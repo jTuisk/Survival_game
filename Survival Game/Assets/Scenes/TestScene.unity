@@ -976,7 +976,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 166119012}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -9, y: 3.5, z: 29}
+  m_LocalPosition: {x: 0, y: 0.125, z: 45}
   m_LocalScale: {x: 2.5, y: 0.25, z: 2.5}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1088,9 +1088,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _canMove: 1
-  _movementSpeed: 1
+  _movementSpeed: 3
   _startPosition: {x: 0, y: 0, z: 0}
-  _moveFromStartToDirection: {x: 0, y: 0, z: 0}
+  _moveFromStartToDirection: {x: 20, y: 10, z: 10}
   _endPosition: {x: 0, y: 0, z: 0}
 --- !u!114 &166119021
 MonoBehaviour:
@@ -1105,7 +1105,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _canRotate: 1
-  _rotationSpeed: 5
+  _rotationSpeed: 50
 --- !u!1 &178685175
 GameObject:
   m_ObjectHideFlags: 0

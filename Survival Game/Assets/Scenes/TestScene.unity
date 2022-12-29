@@ -1300,8 +1300,10 @@ MonoBehaviour:
   CameraFollow: {fileID: 1666574172}
   _input: {fileID: 1488053311}
   _playerAnimator: {fileID: 687563936}
+  _cameraPitch: 0.5
   _playerLookInputLerpTime: 0.35
   _movementMultiplier: 5
+  _sprintingMultiplier: 1.8
   _rotationSpeedMultiplier: 20
   _pitchSpeedMultiplier: 20
   _isRunning: 0
@@ -5565,7 +5567,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b7f6b1dc5d00a240a4d186d45d307a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  showCursor: 0
+  lockCursor: 1
+  hideCursor: 1
 --- !u!1 &978177249
 GameObject:
   m_ObjectHideFlags: 0

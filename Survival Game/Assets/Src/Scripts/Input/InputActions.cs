@@ -53,6 +53,51 @@ public partial class @InputActions : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Jump"",
+                    ""type"": ""Button"",
+                    ""id"": ""14fc354d-a77a-4f8e-9dcf-aeade28fa407"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Pause"",
+                    ""type"": ""Button"",
+                    ""id"": ""6e068ac8-6383-4faf-baec-9bcca9c973a5"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Crouch"",
+                    ""type"": ""Button"",
+                    ""id"": ""dd076f9d-5a92-43e3-a06a-b2ff52220046"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Attack"",
+                    ""type"": ""Button"",
+                    ""id"": ""60596a0d-f7b2-4f4b-9c55-2a9bafe91db4"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Block"",
+                    ""type"": ""Button"",
+                    ""id"": ""5de43d72-59ab-41a0-a764-89d9246e89d1"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -132,6 +177,61 @@ public partial class @InputActions : IInputActionCollection2, IDisposable
                     ""action"": ""Sprint"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""bb31d998-04d8-4fff-8e2e-eb79a02a730b"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Jump"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ffd1f11d-f8eb-462b-9b47-d89f408df06a"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Pause"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f8179841-2054-43d1-812c-f9f898b6501b"",
+                    ""path"": ""<Keyboard>/c"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Crouch"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3fa4032b-4ac6-4532-af5b-f2cb5833ac41"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Attack"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""651aaa81-6eb1-4a26-88c9-01a481f952d8"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Block"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -143,6 +243,11 @@ public partial class @InputActions : IInputActionCollection2, IDisposable
         m_PlayerLand_Move = m_PlayerLand.FindAction("Move", throwIfNotFound: true);
         m_PlayerLand_Look = m_PlayerLand.FindAction("Look", throwIfNotFound: true);
         m_PlayerLand_Sprint = m_PlayerLand.FindAction("Sprint", throwIfNotFound: true);
+        m_PlayerLand_Jump = m_PlayerLand.FindAction("Jump", throwIfNotFound: true);
+        m_PlayerLand_Pause = m_PlayerLand.FindAction("Pause", throwIfNotFound: true);
+        m_PlayerLand_Crouch = m_PlayerLand.FindAction("Crouch", throwIfNotFound: true);
+        m_PlayerLand_Attack = m_PlayerLand.FindAction("Attack", throwIfNotFound: true);
+        m_PlayerLand_Block = m_PlayerLand.FindAction("Block", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -205,6 +310,11 @@ public partial class @InputActions : IInputActionCollection2, IDisposable
     private readonly InputAction m_PlayerLand_Move;
     private readonly InputAction m_PlayerLand_Look;
     private readonly InputAction m_PlayerLand_Sprint;
+    private readonly InputAction m_PlayerLand_Jump;
+    private readonly InputAction m_PlayerLand_Pause;
+    private readonly InputAction m_PlayerLand_Crouch;
+    private readonly InputAction m_PlayerLand_Attack;
+    private readonly InputAction m_PlayerLand_Block;
     public struct PlayerLandActions
     {
         private @InputActions m_Wrapper;
@@ -212,6 +322,11 @@ public partial class @InputActions : IInputActionCollection2, IDisposable
         public InputAction @Move => m_Wrapper.m_PlayerLand_Move;
         public InputAction @Look => m_Wrapper.m_PlayerLand_Look;
         public InputAction @Sprint => m_Wrapper.m_PlayerLand_Sprint;
+        public InputAction @Jump => m_Wrapper.m_PlayerLand_Jump;
+        public InputAction @Pause => m_Wrapper.m_PlayerLand_Pause;
+        public InputAction @Crouch => m_Wrapper.m_PlayerLand_Crouch;
+        public InputAction @Attack => m_Wrapper.m_PlayerLand_Attack;
+        public InputAction @Block => m_Wrapper.m_PlayerLand_Block;
         public InputActionMap Get() { return m_Wrapper.m_PlayerLand; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -230,6 +345,21 @@ public partial class @InputActions : IInputActionCollection2, IDisposable
                 @Sprint.started -= m_Wrapper.m_PlayerLandActionsCallbackInterface.OnSprint;
                 @Sprint.performed -= m_Wrapper.m_PlayerLandActionsCallbackInterface.OnSprint;
                 @Sprint.canceled -= m_Wrapper.m_PlayerLandActionsCallbackInterface.OnSprint;
+                @Jump.started -= m_Wrapper.m_PlayerLandActionsCallbackInterface.OnJump;
+                @Jump.performed -= m_Wrapper.m_PlayerLandActionsCallbackInterface.OnJump;
+                @Jump.canceled -= m_Wrapper.m_PlayerLandActionsCallbackInterface.OnJump;
+                @Pause.started -= m_Wrapper.m_PlayerLandActionsCallbackInterface.OnPause;
+                @Pause.performed -= m_Wrapper.m_PlayerLandActionsCallbackInterface.OnPause;
+                @Pause.canceled -= m_Wrapper.m_PlayerLandActionsCallbackInterface.OnPause;
+                @Crouch.started -= m_Wrapper.m_PlayerLandActionsCallbackInterface.OnCrouch;
+                @Crouch.performed -= m_Wrapper.m_PlayerLandActionsCallbackInterface.OnCrouch;
+                @Crouch.canceled -= m_Wrapper.m_PlayerLandActionsCallbackInterface.OnCrouch;
+                @Attack.started -= m_Wrapper.m_PlayerLandActionsCallbackInterface.OnAttack;
+                @Attack.performed -= m_Wrapper.m_PlayerLandActionsCallbackInterface.OnAttack;
+                @Attack.canceled -= m_Wrapper.m_PlayerLandActionsCallbackInterface.OnAttack;
+                @Block.started -= m_Wrapper.m_PlayerLandActionsCallbackInterface.OnBlock;
+                @Block.performed -= m_Wrapper.m_PlayerLandActionsCallbackInterface.OnBlock;
+                @Block.canceled -= m_Wrapper.m_PlayerLandActionsCallbackInterface.OnBlock;
             }
             m_Wrapper.m_PlayerLandActionsCallbackInterface = instance;
             if (instance != null)
@@ -243,6 +373,21 @@ public partial class @InputActions : IInputActionCollection2, IDisposable
                 @Sprint.started += instance.OnSprint;
                 @Sprint.performed += instance.OnSprint;
                 @Sprint.canceled += instance.OnSprint;
+                @Jump.started += instance.OnJump;
+                @Jump.performed += instance.OnJump;
+                @Jump.canceled += instance.OnJump;
+                @Pause.started += instance.OnPause;
+                @Pause.performed += instance.OnPause;
+                @Pause.canceled += instance.OnPause;
+                @Crouch.started += instance.OnCrouch;
+                @Crouch.performed += instance.OnCrouch;
+                @Crouch.canceled += instance.OnCrouch;
+                @Attack.started += instance.OnAttack;
+                @Attack.performed += instance.OnAttack;
+                @Attack.canceled += instance.OnAttack;
+                @Block.started += instance.OnBlock;
+                @Block.performed += instance.OnBlock;
+                @Block.canceled += instance.OnBlock;
             }
         }
     }
@@ -252,5 +397,10 @@ public partial class @InputActions : IInputActionCollection2, IDisposable
         void OnMove(InputAction.CallbackContext context);
         void OnLook(InputAction.CallbackContext context);
         void OnSprint(InputAction.CallbackContext context);
+        void OnJump(InputAction.CallbackContext context);
+        void OnPause(InputAction.CallbackContext context);
+        void OnCrouch(InputAction.CallbackContext context);
+        void OnAttack(InputAction.CallbackContext context);
+        void OnBlock(InputAction.CallbackContext context);
     }
 }

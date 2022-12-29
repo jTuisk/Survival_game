@@ -13,14 +13,15 @@ public class PlayerLandController : MonoBehaviour
     Vector3 _playerLookInput = Vector3.zero;
     Vector3 _previousPlayerLookInput = Vector3.zero;
 
+    [SerializeField]
     float _cameraPitch = 0.0f;
     [SerializeField] float _playerLookInputLerpTime = 0.35f;
 
     [Header("Movement")]
     [SerializeField] float _movementMultiplier = 30.0f;
     [SerializeField] float _sprintingMultiplier = 1.6f;
-    [SerializeField] float _rotationSpeedMultiplier = 180.0f;
-    [SerializeField] float _pitchSpeedMultiplier = 180.0f;
+    [SerializeField] float _rotationSpeedMultiplier = 20.0f;
+    [SerializeField] float _pitchSpeedMultiplier = 20.0f;
 
 
     [SerializeField] bool _isRunning = false;
@@ -55,7 +56,6 @@ public class PlayerLandController : MonoBehaviour
     }
     private void PlayerMove()
     {
-
         if (!_isRunning)
         {
             _playerMoveInput = new Vector3(_playerMoveInput.x * _movementMultiplier,

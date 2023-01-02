@@ -1302,7 +1302,7 @@ MonoBehaviour:
   _playerAnimator: {fileID: 687563936}
   _cameraPitch: 0.5
   _playerLookInputLerpTime: 0.35
-  _movementMultiplier: 5
+  _movementMultiplier: 2000
   _sprintingMultiplier: 1.8
   _rotationSpeedMultiplier: 20
   _pitchSpeedMultiplier: 20
@@ -1315,7 +1315,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 215761301}
   serializedVersion: 2
-  m_Mass: 0.17
+  m_Mass: 75
   m_Drag: 4
   m_AngularDrag: 4
   m_UseGravity: 1

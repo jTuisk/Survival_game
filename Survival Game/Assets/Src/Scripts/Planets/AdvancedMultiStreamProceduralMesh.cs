@@ -1,6 +1,8 @@
 using Unity.Collections;
 using UnityEngine;
 using UnityEngine.Rendering;
+using Unity.Mathematics;
+using static Unity.Mathematics.math;
 
 [RequireComponent(typeof(MeshFilter),typeof(MeshRenderer))]
 public class AdvancedMultiStreamProceduralMesh : MonoBehaviour
@@ -18,7 +20,7 @@ public class AdvancedMultiStreamProceduralMesh : MonoBehaviour
         Mesh.ApplyAndDisposeWritableMeshData(_meshDataArray, _generatedMesh);
         _meshFilter.mesh = _generatedMesh;
     }
-    //https://catlikecoding.com/unity/tutorials/procedural-meshes/creating-a-mesh/
+
     private Mesh GenerateMesh()
     {
         int vertexAtrributeCount = 4;
@@ -29,10 +31,14 @@ public class AdvancedMultiStreamProceduralMesh : MonoBehaviour
 
         NativeArray<VertexAttributeDescriptor> vertexAttributes = new NativeArray<VertexAttributeDescriptor>
             (
-                vertexAtrributeCount, Allocator.Temp
+                vertexAtrributeCount, Allocator.Temp, NativeArrayOptions.UninitializedMemory
             );
+
         vertexAttributes[0] = new VertexAttributeDescriptor(dimension: 3);
 
+        vertexAttributes[1] = new VertexAttributeDescriptor(VertexAttribute.Normal, dimension: 3, stream: 1);
+        vertexAttributes[2] = new VertexAttributeDescriptor(VertexAttribute.Normal, dimension: 4, stream: 2);
+        vertexAttributes[3] = new VertexAttributeDescriptor(VertexAttribute.Normal, dimension: 2, stream: 3);
 
         meshData.SetVertexBufferParams(vertexCount, vertexAttributes);
         vertexAttributes.Dispose();

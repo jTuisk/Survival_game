@@ -17,7 +17,7 @@ public class IcosahedronPlanetNew : MonoBehaviour
     [SerializeField, Range(0.1f, 1000f)]
     private float _radius = 1;
     [SerializeField, Range(1, 10)]
-    private float _meshDivides;
+    private int _meshResolution = 1;
     [SerializeField, ReadOnly]
     private int _divideToXTriangles = 4;
     [SerializeField, ReadOnly]
@@ -33,6 +33,11 @@ public class IcosahedronPlanetNew : MonoBehaviour
     [Header("Planet Physics")]
     private float _gravity = -9.81f;
 
+
+    //remove later
+
+    private Vector3[] tempVertices;
+
     private void Awake()
     {
         _meshFilter = GetComponent<MeshFilter>();
@@ -42,6 +47,7 @@ public class IcosahedronPlanetNew : MonoBehaviour
         _meshFilter.mesh = _mesh;
         GenerateMesh();
         //_mesh.colors32 = ApplyRandomColorToEachTriangle();
+        tempVertices = GetDefaultVertices();
     }
     // Start is called before the first frame update
     void Start()
@@ -66,9 +72,18 @@ public class IcosahedronPlanetNew : MonoBehaviour
     {
         if (_meshFilter != null)
         {
+            Gizmos.color = Color.cyan;
+            foreach (var vert in tempVertices)
+            {
+                Gizmos.DrawCube(transform.TransformPoint(vert), new Vector3(0.03f, 0.03f, 0.02f) * _radius);
+            }
+
             Gizmos.color = Color.blue;
             foreach (var vert in _meshFilter.sharedMesh.vertices)
             {
+                if (vert == Vector3.zero)
+                    continue;
+
                 Gizmos.DrawCube(transform.TransformPoint(vert), new Vector3(0.03f, 0.03f, 0.03f) * _radius);
             }
         }
@@ -86,7 +101,8 @@ public class IcosahedronPlanetNew : MonoBehaviour
 
     private void GenerateMesh()
     {
-        _mesh.vertices = GenerateDefaultVertices();
+        _mesh.vertices = GenerateVertices(_meshResolution);
+        //_mesh.vertices = GenerateDefaultVertices();
         //_mesh.triangles = GenerateDefaultTriangles();
         //_mesh.normals = GenerateDefaultNormals();
         //_mesh.uv = GenerateDefaultUV();
@@ -97,28 +113,101 @@ public class IcosahedronPlanetNew : MonoBehaviour
         return  (1 + Mathf.Sqrt(5)) / 2;
     }
 
-    private Vector3[] GenerateVertices(int divided)
+    private Vector3[] GenerateVertices(int divideTo)
     {
 
-        float short_side = 1f / 2f * _radius;
-        float long_side = GetGoldenRectangleSideLength() / 2 * _radius;
+        int verticesCount = 12 + (12 * 4 * divideTo);
 
-        int triangleVerticesCount = 3;
+        Vector3[] defaultVertices = GetDefaultVertices(); // Ei haluta vertices listaan n‰it‰.
+        Vector3[] vertices = new Vector3[1000]; // pit‰‰ laskea verticeCount
 
-        int verticesCount = 12 + (12 * 4 * divided);
+        int[,] defaultTriangles = new int[20,3]
+        {
+            {2, 3, 6},
+            {8, 6, 4},
+            {0, 8, 4},
+            {6, 2, 3},
+            {6, 3, 9},
+            {4, 6, 9},
+            {1, 4, 9},
+            {0, 4, 1},
+            {10, 2, 8},
+            {0, 10, 8},
+            {9, 3, 11},
+            {1, 9, 11},
+            {10, 7, 2},
+            {7, 3, 2},
+            {11, 3, 7},
+            {5, 7, 10},
+            {0, 5, 10},
+            {5, 11, 7},
+            {1, 11, 5},
+            {1, 5, 0}
+        };
 
-        Vector3[] vertices = new Vector3[verticesCount];
+        //TODO FIX THIS
+        //for (int i = 0; i < defaultTriangles.GetLength(0); i++) 
+        for (int i = 0; i < 2; i++)
+        {
+            Debug.Log($"{i} - a: {defaultTriangles[i, 0]}, b: {defaultTriangles[i, 1]}, c: {defaultTriangles[i, 2]} ");
+            int startIndex = 12+(200*i); //recalculate
+            DevideVerticleGroup(vertices, startIndex, vertices[defaultTriangles[i ,0]], vertices[defaultTriangles[i, 1]], vertices[defaultTriangles[i, 2]], divideTo);
+        }
+        //DevideVerticleGroup(vertices, 12, defaultVertices[6], defaultVertices[2], defaultVertices[3], divideTo);
+        //DevideVerticleGroup(vertices, 500, defaultVertices[8], defaultVertices[6], defaultVertices[4], divideTo);
 
         //DefaultVertices
 
-
-        for(int i = 0; i < vertices.Length; i++)
-        {
-            vertices[i] = new Vector3(0f, 0f, 0f);
-            
-        }
+        //Debug.Log($"Vertices:  {vertices.Length}");
 
         return vertices;
+    }
+
+    private Vector3[] GetDefaultVertices()
+    {
+        float short_side = 1f / 2f * _radius;
+        float long_side = GetGoldenRectangleSideLength() / 2 * _radius;
+
+        Vector3[] vertices = new Vector3[12];
+
+        //plane y-x
+        vertices[0] = new Vector3(-short_side, -long_side, 0f);
+        vertices[1] = new Vector3(short_side, -long_side, 0f);
+        vertices[2] = new Vector3(-short_side, long_side, 0f);
+        vertices[3] = new Vector3(short_side, long_side, 0f);
+
+        //plane y-z
+        vertices[4] = new Vector3(0f, -short_side, -long_side);
+        vertices[5] = new Vector3(0f, -short_side, long_side);
+        vertices[6] = new Vector3(0f, short_side, -long_side);
+        vertices[7] = new Vector3(0f, short_side, long_side);
+
+        //plane z-x
+        vertices[8] = new Vector3(-short_side, 0f, -long_side);
+        vertices[9] = new Vector3(short_side, 0f, -long_side);
+        vertices[10] = new Vector3(-short_side, 0f, long_side);
+        vertices[11] = new Vector3(short_side, 0f, long_side);
+
+        return vertices;
+    }
+
+    private void DevideVerticleGroup(Vector3[] vertices, int startIndex, Vector3 a, Vector3 b, Vector3 c, int divideTo)
+    {
+        divideTo = divideTo < 1 ? 1 : divideTo;
+        /*
+        * https://docs.unity3d.com/ScriptReference/Vector3.Lerp.html
+        * Lerp(Start value, End value, Interpolate)
+        * We get interpolate value dividing 1 by divideTo * i
+        * Where 1 divided by divideTo gives us % value of and then we multiplie it by i.
+        */
+
+        for (int i = 0; i < divideTo; i++)
+        {
+            vertices[startIndex + (i * 3) + 0] = Vector3.Lerp(a, b, (1f / divideTo * i));
+            vertices[startIndex + (i * 3) + 1] = Vector3.Lerp(b, c, (1f / divideTo * i));
+            vertices[startIndex + (i * 3) + 2] = Vector3.Lerp(c, a, (1f / divideTo * i));
+        }
+
     }
 
     private Vector3[] GenerateDefaultVertices()
@@ -353,7 +442,7 @@ public class IcosahedronPlanetNew : MonoBehaviour
     {
         int count = 1;
 
-        for (int i = 0; i < _meshDivides; i++)
+        for (int i = 0; i < _meshResolution; i++)
         {
             count *= _divideToXTriangles;
         }

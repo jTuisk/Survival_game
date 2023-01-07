@@ -97,6 +97,59 @@ public class IcosahedronPlanetNew : MonoBehaviour
         return  (1 + Mathf.Sqrt(5)) / 2;
     }
 
+    private Vector3[] GenerateVertices(int divided)
+    {
+
+        float short_side = 1f / 2f * _radius;
+        float long_side = GetGoldenRectangleSideLength() / 2 * _radius;
+
+        int triangleVerticesCount = 3;
+
+        int verticesCount = 12 + (12 * 4 * divided);
+
+        Vector3[] vertices = new Vector3[verticesCount];
+
+        //DefaultVertices
+
+
+        for(int i = 0; i < vertices.Length; i++)
+        {
+            vertices[i] = new Vector3(0f, 0f, 0f);
+            
+        }
+
+        return vertices;
+    }
+
+    private Vector3[] GenerateDefaultVertices()
+    {
+        float default_side = 1f / 2f * _radius; // one side is 1f times radius long. We need to divide it by two to center it.
+        float goldenRectangle = (1 + Mathf.Sqrt(5)) / 4 * _radius; // one side is (1 + Mathf.Sqrt(5)) / 2 times radius, but we need to divide it by two to center it.
+
+        Vector3[] vertices = new Vector3[12]
+        { //2, 3, 6
+            //plane y-x 
+            new Vector3(-default_side, -goldenRectangle, 0f),
+            new Vector3(default_side, -goldenRectangle, 0f),
+            new Vector3(-default_side, goldenRectangle, 0f),
+            new Vector3(default_side, goldenRectangle, 0f),
+
+            //plane y-z
+            new Vector3(0f, -default_side, -goldenRectangle),
+            new Vector3(0f, -default_side, goldenRectangle),
+            new Vector3(0f, default_side, -goldenRectangle),
+            new Vector3(0f, default_side, goldenRectangle),
+            
+            //plane z-x
+            new Vector3(-goldenRectangle, 0f, -default_side),
+            new Vector3(goldenRectangle, 0f, -default_side),
+            new Vector3(-goldenRectangle, 0f, default_side),
+            new Vector3(goldenRectangle, 0f , default_side)
+
+        };
+        return vertices;
+    }
+    /*
     private Vector3[] GenerateDefaultVertices()
     {
 
@@ -124,7 +177,7 @@ public class IcosahedronPlanetNew : MonoBehaviour
 
         };
         return vertices;
-    }
+    }*/
 
     private int[] GenerateDefaultTriangles()
     {

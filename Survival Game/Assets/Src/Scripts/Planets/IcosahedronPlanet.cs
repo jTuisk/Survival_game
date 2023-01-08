@@ -14,12 +14,6 @@ public class IcosahedronPlanet : MonoBehaviour
     [SerializeField, ReadOnly]
     private int _seed;
 
-    [Header("Generation size and resolution")]
-    [SerializeField, Range(0.1f, 1000f)]
-    private float _radius = 1;
-    [SerializeField, Range(0, 11)]
-    private int _meshDivides = 0;
-
     [Header("Mesh")]
     [SerializeField]
     private string _meshName;
@@ -28,6 +22,13 @@ public class IcosahedronPlanet : MonoBehaviour
     private Mesh _mesh;
     [SerializeField, ReadOnly]
     private int _verticeCount = 0;
+
+    [Header("Planet data")]
+    [SerializeField, Range(0.1f, 1000f)]
+    private float _radius = 1;
+    [SerializeField, Range(0, 11)]
+    private int _resolution = 0;
+
 
 
     private void Awake()
@@ -70,7 +71,7 @@ public class IcosahedronPlanet : MonoBehaviour
         List<Vector3> vertices = GetDefaultVertices();
         List<Triangle> triangles = GetDefaultTriangles();
 
-        vertices = Subdivide(vertices, triangles, _meshDivides);
+        vertices = Subdivide(vertices, triangles, _resolution);
 
 
         _mesh.vertices = vertices.ToArray();

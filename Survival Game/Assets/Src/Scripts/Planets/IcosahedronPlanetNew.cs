@@ -150,7 +150,7 @@ public class IcosahedronPlanetNew : MonoBehaviour
         for (int i = 0; i < 2; i++)
         {
             Debug.Log($"{i} - a: {defaultTriangles[i, 0]}, b: {defaultTriangles[i, 1]}, c: {defaultTriangles[i, 2]} ");
-            int startIndex = 12+(200*i); //recalculate
+            int startIndex = (200*i); //recalculate
             DevideVerticleGroup(vertices, startIndex, vertices[defaultTriangles[i ,0]], vertices[defaultTriangles[i, 1]], vertices[defaultTriangles[i, 2]], divideTo);
         }
         //DevideVerticleGroup(vertices, 12, defaultVertices[6], defaultVertices[2], defaultVertices[3], divideTo);
@@ -161,6 +161,14 @@ public class IcosahedronPlanetNew : MonoBehaviour
         //Debug.Log($"Vertices:  {vertices.Length}");
 
         return vertices;
+    }
+
+    private int GetVerticeCount(int diviedTo)
+    {
+        //https://colab.research.google.com/drive/1IFV_kIQH17ZFDrOnFy6r_9rlkYWvjylJ#scrollTo=KXpzIWHx3kUO
+        int count = 0;
+
+        return count;
     }
 
     private Vector3[] GetDefaultVertices()
@@ -182,7 +190,7 @@ public class IcosahedronPlanetNew : MonoBehaviour
         vertices[6] = new Vector3(0f, short_side, -long_side);
         vertices[7] = new Vector3(0f, short_side, long_side);
 
-        //plane z-x
+           //plane z-x
         vertices[8] = new Vector3(-short_side, 0f, -long_side);
         vertices[9] = new Vector3(short_side, 0f, -long_side);
         vertices[10] = new Vector3(-short_side, 0f, long_side);

@@ -115,12 +115,6 @@ public class IcosahedronPlanetNew : MonoBehaviour
 
     private Vector3[] GenerateVertices(int divideTo)
     {
-
-        int verticesCount = 12 + (12 * 4 * divideTo);
-
-        Vector3[] defaultVertices = GetDefaultVertices(); // Ei haluta vertices listaan n‰it‰.
-        Vector3[] vertices = new Vector3[1000]; // pit‰‰ laskea verticeCount
-
         int[,] defaultTriangles = new int[20,3]
         {
             {2, 3, 6},
@@ -145,15 +139,25 @@ public class IcosahedronPlanetNew : MonoBehaviour
             {1, 5, 0}
         };
 
-        //TODO FIX THIS
-        //for (int i = 0; i < defaultTriangles.GetLength(0); i++) 
-        for (int i = 0; i < 2; i++)
+        Vector3[] defaultVertices = GetDefaultVertices();
+        Vector3[] vertices = new Vector3[GetVerticeCount(divideTo) * defaultTriangles.Length*10];
+        Debug.Log($"diviedTo: {divideTo}, totalVertices: {vertices.Length}, totalFaces: {(divideTo+1)*(divideTo+1)*defaultTriangles.Length}");
+        
+        for(int i = 0; i < defaultTriangles.Length; i++)
         {
-            Debug.Log($"{i} - a: {defaultTriangles[i, 0]}, b: {defaultTriangles[i, 1]}, c: {defaultTriangles[i, 2]} ");
-            int startIndex = (200*i); //recalculate
-            DevideVerticleGroup(vertices, startIndex, vertices[defaultTriangles[i ,0]], vertices[defaultTriangles[i, 1]], vertices[defaultTriangles[i, 2]], divideTo);
+            int startIndex = GetVerticeCount(divideTo) * i; //WRONG
+            Debug.Log($"s: {startIndex}");
+            //DevideVerticleGroup(vertices, startIndex, defaultVertices[defaultTriangles[i, 0]], defaultVertices[defaultTriangles[i, 1]], defaultVertices[defaultTriangles[i, 2]], divideTo);
         }
-        //DevideVerticleGroup(vertices, 12, defaultVertices[6], defaultVertices[2], defaultVertices[3], divideTo);
+        
+        /*for (int i = 1; i <= divideTo; i++)
+        {
+            int startIndex = GetVerticeCount(i)-1;
+            //Debug.Log($"i {i}, startIndex: {startIndex}");
+            DevideVerticleGroup(vertices, startIndex, defaultVertices[defaultTriangles[i ,0]], defaultVertices[defaultTriangles[i, 1]], defaultVertices[defaultTriangles[i, 2]], divideTo);
+        }*/
+
+        //DevideVerticleGroup(vertices, GetVerticeCount(0), defaultVertices[6], defaultVertices[2], defaultVertices[3], divideTo);
         //DevideVerticleGroup(vertices, 500, defaultVertices[8], defaultVertices[6], defaultVertices[4], divideTo);
 
         //DefaultVertices
@@ -163,10 +167,14 @@ public class IcosahedronPlanetNew : MonoBehaviour
         return vertices;
     }
 
-    private int GetVerticeCount(int diviedTo)
+    private int GetVerticeCount(int divideTo)
     {
-        //https://colab.research.google.com/drive/1IFV_kIQH17ZFDrOnFy6r_9rlkYWvjylJ#scrollTo=KXpzIWHx3kUO
         int count = 0;
+
+        for(int i = 0; i < divideTo; i++)
+        {
+            count += ((i + 1) * (i + 2)) / 2;
+        }
 
         return count;
     }

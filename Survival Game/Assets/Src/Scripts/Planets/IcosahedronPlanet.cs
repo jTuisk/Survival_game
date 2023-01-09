@@ -2,10 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
+[ExecuteInEditMode]
+[RequireComponent(typeof(MeshFilter), typeof(MeshRenderer), typeof(MeshCollider))]
 public class IcosahedronPlanet : MonoBehaviour
 {
-
+    [SerializeField]
+    private bool _DebugMode = false;
     [Header("Generation seed")]
     [SerializeField]
     private bool _generateSeedFromString = false;
@@ -19,9 +21,11 @@ public class IcosahedronPlanet : MonoBehaviour
     private string _meshName;
     private MeshFilter _meshFilter;
     private MeshRenderer _meshRenderer;
+    private MeshCollider _meshCollider;
     private Mesh _mesh;
     [SerializeField, ReadOnly]
     private int _verticeCount = 0;
+
 
     [Header("Planet data")]
     [SerializeField, Range(0.1f, 1000f)]
@@ -29,27 +33,58 @@ public class IcosahedronPlanet : MonoBehaviour
     [SerializeField, Range(0, 4)] //max 4 as we generade new mesh every update -> Oringal: Range(0,11)
     private int _resolution = 0;
 
-
+    [Header("Planet physics")]
+    private Rigidbody _rigidbody;
+    [SerializeField]
+    private float _gravity = -9.81f;
+    [SerializeField]
+    private float _gravityRadius = 0.1f;
+    [SerializeField, Range(0.1f, 100000f)]
+    private float _planetMass = 1000f;
+    [SerializeField]
+    private Vector3 _gravityPoint = Vector3.zero;
 
     private void Awake()
     {
         _meshFilter = GetComponent<MeshFilter>();
         _meshRenderer = GetComponent<MeshRenderer>();
+        _meshCollider = GetComponent<MeshCollider>();
         _seed = GetNewSeed(_generateSeedFromString);
         _mesh = InitializeNewMesh(_meshName);
         _meshFilter.mesh = _mesh;
         GenerateMesh();
+        InitializeMeshCollider();
+        InitializeRigidbody();
     }
 
     // Update is called once per frame
     void Update()
     {
         GenerateMesh();
-        for (int i = 0; i < _mesh.vertices.Length; i++)
+        ShowNormals(_DebugMode);
+    }
+
+    private void InitializeMeshCollider()
+    {
+        _meshCollider.sharedMesh = _mesh;
+    }
+    private void InitializeRigidbody()
+    {
+        _rigidbody = GetComponent<Rigidbody>();
+        _rigidbody.useGravity = false;
+        _rigidbody.isKinematic = true;
+    }
+
+    private void ShowNormals(bool show)
+    {
+        if (show)
         {
-            Vector3 norm = transform.TransformDirection(_mesh.normals[i]);
-            Vector3 vert = transform.TransformPoint(_mesh.vertices[i]);
-            Debug.DrawRay(vert, norm * 0.1f*_radius, Color.red);
+            for (int i = 0; i < _mesh.vertices.Length; i++)
+            {
+                Vector3 norm = transform.TransformDirection(_mesh.normals[i]);
+                Vector3 vert = transform.TransformPoint(_mesh.vertices[i]);
+                Debug.DrawRay(vert, norm * 0.1f * _radius, Color.red);
+            }
         }
     }
 
@@ -57,6 +92,9 @@ public class IcosahedronPlanet : MonoBehaviour
     {
         if(_meshFilter != null)
         {
+            if (!_DebugMode)
+                return;
+
             List<Vector3> verts = GetDefaultVertices();
             for (int i = 0; i < verts.Count; i++)
             {
@@ -268,4 +306,19 @@ public class IcosahedronPlanet : MonoBehaviour
         return seed;
     }
 
+    public void GetGravityForce(GameObject go)
+    {
+        Rigidbody go_rb = go.GetComponent<Rigidbody>();
+        if (go_rb != null)
+        {
+            //calculate distance to planet surface
+            Vector3 distance = go.transform.position - gameObject.transform.position;
+
+            //calculate gravity force at that distance.
+
+
+        }
+        
+
+    }
 }

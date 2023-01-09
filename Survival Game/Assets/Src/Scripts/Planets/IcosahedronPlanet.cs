@@ -26,7 +26,7 @@ public class IcosahedronPlanet : MonoBehaviour
     [Header("Planet data")]
     [SerializeField, Range(0.1f, 1000f)]
     private float _radius = 1;
-    [SerializeField, Range(0, 11)]
+    [SerializeField, Range(0, 4)] //Range(0,11)
     private int _resolution = 0;
 
 
@@ -96,9 +96,9 @@ public class IcosahedronPlanet : MonoBehaviour
                 Vector3 b = vertices[currentFace.b];
                 Vector3 c = vertices[currentFace.c];
 
-                Vector3 ab = Vector3.Lerp(a, b, 0.5f);
-                Vector3 bc = Vector3.Lerp(b, c, 0.5f);
-                Vector3 ca = Vector3.Lerp(c, a, 0.5f);
+                Vector3 ab = Vector3.Lerp(a, b, 0.5f).normalized;
+                Vector3 bc = Vector3.Lerp(b, c, 0.5f).normalized;
+                Vector3 ca = Vector3.Lerp(c, a, 0.5f).normalized;
 
                 int ab_index = AddAndGetVerticeIndex(vertices, ab);
                 int bc_index = AddAndGetVerticeIndex(vertices, bc);
@@ -135,10 +135,10 @@ public class IcosahedronPlanet : MonoBehaviour
 
         return new List<Vector3>
                 {
-                    new Vector3(-short_side, -long_side, 0f).normalized,
-                    new Vector3(short_side, -long_side, 0f).normalized,
-                    new Vector3(-short_side, long_side, 0f).normalized,
-                    new Vector3(short_side, long_side, 0f).normalized,
+                    new Vector3(-long_side, -short_side, 0f).normalized,
+                    new Vector3(long_side, -short_side, 0f).normalized,
+                    new Vector3(-long_side, short_side, 0f).normalized,
+                    new Vector3(long_side, short_side, 0f).normalized,
 
                     new Vector3(0f, -short_side, -long_side).normalized,
                     new Vector3(0f, -short_side, long_side).normalized,

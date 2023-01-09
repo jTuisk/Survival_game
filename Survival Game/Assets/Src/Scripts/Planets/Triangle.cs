@@ -11,6 +11,11 @@ public struct Triangle
         this.c = c;
     }
 
+    public int[] ToArray()
+    {
+        return new int[] { a, b, c };
+    }
+
     public override bool Equals(object o)
     {
         if (o == null || o is not Triangle)
@@ -19,5 +24,10 @@ public struct Triangle
         Triangle t = (Triangle)o;
 
         return a == t.a && b == t.b && c == t.b; 
+    }
+
+    public override string ToString()
+    {
+        return $"a: {a}, b: {b}, c: {c}";
     }
 }

@@ -26,7 +26,7 @@ public class IcosahedronPlanet : MonoBehaviour
     [Header("Planet data")]
     [SerializeField, Range(0.1f, 1000f)]
     private float _radius = 1;
-    [SerializeField, Range(0, 4)] //Range(0,11)
+    [SerializeField, Range(0, 4)] //max 4 as we generade new mesh every update -> Oringal: Range(0,11)
     private int _resolution = 0;
 
 
@@ -44,21 +44,32 @@ public class IcosahedronPlanet : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //DivideTriangles();
         GenerateMesh();
+        for (int i = 0; i < _mesh.vertices.Length; i++)
+        {
+            Vector3 norm = transform.TransformDirection(_mesh.normals[i]);
+            Vector3 vert = transform.TransformPoint(_mesh.vertices[i]);
+            Debug.DrawRay(vert, norm * 0.1f*_radius, Color.red);
+        }
     }
 
     private void OnDrawGizmos()
     {
         if(_meshFilter != null)
         {
-            Gizmos.color = Color.cyan;
-            foreach (var vert in GetDefaultVertices())
+            List<Vector3> verts = GetDefaultVertices();
+            for (int i = 0; i < verts.Count; i++)
             {
-                Gizmos.DrawCube(transform.TransformPoint(vert), new Vector3(0.03f, 0.03f, 0.03f) * _radius);
+                if(i == 0)
+                    Gizmos.color = Color.red;
+                if (i == 4)
+                    Gizmos.color = Color.blue;
+                if (i == 8)
+                    Gizmos.color = Color.green;
+                Gizmos.DrawCube(transform.TransformPoint(verts[i]), new Vector3(0.03f, 0.03f, 0.03f) * _radius);
             }
 
-            Gizmos.color = Color.blue;
+            Gizmos.color = Color.black;
             foreach (var vert in _meshFilter.sharedMesh.vertices)
             {
                 Gizmos.DrawCube(transform.TransformPoint(vert), new Vector3(0.015f, 0.015f, 0.015f)*_radius);
@@ -70,24 +81,30 @@ public class IcosahedronPlanet : MonoBehaviour
     {
         List<Vector3> vertices = GetDefaultVertices();
         List<Triangle> triangles = GetDefaultTriangles();
+        List<Vector3> normals = GetDefaultNormals();
 
-        vertices = Subdivide(vertices, triangles, _resolution);
-
+        triangles = Subdivide(vertices, triangles, normals, _resolution);
 
         _mesh.vertices = vertices.ToArray();
+        _mesh.triangles = ConvertTrianglesToArray(triangles);
+        _mesh.normals = normals.ToArray();
+
+
         _verticeCount = _mesh.vertices.Length;
     }
 
-    private List<Vector3> Subdivide(List<Vector3> vertices, List<Triangle> triangles, int divides)
-    {        
+    private List<Triangle> Subdivide(List<Vector3> vertices, List<Triangle> triangles, List<Vector3> normals, int divides)
+    {
         /**
          * Total count for vertices.
-         * [divideTo, verticeCount]
-         * [1, 12], [2, 42], [3, 162], [4, 642], [5, 2562], [6, 10242]
+         * [divides, verticeCount]
+         * [0, 12], [1, 42], [2, 162], [3, 642], [4, 2562], [5, 10242] 
          */
+
         for (int i = 0; i < divides; i++)
         {
             List<Triangle> newTriangles = new List<Triangle>();
+
             for(int j = 0; j < triangles.Count; j++)
             {
                 Triangle currentFace = triangles[j];
@@ -96,13 +113,13 @@ public class IcosahedronPlanet : MonoBehaviour
                 Vector3 b = vertices[currentFace.b];
                 Vector3 c = vertices[currentFace.c];
 
-                Vector3 ab = Vector3.Lerp(a, b, 0.5f).normalized;
-                Vector3 bc = Vector3.Lerp(b, c, 0.5f).normalized;
-                Vector3 ca = Vector3.Lerp(c, a, 0.5f).normalized;
+                Vector3 ab = Vector3.Lerp(a, b, 0.5f).normalized * _radius;
+                Vector3 bc = Vector3.Lerp(b, c, 0.5f).normalized * _radius;
+                Vector3 ca = Vector3.Lerp(c, a, 0.5f).normalized * _radius;
 
-                int ab_index = AddAndGetVerticeIndex(vertices, ab);
-                int bc_index = AddAndGetVerticeIndex(vertices, bc);
-                int ca_index = AddAndGetVerticeIndex(vertices, ca);
+                int ab_index = AddAndGetVerticeIndex(vertices, normals, ab);
+                int bc_index = AddAndGetVerticeIndex(vertices, normals, bc);
+                int ca_index = AddAndGetVerticeIndex(vertices, normals, ca);
 
                 newTriangles.Add(new Triangle(vertices.IndexOf(a), ab_index, ca_index));
                 newTriangles.Add(new Triangle(vertices.IndexOf(b), bc_index, ab_index));
@@ -111,17 +128,17 @@ public class IcosahedronPlanet : MonoBehaviour
             }
             triangles = newTriangles;
         }
-
-        return vertices;
+        return triangles;
     }
 
-    private int AddAndGetVerticeIndex(List<Vector3> vertices, Vector3 newVertice)
+    private int AddAndGetVerticeIndex(List<Vector3> vertices, List<Vector3> normals, Vector3 newVertice)
     {
         int index = vertices.IndexOf(newVertice);
 
         if (index == -1)
         {
             vertices.Add(newVertice);
+            normals.Add(newVertice);
             index = vertices.Count - 1;
         }
 
@@ -130,60 +147,87 @@ public class IcosahedronPlanet : MonoBehaviour
 
     private List<Vector3> GetDefaultVertices()
     {
-        float short_side = 1f / 2f * _radius;
-        float long_side = GetGoldenRectangleSideLength() / 2 * _radius;
+        float short_side = 1f / 2f;
+        float long_side = GetGoldenRectangleSideLength() / 2;
 
         return new List<Vector3>
                 {
-                    new Vector3(-long_side, -short_side, 0f).normalized,
-                    new Vector3(long_side, -short_side, 0f).normalized,
-                    new Vector3(-long_side, short_side, 0f).normalized,
-                    new Vector3(long_side, short_side, 0f).normalized,
-
-                    new Vector3(0f, -short_side, -long_side).normalized,
-                    new Vector3(0f, -short_side, long_side).normalized,
-                    new Vector3(0f, short_side, -long_side).normalized,
-                    new Vector3(0f, short_side, long_side).normalized,
-
-                    new Vector3(-short_side, 0f, -long_side).normalized,
-                    new Vector3(short_side, 0f, -long_side).normalized,
-                    new Vector3(-short_side, 0f, long_side).normalized,
-                    new Vector3(short_side, 0f, long_side).normalized
+                    //plane y-x
+                    //red
+                    new Vector3(-long_side, -short_side, 0f).normalized * _radius,   // 0
+                    new Vector3(long_side, -short_side, 0f).normalized * _radius,    // 1
+                    new Vector3(-long_side, short_side, 0f).normalized * _radius,    // 2
+                    new Vector3(long_side, short_side, 0f).normalized * _radius,     // 3
+                    
+                    //plane y-z
+                    //blue
+                    new Vector3(0f, -long_side, -short_side).normalized * _radius,   // 4
+                    new Vector3(0f, -long_side, short_side).normalized * _radius,    // 5
+                    new Vector3(0f, long_side, -short_side).normalized * _radius,    // 6
+                    new Vector3(0f, long_side, short_side).normalized * _radius,     // 7
+                    
+                    //plane z-x
+                    //green
+                    new Vector3(-short_side, 0f, -long_side).normalized * _radius,   // 8
+                    new Vector3(short_side, 0f, -long_side).normalized * _radius,    // 9
+                    new Vector3(-short_side, 0f, long_side).normalized * _radius,    // 10
+                    new Vector3(short_side, 0f, long_side).normalized * _radius     // 11
                 };
-
     }
 
     private List<Triangle> GetDefaultTriangles()
     {
         return new List<Triangle>
         {
+            new Triangle(2, 7, 6),
             new Triangle(8, 2, 6),
-            new Triangle(8, 6, 4),
+            new Triangle(8, 6, 9),
             new Triangle(0, 8, 4),
-            new Triangle(6, 2, 3),
-            new Triangle(6, 3, 9),
-            new Triangle(4, 6, 9),
-            new Triangle(1, 4, 9),
-            new Triangle(0, 4, 1),
-            new Triangle(10, 2, 8),
-            new Triangle(0, 10, 8),
-            new Triangle(9, 3, 11),
-            new Triangle(1, 9, 11),
+            new Triangle(4, 8, 9),
+            new Triangle(4, 9, 1),
+            new Triangle(9, 6, 3),
+            new Triangle(3, 6, 7),
+            new Triangle(3, 7, 11),
+            new Triangle(11, 7, 10),
             new Triangle(10, 7, 2),
-            new Triangle(7, 3, 2),
-            new Triangle(11, 3, 7),
-            new Triangle(5, 7, 10),
-            new Triangle(0, 5, 10),
-            new Triangle(5, 11, 7),
-            new Triangle(1, 11, 5),
-            new Triangle(1, 5, 0)
+            new Triangle(0, 10, 2),
+            new Triangle(0, 2, 8),
+            new Triangle(1, 9, 3),
+            new Triangle(1, 3, 11),
+            new Triangle(1, 5, 4),
+            new Triangle(0, 4, 5),
+            new Triangle(5, 1, 11),
+            new Triangle(5, 11, 10),
+            new Triangle(5, 10, 0)
         };
+    }
+
+    private List<Vector3> GetDefaultNormals()
+    {
+        return GetDefaultVertices();
+    }
+
+    private int[] ConvertTrianglesToArray(List<Triangle> triangles)
+    {
+        int[] int_Triangles = new int[triangles.Count*3];
+
+
+        for(int i = 0; i < triangles.Count; i++)
+        {
+            int[] points = triangles[i].ToArray();
+            int_Triangles[i*3 + 0] = points[0];
+            int_Triangles[i*3 + 1] = points[1];
+            int_Triangles[i*3 + 2] = points[2];
+        }
+
+        return int_Triangles;
     }
 
     private int GetVerticeCount(int divideTo)
     {
         return ((divideTo + 1) * (divideTo + 2)) / 2;
     }
+
     private float GetGoldenRectangleSideLength()
     {
         return (1 + Mathf.Sqrt(5)) / 2;

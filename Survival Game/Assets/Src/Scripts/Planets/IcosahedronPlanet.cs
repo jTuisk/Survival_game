@@ -18,6 +18,8 @@ public class IcosahedronPlanet : MonoBehaviour
 
     [Header("Mesh")]
     [SerializeField]
+    private bool _updateMessEveryFrame = true;
+    [SerializeField]
     private string _meshName;
     private MeshFilter _meshFilter;
     private MeshRenderer _meshRenderer;
@@ -25,7 +27,10 @@ public class IcosahedronPlanet : MonoBehaviour
     private Mesh _mesh;
     [SerializeField, ReadOnly]
     private int _verticeCount = 0;
-
+    //[SerializeField]
+    //private bool _useGPU;
+    //[SerializeField]
+    //private ComputeShader _subdivideShader;
 
     [Header("Planet data")]
     [SerializeField, Range(0.1f, 1000f)]
@@ -33,16 +38,7 @@ public class IcosahedronPlanet : MonoBehaviour
     [SerializeField, Range(0, 4)] //max 4 as we generade new mesh every update -> Oringal: Range(0,11)
     private int _resolution = 0;
 
-    [Header("Planet physics")]
-    private Rigidbody _rigidbody;
-    [SerializeField]
-    private float _gravity = -9.81f;
-    [SerializeField]
-    private float _gravityRadius = 0.1f;
-    [SerializeField, Range(0.1f, 100000f)]
-    private float _planetMass = 1000f;
-    [SerializeField]
-    private Vector3 _gravityPoint = Vector3.zero;
+
 
     private void Awake()
     {
@@ -54,25 +50,18 @@ public class IcosahedronPlanet : MonoBehaviour
         _meshFilter.mesh = _mesh;
         GenerateMesh();
         InitializeMeshCollider();
-        InitializeRigidbody();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void FixedUpdate()
     {
-        GenerateMesh();
+        if(_updateMessEveryFrame)
+            GenerateMesh();
         ShowNormals(_DebugMode);
     }
 
     private void InitializeMeshCollider()
     {
         _meshCollider.sharedMesh = _mesh;
-    }
-    private void InitializeRigidbody()
-    {
-        _rigidbody = GetComponent<Rigidbody>();
-        _rigidbody.useGravity = false;
-        _rigidbody.isKinematic = true;
     }
 
     private void ShowNormals(bool show)
@@ -138,12 +127,11 @@ public class IcosahedronPlanet : MonoBehaviour
          * [divides, verticeCount]
          * [0, 12], [1, 42], [2, 162], [3, 642], [4, 2562], [5, 10242] 
          */
-
         for (int i = 0; i < divides; i++)
         {
             List<Triangle> newTriangles = new List<Triangle>();
 
-            for(int j = 0; j < triangles.Count; j++)
+            for (int j = 0; j < triangles.Count; j++)
             {
                 Triangle currentFace = triangles[j];
 
@@ -306,19 +294,29 @@ public class IcosahedronPlanet : MonoBehaviour
         return seed;
     }
 
-    public void GetGravityForce(GameObject go)
+    public Vector3 GetRandomSurfacePoint()
     {
-        Rigidbody go_rb = go.GetComponent<Rigidbody>();
-        if (go_rb != null)
+        Vector3 surfacePoint = new Vector3();
+        Vector3 direction = Random.onUnitSphere * _radius;
+        surfacePoint = (direction - transform.position).normalized;
+        /*
+        RaycastHit hit;
+
+        Vector3 origin = transform.position;
+        Vector3 direction = Random.onUnitSphere * _radius;
+
+        Vector3 start = direction * _radius * 2f; 
+        Vector3 to = -(start - transform.position).normalized;
+
+
+        if (Physics.Raycast(start, to, out hit))
         {
-            //calculate distance to planet surface
-            Vector3 distance = go.transform.position - gameObject.transform.position;
 
-            //calculate gravity force at that distance.
+            surfacePoint = hit.transform.position;
+            Debug.DrawRay(start, to * hit.distance, Color.red);
+            Debug.Log($"origin: {start}, dir: {to}, outcome: {surfacePoint}");
+        }*/
 
-
-        }
-        
-
+        return surfacePoint;
     }
 }

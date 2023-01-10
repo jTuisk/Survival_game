@@ -1,0 +1,66 @@
+// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel Subdivide
+
+float divides = 0;
+
+struct TriangleShader
+{
+    uint a;
+    uint b;
+    uint c;
+};
+// Create a RenderTexture with enableRandomWrite flag and set it
+// with cs.SetTexture
+RWStructureBuffer<float3> vertices;
+RWStructureBuffer<int> triangles;
+RWStructureBuffer<float3> normals;
+
+[numthreads(8, 8, 1)]
+void Subdivide (uint3 id : SV_DispatchThreadID)
+{
+    /*
+            for (int i = 0; i < divides; i++)
+            {
+                List<Triangle> newTriangles = new List<Triangle>();
+
+                for (int j = 0; j < triangles.Count; j++)
+                {
+                    Triangle currentFace = triangles[j];
+
+                    Vector3 a = vertices[currentFace.a];
+                    Vector3 b = vertices[currentFace.b];
+                    Vector3 c = vertices[currentFace.c];
+
+                    Vector3 ab = Vector3.Lerp(a, b, 0.5f).normalized * _radius;
+                    Vector3 bc = Vector3.Lerp(b, c, 0.5f).normalized * _radius;
+                    Vector3 ca = Vector3.Lerp(c, a, 0.5f).normalized * _radius;
+
+                    int ab_index = AddAndGetVerticeIndex(vertices, normals, ab);
+                    int bc_index = AddAndGetVerticeIndex(vertices, normals, bc);
+                    int ca_index = AddAndGetVerticeIndex(vertices, normals, ca);
+
+                    newTriangles.Add(new Triangle(vertices.IndexOf(a), ab_index, ca_index));
+                    newTriangles.Add(new Triangle(vertices.IndexOf(b), bc_index, ab_index));
+                    newTriangles.Add(new Triangle(vertices.IndexOf(c), ca_index, bc_index));
+                    newTriangles.Add(new Triangle(ab_index, bc_index, ca_index));
+                }
+                triangles = newTriangles;
+            }
+        }
+    */
+    for(uint i = 0; i < divides; i++)
+    {
+        //List<Triangle> newTriangles = new List<Triangle>();
+        for(uint j = 0; j < triangles.Length; j++)
+        {
+            Triangle currentFace = triangles[j];
+
+            float3 a = vertices[currentFace.a]
+        }
+        //triangles = newTriangles;
+    }
+
+    // TODO: insert actual code here!
+
+    Result[id.xy] = float4(id.x & id.y, (id.x & 15)/15.0, (id.y & 15)/15.0, 0.0);
+}

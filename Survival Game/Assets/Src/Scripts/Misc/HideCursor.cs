@@ -2,12 +2,10 @@ using UnityEngine;
 
 public class HideCursor : MonoBehaviour
 {
-    [SerializeField] bool lockCursor = true;
-    [SerializeField] bool hideCursor = true;
-    // Update is called once per frame
-    void Update()
+
+    public static void ShowCurors(bool showCursor, bool lockCursor)
     {
-        Cursor.visible = !hideCursor;
+        Cursor.visible = showCursor;
         Cursor.lockState = lockCursor ? CursorLockMode.Locked : CursorLockMode.None;
     }
 }

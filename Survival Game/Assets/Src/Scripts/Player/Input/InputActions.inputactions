@@ -2,7 +2,7 @@
     "name": "InputActions",
     "maps": [
         {
-            "name": "PlayerLand",
+            "name": "Player",
             "id": "3dd53029-98cc-4fe3-8885-4cf071d11cca",
             "actions": [
                 {

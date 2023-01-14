@@ -368,7 +368,7 @@ Rigidbody:
   m_AngularDrag: 0
   m_UseGravity: 0
   m_IsKinematic: 0
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_Constraints: 112
   m_CollisionDetection: 0
 --- !u!136 &50606053
@@ -425,7 +425,7 @@ MonoBehaviour:
   m_ActionEvents: []
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
-  m_DefaultActionMap: PlayerLand
+  m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
 --- !u!114 &50606057
@@ -440,7 +440,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c37ca91bb9e49d43bda593b712edac4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _animator: {fileID: 0}
+  _animator: {fileID: 8879528567133557731}
   _animatorBlendSpeed: 1
   _thirdPersonCamera: {fileID: 963194228}
   _firstPersonCamera: {fileID: 417662709}
@@ -2311,7 +2311,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 417662708}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 1.706, z: 0.112}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -12656,6 +12656,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8879528567133557730}
+  - component: {fileID: 8879528567133557731}
   m_Layer: 0
   m_Name: Armature
   m_TagString: Untagged
@@ -12931,6 +12932,26 @@ Transform:
   m_Father: {fileID: 543450653021045628}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!95 &8879528567133557731
+Animator:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7036213049066953128}
+  m_Enabled: 1
+  m_Avatar: {fileID: 9000000, guid: 4e331c1984c7a77449375e82a8372f59, type: 3}
+  m_Controller: {fileID: 9100000, guid: 18c0d61011951a84ca95ec2ff4994e49, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 1
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &9174377916323017841
 GameObject:
   m_ObjectHideFlags: 0

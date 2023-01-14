@@ -86,6 +86,7 @@ public class PlayerController : MonoBehaviour
         //_rigidbody.AddForce(transform.TransformVector(new Vector3(xVelocityDifference, 0.0f, yVelocityDifference)), ForceMode.VelocityChange);
          _rigidbody.AddRelativeForce(new Vector3(_currentVelocity.x, 0.0f, _currentVelocity.y), ForceMode.Force);
 
+        Debug.Log($"_hasAnimator: {_hasAnimator}");
         if (_hasAnimator)
         {
             _animator.SetFloat(_xVelocityHash, _currentVelocity.x);

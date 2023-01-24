@@ -219,7 +219,7 @@ public class PlayerController : MonoBehaviour
 
     private float GetMaxSpeed()
     {
-        if (_inputManager.Sprint)
+        if (_inputManager.Run)
             return _sprintSpeed;
 
         return _walkSpeed;

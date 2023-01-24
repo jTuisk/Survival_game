@@ -9,7 +9,10 @@ public class InputManager : MonoBehaviour
 
     public Vector2 Move { get; private set; }
     public Vector2 Look { get; private set; }
-    public bool Sprint { get; private set; }
+    public bool Run { get; private set; }
+    public bool Jump { get; private set; }
+
+
     /*
     public bool MoveIsPressed { get; private set; }
     public bool JumpIsPressed { get; private set; }
@@ -21,14 +24,16 @@ public class InputManager : MonoBehaviour
     private InputActionMap _currentMap;
     private InputAction _moveAction;
     private InputAction _lookAction;
-    private InputAction _sprintAction;
+    private InputAction _runAction;
+    private InputAction _jumpAction;
 
     private void Awake()
     {
         _currentMap = _playerInput.currentActionMap;
         _moveAction = _currentMap.FindAction("Move");
         _lookAction = _currentMap.FindAction("Look");
-        _sprintAction = _currentMap.FindAction("Sprint");
+        _runAction = _currentMap.FindAction("Run");
+        _jumpAction = _currentMap.FindAction("Jump");
 
         _moveAction.performed += SetMove;
         _moveAction.canceled += SetMove;
@@ -36,8 +41,11 @@ public class InputManager : MonoBehaviour
         _lookAction.performed += SetLook;
         _lookAction.canceled += SetLook;
 
-        _sprintAction.performed += SetSprint;
-        _sprintAction.canceled += SetSprint;
+        _runAction.performed += SetRun;
+        _runAction.canceled += SetRun;
+
+        _jumpAction.performed += SetJump;
+        _jumpAction.canceled += SetJump;
     }
     private void SetMove(InputAction.CallbackContext context)
     {
@@ -49,9 +57,14 @@ public class InputManager : MonoBehaviour
         Look = context.ReadValue<Vector2>();
     }
 
-    private void SetSprint(InputAction.CallbackContext context)
+    private void SetRun(InputAction.CallbackContext context)
     {
-        Sprint = context.ReadValueAsButton();
+        Run = context.ReadValueAsButton();
+    }
+
+    private void SetJump(InputAction.CallbackContext context)
+    {
+        Jump = context.ReadValueAsButton();
     }
 
     private void OnEnable()

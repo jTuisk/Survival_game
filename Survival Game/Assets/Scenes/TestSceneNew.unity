@@ -478,9 +478,8 @@ MonoBehaviour:
   _oirientSlerpSpeed: 10
   _celestialBody: {fileID: 888695539}
   _gravityForce: -9.81
-  _stickToGroundGravity: -5
+  _stickToGroundGravity: -1
   _playerMoveInput: {x: 0, y: 0, z: 0}
-  _smoothVelocity: {x: 0, y: 0, z: 0}
   _currentSpeed: 0
   _walkSpeed: 5.4
   _runSpeed: 9.8

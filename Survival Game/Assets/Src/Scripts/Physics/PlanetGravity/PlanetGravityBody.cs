@@ -10,8 +10,6 @@ public class PlanetGravityBody : MonoBehaviour
 
     private Rigidbody _rigidbody;
 
-
-
     // Start is called before the first frame update
     void Start()
     {

@@ -116,7 +116,6 @@ public class IcosahedronPlanet : MonoBehaviour
         _mesh.triangles = ConvertTrianglesToArray(triangles);
         _mesh.normals = normals.ToArray();
 
-
         _verticeCount = _mesh.vertices.Length;
     }
 
@@ -135,9 +134,11 @@ public class IcosahedronPlanet : MonoBehaviour
             {
                 Triangle currentFace = triangles[j];
 
+
                 Vector3 a = vertices[currentFace.a];
                 Vector3 b = vertices[currentFace.b];
                 Vector3 c = vertices[currentFace.c];
+
 
                 Vector3 ab = Vector3.Lerp(a, b, 0.5f).normalized * _radius;
                 Vector3 bc = Vector3.Lerp(b, c, 0.5f).normalized * _radius;
@@ -169,7 +170,17 @@ public class IcosahedronPlanet : MonoBehaviour
         }
 
         return index;
-    } 
+    }
+
+    private void ApplyPerlinNoise()
+    {
+        for(int i = 0; i < _mesh.vertices.Length; i++)
+        {
+            _mesh.vertices[i] *= Noise.PerlinNoise3D(_mesh.vertices[i].x, _mesh.vertices[i].y, _mesh.vertices[i].z);
+        }
+    }
+
+
 
     private List<Vector3> GetDefaultVertices()
     {

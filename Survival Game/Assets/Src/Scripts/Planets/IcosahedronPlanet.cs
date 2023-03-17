@@ -6,6 +6,14 @@ using UnityEngine;
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer), typeof(MeshCollider))]
 public class IcosahedronPlanet : MonoBehaviour
 {
+
+    [HideInInspector]
+    public bool ShapeSettingsfoldout;
+    [HideInInspector]
+    public bool ColorSettingsfoldout;
+    [HideInInspector]
+    public bool NatureSettingsfoldout;
+
     [SerializeField]
     private bool _DebugMode = false;
     [Header("Generation seed")]
@@ -32,16 +40,15 @@ public class IcosahedronPlanet : MonoBehaviour
     //[SerializeField]
     //private ComputeShader _subdivideShader;
 
-    [Header("Planet data")]
-    [SerializeField, Range(0.1f, 1000f)]
-    private float _radius = 1;
-    [SerializeField, Range(0, 4)] //max 4 as we generade new mesh every update -> Oringal: Range(0,11)
-    private int _resolution = 0;
+    PlanetShapeGenerator _shapeGenerator;
 
-
+    public PlanetShapeSettings shapeSettings;
+    public PlanetColorSettings colorSettings;
+    public PlanetNatureSettings natureSettings;
 
     private void Awake()
     {
+        _shapeGenerator = new PlanetShapeGenerator(shapeSettings);
         _meshFilter = GetComponent<MeshFilter>();
         _meshRenderer = GetComponent<MeshRenderer>();
         _meshCollider = GetComponent<MeshCollider>();
@@ -72,7 +79,7 @@ public class IcosahedronPlanet : MonoBehaviour
             {
                 Vector3 norm = transform.TransformDirection(_mesh.normals[i]);
                 Vector3 vert = transform.TransformPoint(_mesh.vertices[i]);
-                Debug.DrawRay(vert, norm * 0.1f * _radius, Color.red);
+                Debug.DrawRay(vert, norm * 0.1f * shapeSettings.radius, Color.red);
             }
         }
     }
@@ -93,13 +100,13 @@ public class IcosahedronPlanet : MonoBehaviour
                     Gizmos.color = Color.blue;
                 if (i == 8)
                     Gizmos.color = Color.green;
-                Gizmos.DrawCube(transform.TransformPoint(verts[i]), new Vector3(0.03f, 0.03f, 0.03f) * _radius);
+                Gizmos.DrawCube(transform.TransformPoint(verts[i]), new Vector3(0.03f, 0.03f, 0.03f) * shapeSettings.radius);
             }
 
             Gizmos.color = Color.black;
             foreach (var vert in _meshFilter.sharedMesh.vertices)
             {
-                Gizmos.DrawCube(transform.TransformPoint(vert), new Vector3(0.015f, 0.015f, 0.015f)*_radius);
+                Gizmos.DrawCube(transform.TransformPoint(vert), new Vector3(0.015f, 0.015f, 0.015f)* shapeSettings.radius);
             }
         }
     }
@@ -110,7 +117,9 @@ public class IcosahedronPlanet : MonoBehaviour
         List<Triangle> triangles = GetDefaultTriangles();
         List<Vector3> normals = GetDefaultNormals();
 
-        triangles = Subdivide(vertices, triangles, normals, _resolution);
+        triangles = Subdivide(vertices, triangles, normals, shapeSettings.resolution);
+
+        _shapeGenerator.GenerateShape(ref vertices);
 
         _mesh.vertices = vertices.ToArray();
         _mesh.triangles = ConvertTrianglesToArray(triangles);
@@ -119,7 +128,7 @@ public class IcosahedronPlanet : MonoBehaviour
         _verticeCount = _mesh.vertices.Length;
     }
 
-    private List<Triangle> Subdivide(List<Vector3> vertices, List<Triangle> triangles, List<Vector3> normals, int divides)
+    private List<Triangle> Subdivide(List<Vector3> vertices, List<Triangle> triangles, List<Vector3> normals, uint divides)
     {
         /**
          * Total count for vertices.
@@ -139,10 +148,16 @@ public class IcosahedronPlanet : MonoBehaviour
                 Vector3 b = vertices[currentFace.b];
                 Vector3 c = vertices[currentFace.c];
 
-
-                Vector3 ab = Vector3.Lerp(a, b, 0.5f).normalized * _radius;
-                Vector3 bc = Vector3.Lerp(b, c, 0.5f).normalized * _radius;
-                Vector3 ca = Vector3.Lerp(c, a, 0.5f).normalized * _radius;
+                /*
+                Vector3 ab = _shapeGenerator.CalculatePointOnPlanet(Vector3.Lerp(a, b, 0.5f)).normalized;
+                Vector3 bc = _shapeGenerator.CalculatePointOnPlanet(Vector3.Lerp(b, c, 0.5f)).normalized;
+                Vector3 ca = _shapeGenerator.CalculatePointOnPlanet(Vector3.Lerp(c, a, 0.5f)).normalized;
+                */
+                
+                Vector3 ab = Vector3.Lerp(a, b, 0.5f).normalized * shapeSettings.radius;
+                Vector3 bc = Vector3.Lerp(b, c, 0.5f).normalized * shapeSettings.radius;
+                Vector3 ca = Vector3.Lerp(c, a, 0.5f).normalized * shapeSettings.radius;
+                
 
                 int ab_index = AddAndGetVerticeIndex(vertices, normals, ab);
                 int bc_index = AddAndGetVerticeIndex(vertices, normals, bc);
@@ -186,33 +201,56 @@ public class IcosahedronPlanet : MonoBehaviour
     {
         float short_side = 1f / 2f;
         float long_side = GetGoldenRectangleSideLength() / 2;
-
+        /*
         return new List<Vector3>
                 {
                     //plane y-x
                     //red
-                    new Vector3(-long_side, -short_side, 0f).normalized * _radius,   // 0
-                    new Vector3(long_side, -short_side, 0f).normalized * _radius,    // 1
-                    new Vector3(-long_side, short_side, 0f).normalized * _radius,    // 2
-                    new Vector3(long_side, short_side, 0f).normalized * _radius,     // 3
+                    new Vector3(-long_side, -short_side, 0f).normalized,   // 0
+                    new Vector3(long_side, -short_side, 0f).normalized,    // 1
+                    new Vector3(-long_side, short_side, 0f).normalized,    // 2
+                    new Vector3(long_side, short_side, 0f).normalized,     // 3
                     
                     //plane y-z
                     //blue
-                    new Vector3(0f, -long_side, -short_side).normalized * _radius,   // 4
-                    new Vector3(0f, -long_side, short_side).normalized * _radius,    // 5
-                    new Vector3(0f, long_side, -short_side).normalized * _radius,    // 6
-                    new Vector3(0f, long_side, short_side).normalized * _radius,     // 7
+                    new Vector3(0f, -long_side, -short_side).normalized,   // 4
+                    new Vector3(0f, -long_side, short_side).normalized,    // 5
+                    new Vector3(0f, long_side, -short_side).normalized,    // 6
+                    new Vector3(0f, long_side, short_side).normalized,     // 7
                     
                     //plane z-x
                     //green
-                    new Vector3(-short_side, 0f, -long_side).normalized * _radius,   // 8
-                    new Vector3(short_side, 0f, -long_side).normalized * _radius,    // 9
-                    new Vector3(-short_side, 0f, long_side).normalized * _radius,    // 10
-                    new Vector3(short_side, 0f, long_side).normalized * _radius     // 11
+                    new Vector3(-short_side, 0f, -long_side).normalized,   // 8
+                    new Vector3(short_side, 0f, -long_side).normalized,    // 9
+                    new Vector3(-short_side, 0f, long_side).normalized,    // 10
+                    new Vector3(short_side, 0f, long_side).normalized     // 11
+                };*/
+                return new List<Vector3>
+                {
+                    //plane y-x
+                    //red
+                    new Vector3(-long_side, -short_side, 0f).normalized * shapeSettings.radius,   // 0
+                    new Vector3(long_side, -short_side, 0f).normalized * shapeSettings.radius,    // 1
+                    new Vector3(-long_side, short_side, 0f).normalized * shapeSettings.radius,    // 2
+                    new Vector3(long_side, short_side, 0f).normalized * shapeSettings.radius,     // 3
+                    
+                    //plane y-z
+                    //blue
+                    new Vector3(0f, -long_side, -short_side).normalized * shapeSettings.radius,   // 4
+                    new Vector3(0f, -long_side, short_side).normalized * shapeSettings.radius,    // 5
+                    new Vector3(0f, long_side, -short_side).normalized * shapeSettings.radius,    // 6
+                    new Vector3(0f, long_side, short_side).normalized * shapeSettings.radius,     // 7
+                    
+                    //plane z-x
+                    //green
+                    new Vector3(-short_side, 0f, -long_side).normalized * shapeSettings.radius,   // 8
+                    new Vector3(short_side, 0f, -long_side).normalized * shapeSettings.radius,    // 9
+                    new Vector3(-short_side, 0f, long_side).normalized * shapeSettings.radius,    // 10
+                    new Vector3(short_side, 0f, long_side).normalized * shapeSettings.radius     // 11
                 };
-    }
+            }
 
-    private List<Triangle> GetDefaultTriangles()
+            private List<Triangle> GetDefaultTriangles()
     {
         return new List<Triangle>
         {
@@ -307,16 +345,18 @@ public class IcosahedronPlanet : MonoBehaviour
 
     public Vector3 GetRandomSurfacePoint()
     {
+        //REDO
+
         Vector3 surfacePoint = new Vector3();
-        Vector3 direction = Random.onUnitSphere * _radius;
+        Vector3 direction = Random.onUnitSphere * shapeSettings.radius;
         surfacePoint = (direction - transform.position).normalized;
         /*
         RaycastHit hit;
 
         Vector3 origin = transform.position;
-        Vector3 direction = Random.onUnitSphere * _radius;
+        Vector3 direction = Random.onUnitSphere * shapeSettings.radius;
 
-        Vector3 start = direction * _radius * 2f; 
+        Vector3 start = direction * shapeSettings.radius * 2f; 
         Vector3 to = -(start - transform.position).normalized;
 
 
@@ -329,5 +369,33 @@ public class IcosahedronPlanet : MonoBehaviour
         }*/
 
         return surfacePoint;
+    }
+
+
+    private void GenerateColors()
+    {
+    }
+
+
+    public void GeneratePlanet()
+    {
+        Debug.Log("GeneratePlanet");
+        _mesh.Clear();
+
+        GenerateMesh();
+    }
+
+    public void OnShapeSettingsUpdated()
+    {
+        Debug.Log("OnShapeSettingsUpdated");
+    }
+
+    public void OnColorSettingsUpdated()
+    {
+        Debug.Log("OnColorSettingsUpdated");
+    }
+    public void OnNatureSettingsUpdated()
+    {
+        Debug.Log("OnNatureSettingsUpdated");
     }
 }

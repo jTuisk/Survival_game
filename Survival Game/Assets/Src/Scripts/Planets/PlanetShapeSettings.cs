@@ -7,7 +7,13 @@ public class PlanetShapeSettings : ScriptableObject
     public float radius = 1f;
     [Range(0, 7)]
     public uint resolution = 1;
+    public NoiseLayer[] noiseLayers;
 
-    [Range(-360, 360)]
-    public float multiplier = 1f;
+    [System.Serializable]
+    public class NoiseLayer
+    {
+        public bool enabled = true;
+        public bool useFirstLayerAsMask;
+        public PlanetNoiseSettings noiseSettings;
+    }
 }

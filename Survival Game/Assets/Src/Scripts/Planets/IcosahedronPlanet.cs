@@ -35,24 +35,24 @@ public class IcosahedronPlanet : MonoBehaviour
     private Mesh _mesh;
     [SerializeField, ReadOnly]
     private int _verticeCount = 0;
-    //[SerializeField]
-    //private bool _useGPU;
-    //[SerializeField]
-    //private ComputeShader _subdivideShader;
 
     PlanetShapeGenerator _shapeGenerator;
+    PlanetColorGenerator _colorGenerator;
 
     public PlanetShapeSettings shapeSettings;
     public PlanetColorSettings colorSettings;
     public PlanetNatureSettings natureSettings;
 
-    private void Awake()
+    private void OnValidate()
     {
-        _shapeGenerator = new PlanetShapeGenerator(shapeSettings);
+        _seed = GetNewSeed(_generateSeedFromString);
+        _shapeGenerator = new PlanetShapeGenerator();
+        _shapeGenerator.UpdateSettings(shapeSettings, _seed);
+        _colorGenerator = new PlanetColorGenerator();
+        _colorGenerator.UpdateSettings(colorSettings, _seed);
         _meshFilter = GetComponent<MeshFilter>();
         _meshRenderer = GetComponent<MeshRenderer>();
         _meshCollider = GetComponent<MeshCollider>();
-        _seed = GetNewSeed(_generateSeedFromString);
         _mesh = InitializeNewMesh(_meshName);
         _meshFilter.mesh = _mesh;
         GenerateMesh();
@@ -125,7 +125,10 @@ public class IcosahedronPlanet : MonoBehaviour
         _mesh.triangles = ConvertTrianglesToArray(triangles);
         _mesh.normals = normals.ToArray();
 
+        GenerateColors();
+
         _verticeCount = _mesh.vertices.Length;
+        UpdateUVs(_colorGenerator);
     }
 
     private List<Triangle> Subdivide(List<Vector3> vertices, List<Triangle> triangles, List<Vector3> normals, uint divides)
@@ -187,13 +190,6 @@ public class IcosahedronPlanet : MonoBehaviour
         return index;
     }
 
-    private void ApplyPerlinNoise()
-    {
-        for(int i = 0; i < _mesh.vertices.Length; i++)
-        {
-            _mesh.vertices[i] *= Noise.PerlinNoise3D(_mesh.vertices[i].x, _mesh.vertices[i].y, _mesh.vertices[i].z);
-        }
-    }
 
 
 
@@ -340,6 +336,12 @@ public class IcosahedronPlanet : MonoBehaviour
             return seed;
 
         seed = GenerateNewSeed();
+
+        if(_shapeGenerator != null)
+        {
+            _shapeGenerator.SetSeed(seed);
+        }
+
         return seed;
     }
 
@@ -374,6 +376,26 @@ public class IcosahedronPlanet : MonoBehaviour
 
     private void GenerateColors()
     {
+        _meshRenderer.sharedMaterial = colorSettings.planetMaterial;
+        /*if(_colorGenerator != null && _shapeGenerator != null)
+        {
+            _colorGenerator.UpdateElevation(_shapeGenerator.MinMax);
+        }*/
+        _colorGenerator.UpdateColors();
+    }
+
+    public void UpdateUVs(PlanetColorGenerator colorGenerator)
+    {
+        Vector2[] uv = new Vector2[_verticeCount];
+        int resolution = _verticeCount / 2;
+        
+        for (int i = 0; i < _mesh.vertices.Length; i++)
+        {
+            Vector2 percent = new Vector2(_mesh.vertices[i].x, _mesh.vertices[i].y) / (resolution -1);
+            uv[i] = new Vector2(colorGenerator.BiomePercentFromPoint(_mesh.vertices[i].normalized), 0);
+
+        }
+        _mesh.uv = uv;
     }
 
 
@@ -388,11 +410,15 @@ public class IcosahedronPlanet : MonoBehaviour
     public void OnShapeSettingsUpdated()
     {
         Debug.Log("OnShapeSettingsUpdated");
+        _mesh.Clear();
+
+        GenerateMesh();
     }
 
     public void OnColorSettingsUpdated()
     {
-        Debug.Log("OnColorSettingsUpdated");
+        GenerateColors();
+        UpdateUVs(_colorGenerator);
     }
     public void OnNatureSettingsUpdated()
     {

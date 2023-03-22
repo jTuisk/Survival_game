@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44f8225a81a78df4b87aabbf96685719, type: 3}
   m_Name: EarthLikeShape
   m_EditorClassIdentifier: 
-  radius: 2.73
+  radius: 51.9
   resolution: 4
   noiseLayers:
   - enabled: 1
@@ -20,12 +20,12 @@ MonoBehaviour:
     noiseSettings:
       filterType: 0
       simpleNoiseSettings:
-        strength: 0.41
+        strength: 0.3
         baseRoughness: 0.26
         roughness: 2.18
         numLayers: 5
         presistence: 0.5
-        center: {x: 0, y: 0, z: 0}
+        center: {x: 0, y: 0.49, z: 0.37}
         minValue: 1.13
       rigidNoiseSettings:
         strength: 1
@@ -36,38 +36,17 @@ MonoBehaviour:
         center: {x: 0, y: 0, z: 0}
         minValue: 0
         weightMultiplier: 1
-  - enabled: 0
+  - enabled: 1
     useFirstLayerAsMask: 1
     noiseSettings:
       filterType: 0
       simpleNoiseSettings:
-        strength: 0.5
+        strength: 0.08
         baseRoughness: 0.8
         roughness: 1.75
-        numLayers: 5
+        numLayers: 6
         presistence: 0.5
         center: {x: 1.45, y: 0.87, z: 0}
-        minValue: 0.41
-      rigidNoiseSettings:
-        strength: 1
-        baseRoughness: 1
-        roughness: 1
-        numLayers: 1
-        presistence: 0.5
-        center: {x: 0, y: 0, z: 0}
-        minValue: 0
-        weightMultiplier: 1
-  - enabled: 0
-    useFirstLayerAsMask: 1
-    noiseSettings:
-      filterType: 1
-      simpleNoiseSettings:
-        strength: 1
-        baseRoughness: 1
-        roughness: 1
-        numLayers: 1
-        presistence: 0.5
-        center: {x: 0, y: 0, z: 0}
         minValue: 0
       rigidNoiseSettings:
         strength: 1

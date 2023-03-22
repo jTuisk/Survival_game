@@ -7,7 +7,7 @@ public class PlanetShapeGenerator
     PlanetShapeSettings shapeSettings;
     INoiseFilter[] noiseFilters;
     public MinMax MinMax { get; private set; }
-
+    
     public void UpdateSettings(PlanetShapeSettings shapeSettings, int seed)
     {
         this.shapeSettings = shapeSettings;
@@ -36,9 +36,11 @@ public class PlanetShapeGenerator
 
         for(int i = 1; i < noiseFilters.Length; i++)
         {
+            if (shapeSettings.noiseLayers[i] == null)
+                continue;
+
             if (shapeSettings.noiseLayers[i].enabled)
             {
-                //Debug.Log(shapeSettings.noiseLayers[i].noiseSettings.filterType);
                 float mask = (shapeSettings.noiseLayers[i].useFirstLayerAsMask) ? firstLayerValue : 1f;
                 elevation += noiseFilters[i].Evaluate(pointOnUnitSphere) * mask;
             }
@@ -54,7 +56,6 @@ public class PlanetShapeGenerator
         {
             vertices[i] = CalculatePointOnPlanet(vertices[i]);
         }
-        Debug.Log($"min {MinMax.Min}, max {MinMax.Max}");
     }
 
     public void SetSeed(int seed)
@@ -63,5 +64,10 @@ public class PlanetShapeGenerator
         {
             noiseFilters[i].SetSeed(seed);
         }
+    }
+
+    public void ResetMinMax()
+    {
+        MinMax = new MinMax();
     }
 }

@@ -6,46 +6,36 @@ public class PlanetColorGenerator
 {
     PlanetColorSettings colorSettings;
     Texture2D texture;
-    const int textureResolution = 50;
-    INoiseFilter biomeNoiseFilter;
+    const int textureResolution = 256;
+    //INoiseFilter biomeNoiseFilter;
     int seed;
 
     public void UpdateSettings(PlanetColorSettings colorSettings, int seed)
     {
         this.colorSettings = colorSettings;
-        if(texture == null || texture.height != colorSettings.biomeColorSettings.biomes.Length)
+        this.seed = seed;
+        if(texture == null)
+        {
+            texture = new Texture2D(textureResolution, 1);
+        }
+        /*if(texture == null || texture.height != colorSettings.biomeColorSettings.biomes.Length)
         {
             texture = new Texture2D(textureResolution, colorSettings.biomeColorSettings.biomes.Length);
         }
-        biomeNoiseFilter = PlanetNoiseFilterFactory.CreateNoiseFilter(colorSettings.biomeColorSettings.noiseSettings, seed);
+        biomeNoiseFilter = PlanetNoiseFilterFactory.CreateNoiseFilter(colorSettings.biomeColorSettings.noiseSettings, seed);*/
     }
 
     public void UpdateElevation(MinMax minMax)
     {
-        float x = Mathf.Lerp(0, 5.05f, minMax.Min);
-            x = Mathf.Lerp(0, 255, x);
-        float y = Mathf.Lerp(0, 5.05f, minMax.Max);
-            y = Mathf.Lerp(0, 255, y);
-        //colorSettings.planetMaterial.SetVector("_elevationMinMax", new Vector4(x, y));
         colorSettings.planetMaterial.SetVector("_elevationMinMax", new Vector4(minMax.Min, minMax.Max));
     }
 
-    public void UpdateColors()
+    /*public void UpdateColors()
     {
         if (colorSettings.biomeColorSettings.biomes.Length == 0)
             return;
 
         Color[] colors = new Color[texture.height * texture.width];
-        /*foreach(var biome in colorSettings.biomeColorSettings.biomes)
-        {
-            for (int i = 0; i < colors.Length; i++)
-            {
-                Color color = biome.gradient.Evaluate(i / (textureResolution - 1f));
-                Color biomeColor = biome.biomeColor;
-
-                color[]
-            }
-        }*/
 
         var biomes = colorSettings.biomeColorSettings.biomes;
 
@@ -63,10 +53,22 @@ public class PlanetColorGenerator
         texture.SetPixels(colors);
         texture.Apply();
         colorSettings.planetMaterial.SetTexture("_planetTexture", texture);
+    }*/
+
+    public void UpdateColors()
+    {
+        Color[] colours = new Color[textureResolution];
+        for (int i = 0; i < colours.Length; i++)
+        {
+            colours[i] = colorSettings.gradient.Evaluate(i / (textureResolution - 1f));
+        }
+
+        texture.SetPixels(colours);
+        texture.Apply();
+        colorSettings.planetMaterial.SetTexture("_planetTexture", texture);
     }
 
-
-    public float BiomePercentFromPoint(Vector3 point)
+    /*public float BiomePercentFromPoint(Vector3 point)
     {
         float heightPercent = (point.y + 1)/2f;
         heightPercent += (biomeNoiseFilter.Evaluate(point) - colorSettings.biomeColorSettings.noiseOffSet) * colorSettings.biomeColorSettings.noiseStrength;
@@ -83,5 +85,5 @@ public class PlanetColorGenerator
             biomeIndex += i * weight;
         }
         return biomeIndex / Mathf.Max(1, numBiomes - 1);
-    }
+    }*/
 }

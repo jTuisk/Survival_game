@@ -128,7 +128,8 @@ public class IcosahedronPlanet : MonoBehaviour
         GenerateColors();
 
         _verticeCount = _mesh.vertices.Length;
-        UpdateUVs(_colorGenerator);
+        _colorGenerator.UpdateElevation(_shapeGenerator.MinMax);
+        //UpdateUVs(_colorGenerator);
     }
 
     private List<Triangle> Subdivide(List<Vector3> vertices, List<Triangle> triangles, List<Vector3> normals, uint divides)
@@ -151,16 +152,10 @@ public class IcosahedronPlanet : MonoBehaviour
                 Vector3 b = vertices[currentFace.b];
                 Vector3 c = vertices[currentFace.c];
 
-                /*
+                
                 Vector3 ab = _shapeGenerator.CalculatePointOnPlanet(Vector3.Lerp(a, b, 0.5f)).normalized;
                 Vector3 bc = _shapeGenerator.CalculatePointOnPlanet(Vector3.Lerp(b, c, 0.5f)).normalized;
                 Vector3 ca = _shapeGenerator.CalculatePointOnPlanet(Vector3.Lerp(c, a, 0.5f)).normalized;
-                */
-                
-                Vector3 ab = Vector3.Lerp(a, b, 0.5f).normalized * shapeSettings.radius;
-                Vector3 bc = Vector3.Lerp(b, c, 0.5f).normalized * shapeSettings.radius;
-                Vector3 ca = Vector3.Lerp(c, a, 0.5f).normalized * shapeSettings.radius;
-                
 
                 int ab_index = AddAndGetVerticeIndex(vertices, normals, ab);
                 int bc_index = AddAndGetVerticeIndex(vertices, normals, bc);
@@ -190,14 +185,11 @@ public class IcosahedronPlanet : MonoBehaviour
         return index;
     }
 
-
-
-
     private List<Vector3> GetDefaultVertices()
     {
         float short_side = 1f / 2f;
         float long_side = GetGoldenRectangleSideLength() / 2;
-        /*
+        
         return new List<Vector3>
                 {
                     //plane y-x
@@ -220,33 +212,10 @@ public class IcosahedronPlanet : MonoBehaviour
                     new Vector3(short_side, 0f, -long_side).normalized,    // 9
                     new Vector3(-short_side, 0f, long_side).normalized,    // 10
                     new Vector3(short_side, 0f, long_side).normalized     // 11
-                };*/
-                return new List<Vector3>
-                {
-                    //plane y-x
-                    //red
-                    new Vector3(-long_side, -short_side, 0f).normalized * shapeSettings.radius,   // 0
-                    new Vector3(long_side, -short_side, 0f).normalized * shapeSettings.radius,    // 1
-                    new Vector3(-long_side, short_side, 0f).normalized * shapeSettings.radius,    // 2
-                    new Vector3(long_side, short_side, 0f).normalized * shapeSettings.radius,     // 3
-                    
-                    //plane y-z
-                    //blue
-                    new Vector3(0f, -long_side, -short_side).normalized * shapeSettings.radius,   // 4
-                    new Vector3(0f, -long_side, short_side).normalized * shapeSettings.radius,    // 5
-                    new Vector3(0f, long_side, -short_side).normalized * shapeSettings.radius,    // 6
-                    new Vector3(0f, long_side, short_side).normalized * shapeSettings.radius,     // 7
-                    
-                    //plane z-x
-                    //green
-                    new Vector3(-short_side, 0f, -long_side).normalized * shapeSettings.radius,   // 8
-                    new Vector3(short_side, 0f, -long_side).normalized * shapeSettings.radius,    // 9
-                    new Vector3(-short_side, 0f, long_side).normalized * shapeSettings.radius,    // 10
-                    new Vector3(short_side, 0f, long_side).normalized * shapeSettings.radius     // 11
                 };
             }
 
-            private List<Triangle> GetDefaultTriangles()
+    private List<Triangle> GetDefaultTriangles()
     {
         return new List<Triangle>
         {
@@ -352,39 +321,17 @@ public class IcosahedronPlanet : MonoBehaviour
         Vector3 surfacePoint = new Vector3();
         Vector3 direction = Random.onUnitSphere * shapeSettings.radius;
         surfacePoint = (direction - transform.position).normalized;
-        /*
-        RaycastHit hit;
-
-        Vector3 origin = transform.position;
-        Vector3 direction = Random.onUnitSphere * shapeSettings.radius;
-
-        Vector3 start = direction * shapeSettings.radius * 2f; 
-        Vector3 to = -(start - transform.position).normalized;
-
-
-        if (Physics.Raycast(start, to, out hit))
-        {
-
-            surfacePoint = hit.transform.position;
-            Debug.DrawRay(start, to * hit.distance, Color.red);
-            Debug.Log($"origin: {start}, dir: {to}, outcome: {surfacePoint}");
-        }*/
-
         return surfacePoint;
     }
 
 
     private void GenerateColors()
     {
-        _meshRenderer.sharedMaterial = colorSettings.planetMaterial;
-        /*if(_colorGenerator != null && _shapeGenerator != null)
-        {
-            _colorGenerator.UpdateElevation(_shapeGenerator.MinMax);
-        }*/
+        //_meshRenderer.sharedMaterial = colorSettings.planetMaterial;
         _colorGenerator.UpdateColors();
     }
 
-    public void UpdateUVs(PlanetColorGenerator colorGenerator)
+    /*public void UpdateUVs(PlanetColorGenerator colorGenerator)
     {
         Vector2[] uv = new Vector2[_verticeCount];
         int resolution = _verticeCount / 2;
@@ -396,7 +343,7 @@ public class IcosahedronPlanet : MonoBehaviour
 
         }
         _mesh.uv = uv;
-    }
+    }*/
 
 
     public void GeneratePlanet()
@@ -410,15 +357,15 @@ public class IcosahedronPlanet : MonoBehaviour
     public void OnShapeSettingsUpdated()
     {
         Debug.Log("OnShapeSettingsUpdated");
+        _shapeGenerator.ResetMinMax();
         _mesh.Clear();
-
         GenerateMesh();
     }
 
     public void OnColorSettingsUpdated()
     {
         GenerateColors();
-        UpdateUVs(_colorGenerator);
+        //UpdateUVs(_colorGenerator);
     }
     public void OnNatureSettingsUpdated()
     {

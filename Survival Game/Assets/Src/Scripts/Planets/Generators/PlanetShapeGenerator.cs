@@ -5,22 +5,22 @@ using UnityEngine;
 public class PlanetShapeGenerator
 {
     PlanetShapeSettings shapeSettings;
-    INoiseFilter[] noiseFilters;
+    IShapeNoiseFilter[] noiseFilters;
     public MinMax MinMax { get; private set; }
     
     public void UpdateSettings(PlanetShapeSettings shapeSettings, int seed)
     {
         this.shapeSettings = shapeSettings;
-        noiseFilters = new INoiseFilter[shapeSettings.noiseLayers.Length];
+        noiseFilters = new IShapeNoiseFilter[shapeSettings.noiseLayers.Length];
 
         for(int i = 0; i < noiseFilters.Length; i++)
         {
-            noiseFilters[i] = PlanetNoiseFilterFactory.CreateNoiseFilter(shapeSettings.noiseLayers[i].noiseSettings, seed);
+            noiseFilters[i] = PlanetNoiseFilterFactory.CreateShapeNoiseFilter(shapeSettings.noiseLayers[i].noiseSettings, seed);
         }
         MinMax = new MinMax();
     }
 
-    public Vector3 CalculatePointOnPlanet(Vector3 pointOnUnitSphere)
+    public Vector3 CalculatePointOnPlanet(Vector3 pointOnUnitSphere, bool addToMinMax = true)
     {
         float elevation = 0f;
         float firstLayerValue = 0f;
@@ -46,7 +46,10 @@ public class PlanetShapeGenerator
             }
         }
         elevation = shapeSettings.radius * (1 + elevation);
-        MinMax.AddValue(elevation);
+        if (addToMinMax)
+        {
+            MinMax.AddValue(elevation);
+        }
         return pointOnUnitSphere * elevation;
     }
 

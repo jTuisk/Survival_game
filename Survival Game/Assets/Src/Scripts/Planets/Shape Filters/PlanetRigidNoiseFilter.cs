@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlanetRigidNoiseFilter : INoiseFilter
+public class PlanetRigidNoiseFilter : IShapeNoiseFilter
 {
     PlanetNoiseSettings.RigidNoiseSettings noiseSettings;
     Noise noise;

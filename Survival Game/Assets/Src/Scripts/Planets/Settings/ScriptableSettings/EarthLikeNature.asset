@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49a5b48ad00aac248baff1342fcd13b9, type: 3}
+  m_Name: EarthLikeNature
+  m_EditorClassIdentifier: 
+  forestLayers:
+  - enabled: 1
+    forestSettings:
+      spawnType: 0
+      randomTrees:
+        seed: 0
+        trees:
+        - {fileID: 5415383256110939030, guid: 2ba26363162b99142bff12943822b8df, type: 3}
+        generatedTrees: []
+        frequency: 0
+        minElevationHeight: 0
+        maxElevationHeight: 0
+        forestSize: 2000
+      forest:
+        seed: 0
+        trees: []
+        generatedTrees: []
+        frequency: 0
+        minElevationHeight: 0
+        maxElevationHeight: 0
+        forestSize: 0
+        minDistance: 0
+  mineralLayers: []

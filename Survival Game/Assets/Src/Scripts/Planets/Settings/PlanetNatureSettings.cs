@@ -5,12 +5,20 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Planet/Nature settings")]
 public class PlanetNatureSettings : ScriptableObject
 {
-    public bool spawnTrees = true;
-    public List<GameObject> trees;
-    /*
-     * List<Forests> (List of trees that grow in same place)
-     */
+    public ForestLayers[] forestLayers;
+    public MineralLayers[] mineralLayers;
 
-    public bool spawnMinerals = true;
-    public List<GameObject> minerals;
+    [System.Serializable]
+    public class ForestLayers
+    {
+        public bool enabled = true;
+        public PlanetForestSettings forestSettings;
+    }
+
+    [System.Serializable]
+    public class MineralLayers
+    {
+        public bool enabled = true;
+        public PlanetMineralSettings mineralSettings;
+    }
 }

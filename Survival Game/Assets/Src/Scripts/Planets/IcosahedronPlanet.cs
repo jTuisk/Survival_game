@@ -38,6 +38,7 @@ public class IcosahedronPlanet : MonoBehaviour
 
     PlanetShapeGenerator _shapeGenerator;
     PlanetColorGenerator _colorGenerator;
+    PlanetNatureGenerator _natureGenerator;
 
     public PlanetShapeSettings shapeSettings;
     public PlanetColorSettings colorSettings;
@@ -46,10 +47,16 @@ public class IcosahedronPlanet : MonoBehaviour
     private void OnValidate()
     {
         _seed = GetNewSeed(_generateSeedFromString);
+
         _shapeGenerator = new PlanetShapeGenerator();
         _shapeGenerator.UpdateSettings(shapeSettings, _seed);
+
         _colorGenerator = new PlanetColorGenerator();
         _colorGenerator.UpdateSettings(colorSettings, _seed);
+
+        _natureGenerator = new PlanetNatureGenerator();
+        _natureGenerator.UpdateSettings(natureSettings, _seed, _shapeGenerator);
+
         _meshFilter = GetComponent<MeshFilter>();
         _meshRenderer = GetComponent<MeshRenderer>();
         _meshCollider = GetComponent<MeshCollider>();
@@ -129,6 +136,7 @@ public class IcosahedronPlanet : MonoBehaviour
 
         _verticeCount = _mesh.vertices.Length;
         _colorGenerator.UpdateElevation(_shapeGenerator.MinMax);
+        _natureGenerator.GenerateNature();
         //UpdateUVs(_colorGenerator);
     }
 
@@ -152,10 +160,13 @@ public class IcosahedronPlanet : MonoBehaviour
                 Vector3 b = vertices[currentFace.b];
                 Vector3 c = vertices[currentFace.c];
 
-                
-                Vector3 ab = _shapeGenerator.CalculatePointOnPlanet(Vector3.Lerp(a, b, 0.5f)).normalized;
+
+                /*Vector3 ab = _shapeGenerator.CalculatePointOnPlanet(Vector3.Lerp(a, b, 0.5f)).normalized;
                 Vector3 bc = _shapeGenerator.CalculatePointOnPlanet(Vector3.Lerp(b, c, 0.5f)).normalized;
-                Vector3 ca = _shapeGenerator.CalculatePointOnPlanet(Vector3.Lerp(c, a, 0.5f)).normalized;
+                Vector3 ca = _shapeGenerator.CalculatePointOnPlanet(Vector3.Lerp(c, a, 0.5f)).normalized;*/
+                Vector3 ab = Vector3.Lerp(a, b, 0.5f).normalized;
+                Vector3 bc = Vector3.Lerp(b, c, 0.5f).normalized;
+                Vector3 ca = Vector3.Lerp(c, a, 0.5f).normalized;
 
                 int ab_index = AddAndGetVerticeIndex(vertices, normals, ab);
                 int bc_index = AddAndGetVerticeIndex(vertices, normals, bc);
@@ -369,6 +380,6 @@ public class IcosahedronPlanet : MonoBehaviour
     }
     public void OnNatureSettingsUpdated()
     {
-        Debug.Log("OnNatureSettingsUpdated");
+        _natureGenerator.GenerateNature();
     }
 }

@@ -3,7 +3,7 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Planet/Shape settings")]
 public class PlanetShapeSettings : ScriptableObject
 {
-    [Range(0.1f, 1000f)]
+    [Range(1f, 100000f)]
     public float radius = 1f;
     [Range(0, 7)]
     public uint resolution = 1;

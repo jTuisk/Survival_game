@@ -40,7 +40,7 @@ public class PlanetRandomTreesFilter : INatureNoiseFilter
             GameObject tree = GetRandomTree();
             Vector3 pos = shapeGenerator.CalculatePointOnPlanet(Random.onUnitSphere, false);
             tree.transform.position = pos;
-            tree.transform.localScale = new Vector3(10f, 10f, 10f) * Random.Range(0.5f, 1.3f);
+            tree.transform.localScale = new Vector3(100f, 100f, 100f) * Random.Range(0.5f, 1.3f);
 
             GameObject planet = GameObject.Find("Earth");
 
@@ -50,9 +50,8 @@ public class PlanetRandomTreesFilter : INatureNoiseFilter
                 Quaternion rotation = Quaternion.FromToRotation(tree.transform.up, spawnRotation) * tree.transform.rotation;
                 tree.transform.rotation = rotation;
             }
-
+            
             UnityEngine.MonoBehaviour.Instantiate(tree, _parent.transform);
-
         }
     }
 

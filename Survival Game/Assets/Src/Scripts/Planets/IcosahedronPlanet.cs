@@ -327,35 +327,14 @@ public class IcosahedronPlanet : MonoBehaviour
 
     public Vector3 GetRandomSurfacePoint()
     {
-        //REDO
-
-        Vector3 surfacePoint = new Vector3();
-        Vector3 direction = Random.onUnitSphere * shapeSettings.radius;
-        surfacePoint = (direction - transform.position).normalized;
-        return surfacePoint;
+        return _shapeGenerator.CalculatePointOnPlanet(Random.onUnitSphere, false);
     }
 
 
     private void GenerateColors()
     {
-        //_meshRenderer.sharedMaterial = colorSettings.planetMaterial;
         _colorGenerator.UpdateColors();
     }
-
-    /*public void UpdateUVs(PlanetColorGenerator colorGenerator)
-    {
-        Vector2[] uv = new Vector2[_verticeCount];
-        int resolution = _verticeCount / 2;
-        
-        for (int i = 0; i < _mesh.vertices.Length; i++)
-        {
-            Vector2 percent = new Vector2(_mesh.vertices[i].x, _mesh.vertices[i].y) / (resolution -1);
-            uv[i] = new Vector2(colorGenerator.BiomePercentFromPoint(_mesh.vertices[i].normalized), 0);
-
-        }
-        _mesh.uv = uv;
-    }*/
-
 
     public void GeneratePlanet()
     {

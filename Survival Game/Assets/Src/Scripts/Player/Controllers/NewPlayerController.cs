@@ -8,7 +8,10 @@ public class NewPlayerController : MonoBehaviour
     private Rigidbody _rb;
     private CapsuleCollider _capsuleCollider;
 
-
+    [SerializeField]
+    private bool _randomLocationAtStart = true;
+    [SerializeField]
+    private IcosahedronPlanet _planet;  
 
     [Header("Gravity settings")]
     [SerializeField]
@@ -90,6 +93,14 @@ public class NewPlayerController : MonoBehaviour
         InitializeAnimator();
     }
 
+    private void Start()
+    {
+        if(_randomLocationAtStart && _planet != null)
+        {
+            RelocatePlayer(_planet.GetRandomSurfacePoint());
+        }
+    }
+
     private void InitializeRigidbody()
     {
         if(!TryGetComponent<Rigidbody>(out _rb))
@@ -137,10 +148,16 @@ public class NewPlayerController : MonoBehaviour
         {
             if (_celestialBody != null)
             {
-                //TODO: if object under is not planet, get different gravityUp?
+                //TODO: if celestialBody is not planet, get different gravityUp?
                 Vector3 planetOrigin = _celestialBody.transform.position;
                 Vector3 gravityUp = (transform.position - planetOrigin).normalized; 
                 _rb.rotation = Quaternion.FromToRotation(transform.up, gravityUp) * _rb.rotation;
+
+                /*
+                    Vector3 spawnRotation = toPos.normalized;
+                    Quaternion rotation = Quaternion.FromToRotation(transform.up, spawnRotation) * transform.rotation;
+                    transform.rotation = rotation; 
+                 */
             }
         }
         //Get highest gravity Force or get nearest celestian body and get gravity force from that.
@@ -250,4 +267,11 @@ public class NewPlayerController : MonoBehaviour
         return new Vector3(_inputManager.Move.x, 0.0f, _inputManager.Move.y);
     }
 
+    private void RelocatePlayer(Vector3 toPos)
+    {
+        transform.position = toPos;
+        Vector3 spawnRotation = toPos.normalized;
+        Quaternion rotation = Quaternion.FromToRotation(transform.up, spawnRotation) * transform.rotation;
+        transform.rotation = rotation;
+    }
 }

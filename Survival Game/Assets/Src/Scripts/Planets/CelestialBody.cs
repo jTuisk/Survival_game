@@ -4,6 +4,5 @@ using UnityEngine;
 
 public class CelestialBody : MonoBehaviour
 {
-
     public Vector3 Velocity { get; private set; }
 }

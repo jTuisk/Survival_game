@@ -52,7 +52,7 @@ public class IcosahedronPlanet : MonoBehaviour
         _shapeGenerator.UpdateSettings(shapeSettings, _seed);
 
         _colorGenerator = new PlanetColorGenerator();
-        _colorGenerator.UpdateSettings(colorSettings, _seed);
+        _colorGenerator.UpdateSettings(colorSettings);
 
         _natureGenerator = new PlanetNatureGenerator();
         _natureGenerator.UpdateSettings(natureSettings, _seed, _shapeGenerator);
@@ -137,7 +137,6 @@ public class IcosahedronPlanet : MonoBehaviour
         _verticeCount = _mesh.vertices.Length;
         _colorGenerator.UpdateElevation(_shapeGenerator.MinMax);
         _natureGenerator.GenerateNature();
-        //UpdateUVs(_colorGenerator);
     }
 
     private List<Triangle> Subdivide(List<Vector3> vertices, List<Triangle> triangles, List<Vector3> normals, uint divides)
@@ -160,10 +159,6 @@ public class IcosahedronPlanet : MonoBehaviour
                 Vector3 b = vertices[currentFace.b];
                 Vector3 c = vertices[currentFace.c];
 
-
-                /*Vector3 ab = _shapeGenerator.CalculatePointOnPlanet(Vector3.Lerp(a, b, 0.5f)).normalized;
-                Vector3 bc = _shapeGenerator.CalculatePointOnPlanet(Vector3.Lerp(b, c, 0.5f)).normalized;
-                Vector3 ca = _shapeGenerator.CalculatePointOnPlanet(Vector3.Lerp(c, a, 0.5f)).normalized;*/
                 Vector3 ab = Vector3.Lerp(a, b, 0.5f).normalized;
                 Vector3 bc = Vector3.Lerp(b, c, 0.5f).normalized;
                 Vector3 ca = Vector3.Lerp(c, a, 0.5f).normalized;
@@ -355,7 +350,6 @@ public class IcosahedronPlanet : MonoBehaviour
     public void OnColorSettingsUpdated()
     {
         GenerateColors();
-        //UpdateUVs(_colorGenerator);
     }
     public void OnNatureSettingsUpdated()
     {

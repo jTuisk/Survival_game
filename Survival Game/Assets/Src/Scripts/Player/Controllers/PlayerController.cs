@@ -4,62 +4,59 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    public bool use;
-
-    private Rigidbody _rigidbody;
-    private CapsuleCollider _capsuleCollider;
     private InputManager _inputManager;
+    private Rigidbody _rb;
+    private CapsuleCollider _capsuleCollider;
 
     [SerializeField]
-    private PlanetGravityAttractor _attractor;
-
+    private bool _randomLocationAtStart = true;
     [SerializeField]
-    private Animator _animator;
-    private bool _hasAnimator;
-    [SerializeField]
-    private float _animatorBlendSpeed = 1f;
-    private int _xVelocityHash;
-    private int _zVelocityHash;
+    private IcosahedronPlanet _planet;  
 
-    [Header("Movement")]
-    [SerializeField, ReadOnly]
-    private Vector3 _playerMoveInput = Vector3.zero;
-
-    [SerializeField, ReadOnly]
-    private float _currentSpeed = 0f;
-    [SerializeField, Range(0.1f, 100f)]
-    private float _walkSpeed = 5.4f;
-    [SerializeField, Range(0.1f, 100f)]
-    private float _sprintSpeed = 9.8f;
-
-    private Vector3 _moveDirection;
-
-    [SerializeField, Range(0.1f, 100f)]
-    private float _movementMultiplier = 10.0f;
-
-
-    [Header("Ground check")]
-    [SerializeField]
-    private bool _playerIsGrounded = false;
-    [SerializeField, Range(0.0f, 2f)]
-    private float _groundCheckRadiusMultiplier = 1f;
-    [SerializeField, Range(-1f, 1f)]
-    private float _groundCheckDistance = 0.05f;
-    RaycastHit _groundCheckHit = new RaycastHit();
-
-    [Header("Gravity")]
+    [Header("Gravity settings")]
     [SerializeField]
     private bool _useGravity = true;
     [SerializeField]
     private bool _autoOrient = true;
     [SerializeField, Range(0.0f, 1000f)]
     private float _oirientSlerpSpeed = 10f;
+    [SerializeField] //[SerializeField, ReadOnly]
+    private CelestialBody _celestialBody;
+    [SerializeField, Range(0.0f, -1000f)] //[SerializeField, ReadOnly]
+    private float _gravityForce = -9.81f;
+    [SerializeField, Range(0.0f, -10f)]
+    private float _stickToGroundGravity = -5f;
 
-    //outterGravityForce
-    //innerGravityForce
+
+    [Header("Movement settings")]
+    [SerializeField, ReadOnly]
+    private Vector3 _playerMoveInput = Vector3.zero;
+    private Vector3 _targetVelocity;
+    private Vector3 _smoothVelocity;
+    private Vector3 _smoothVectorRef;
+
+    [SerializeField, ReadOnly]
+    private float _currentSpeed = 0.0f;
+    [SerializeField, Range(0.1f, 100f)]
+    private float _walkSpeed = 5.4f;
+    [SerializeField, Range(0.1f, 100f)]
+    private float _runSpeed = 9.8f;
+
+    [SerializeField, Range(0.1f, 100f)]
+    private float _jumpForce = 10.0f;
+    private float _vSmoothTime = 0.1f;
+    private float _airSmoothTime = 0.5f;
 
 
-    [Header("Camera")]
+    [Header("Mouse settings")]
+    [SerializeField, Range(0.1f, 1000f)]
+    private float _mouseSensitivity = 100f;
+
+    [Header("Other player settings")]
+    [SerializeField]
+    private float _mass = 80.0f;
+
+    [Header("Camera settings")]
     [SerializeField]
     private Transform _firstPersonCamera;
     [SerializeField]
@@ -71,161 +68,125 @@ public class PlayerController : MonoBehaviour
     private float _xRotationLowerLimit = 80f;
     private float _xRotation;
 
+    [Header("Ground check")]
     [SerializeField]
-    private float _mouseSensitivity = 100f;
+    private bool _playerIsGrounded = false;
+    [SerializeField, Range(0.0f, 2f)]
+    private float _groundCheckRadiusMultiplier = 1f;
+    [SerializeField, Range(-1f, 1f)]
+    private float _groundCheckDistance = 0.05f;
+    RaycastHit _groundCheckHit = new RaycastHit();
+
+    [Header("Animation settings")]
+    [SerializeField]
+    private Animator _animator;
+    private bool _hasAnimator;
+    private int _speedHash;
+
 
     private void Awake()
     {
         HideCursor.ShowCurors(false, true);
-
-        _hasAnimator = _animator != null ? true : TryGetComponent<Animator>(out _animator);
-        _rigidbody = GetComponent<Rigidbody>();
         _capsuleCollider = GetComponent<CapsuleCollider>();
         _inputManager = GetComponent<InputManager>();
+        InitializeRigidbody();
+        InitializeAnimator();
+    }
 
-        _xVelocityHash = Animator.StringToHash("X_Velocity");
-        _zVelocityHash = Animator.StringToHash("Z_Velocity");
+    private void Start()
+    {
+        if(_randomLocationAtStart && _planet != null)
+        {
+            RelocatePlayer(_planet.GetRandomSurfacePoint());
+        }
+    }
+
+    private void InitializeRigidbody()
+    {
+        if(!TryGetComponent<Rigidbody>(out _rb))
+        {
+            _rb = gameObject.AddComponent<Rigidbody>() as Rigidbody;
+        }
+        _rb.useGravity = false;
+        _rb.isKinematic = false;
+        _rb.interpolation = RigidbodyInterpolation.Interpolate;
+        _rb.mass = _mass;
+    }
+
+    private void InitializeAnimator()
+    {
+        _hasAnimator = _animator != null ? true : TryGetComponent<Animator>(out _animator);
+
+        _speedHash = Animator.StringToHash("Speed");
     }
 
     private void FixedUpdate()
     {
-        _moveDirection = GetMoveDirection();
-        _playerMoveInput = GetMoveInput();
-        _playerIsGrounded = PlayerIsGrounded();
-        //_playerMoveInput.y = PlayerGravity();
-        _playerMoveInput = PlayerGravity();
-
-        //PlayerGravity();
-        PlayerMove();
-        Animate();
-
-        _rigidbody.AddRelativeForce(_playerMoveInput, ForceMode.Force);
-    }
-
-    private void LateUpdate()
-    {
-        CameraMovements();
-    }
-
-    private Vector3 GetMoveDirection()
-    {
-        return new Vector3(_inputManager.Move.x, 0.0f, _inputManager.Move.y).normalized;
-    }
-
-    private Vector3 GetMoveInput()
-    {
-        return new Vector3(_inputManager.Move.x, 0.0f, _inputManager.Move.y);
-    }
-
-    /*
-    private void PlayerMove()
-    {
-        Debug.Log($"input: {_playerMoveInput}, multi: {_movementMultiplier}, dir: {transform.TransformDirection(_moveDirection)}, input+dir: {_playerMoveInput+transform.TransformDirection(_moveDirection)}");
-        //_playerMoveInput += _moveDirection;
-        _playerMoveInput += transform.TransformDirection(_moveDirection);
-        _playerMoveInput *= _movementMultiplier;
-
-    }
-    */
-    private void PlayerMove()
-    {
-        _playerMoveInput = new Vector3(_playerMoveInput.x * _movementMultiplier, _playerMoveInput.y, _playerMoveInput.z * _movementMultiplier);
-        _playerMoveInput += transform.TransformDirection(_moveDirection) * _movementMultiplier;
+        HandleMovement();
     }
 
 
-    private Vector3 PlayerGravity()
+    private void HandleMovement()
     {
-        if (!_useGravity || _playerIsGrounded)
-            return _playerMoveInput;
-
-
-        float maxGravityFall = _attractor.Gravity;
-        Vector3 planetOrigin = _attractor.transform.position;
-        Vector3 gravityUp = (transform.position - planetOrigin).normalized;
-        int layerMask = 1 << 3;
-
-
-        Debug.DrawRay(transform.position, -gravityUp * Vector3.Distance(transform.position, planetOrigin), Color.red);
-
-        RaycastHit distanceHit;
-
-        if (Physics.Raycast(transform.position, -gravityUp, out distanceHit, Vector3.Distance(transform.position, planetOrigin), layerMask))
-        {
-            Debug.DrawRay(transform.position, -gravityUp * distanceHit.distance, Color.yellow);
-        }
-
-        float gravityForce = _attractor.GetCurrentGravityForce(distanceHit.distance);
-
-        Debug.Log($"gravityForce: {gravityForce} at distance: {distanceHit.distance}, -dir = {-gravityUp * gravityForce}, dir: {gravityUp * gravityForce} ");
-        //_rigidbody.AddRelativeForce(transform.TransformDirection(gravityUp * gravityForce), ForceMode.Force);
-        //_playerMoveInput += transform.TransformDirection(gravityUp * gravityForce);
-
-        if (_autoOrient)
-            RotatePlayerToGravityOrigin(gravityUp);
-
-        return _playerMoveInput;
-    }
-
-    /*private void PlayerGravity()
-    {
-        if (!_useGravity || _playerIsGrounded)
+        if (Time.timeScale == 0)
             return;
 
-        float maxGravityFall = _attractor.Gravity;
-        Vector3 planetOrigin = _attractor.transform.position;
-        Vector3 gravityUp = (transform.position - planetOrigin).normalized;
-        int layerMask = 1 << 3;
+        HandleGravity();
+
+        HandleMovementInput();
+        HandleCameraMovements();
+        HandleAnimations();
+    }
+
+    private void HandleGravity()
+    {
+        if (!_useGravity)
+            return;
 
 
-        Debug.DrawRay(transform.position, -gravityUp * Vector3.Distance(transform.position, planetOrigin), Color.red);
-
-        RaycastHit distanceHit;
-
-        if (Physics.Raycast(transform.position, -gravityUp, out distanceHit, Vector3.Distance(transform.position, planetOrigin), layerMask))
+        if (_autoOrient)
         {
-            Debug.DrawRay(transform.position, -gravityUp * distanceHit.distance, Color.yellow);
+            if (_celestialBody != null)
+            {
+                Vector3 planetOrigin = _celestialBody.transform.position;
+                Vector3 gravityUp = (transform.position - planetOrigin).normalized; 
+                _rb.rotation = Quaternion.FromToRotation(transform.up, gravityUp) * _rb.rotation;
+
+                /*
+                    Vector3 spawnRotation = toPos.normalized;
+                    Quaternion rotation = Quaternion.FromToRotation(transform.up, spawnRotation) * transform.rotation;
+                    transform.rotation = rotation; 
+                 */
+            }
+        }
+        //Get highest gravity Force or get nearest celestian body and get gravity force from that.
+
+        _rb.AddForce(transform.up * _gravityForce, ForceMode.VelocityChange);
+    }
+
+    private void HandleMovementInput()
+    {
+        _playerIsGrounded = IsGrounded();
+        _playerMoveInput = GetMoveInput();
+
+        _targetVelocity = transform.TransformDirection(_playerMoveInput.normalized) * GetMovementSpeed();
+        _smoothVelocity = Vector3.SmoothDamp(_smoothVelocity, _targetVelocity, ref _smoothVectorRef, GetSmoothVelocityTime());
+
+        _currentSpeed = _smoothVelocity.magnitude;
+
+        if (_inputManager.Jump)
+        {
+            HandleJump();
+        }
+        else
+        {
+            StickPlayerToGround();
         }
 
-        float gravityForce = _attractor.GetCurrentGravityForce(distanceHit.distance);
-
-        Debug.Log($"gravityForce: {gravityForce} at distance: {distanceHit.distance}, -dir = {-gravityUp * gravityForce}, dir: {gravityUp * gravityForce} ");
-        _rigidbody.AddRelativeForce(transform.TransformDirection(gravityUp * gravityForce) , ForceMode.Force);
-
-        RotatePlayerToGravityOrigin(-gravityUp);
-    }*/
-
-    private void RotatePlayerToGravityOrigin(Vector3 gravityUp)
-    {
-        Quaternion targetRotation = Quaternion.FromToRotation(transform.up, gravityUp) * transform.rotation;
-        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, _oirientSlerpSpeed * Time.fixedDeltaTime);
+        _rb.MovePosition(_rb.position + _smoothVelocity * Time.fixedDeltaTime);
     }
 
-    private bool PlayerIsGrounded()
-    {
-        float sphereCastRadius = _capsuleCollider.radius * _groundCheckRadiusMultiplier;
-        float sphereCastTravelDistance = _capsuleCollider.bounds.extents.y - sphereCastRadius + _groundCheckDistance;
-        return Physics.SphereCast(_rigidbody.position, sphereCastRadius, Vector3.down, out _groundCheckHit, sphereCastTravelDistance);
-    }
-
-    private void Animate()
-    {
-        if (_hasAnimator)
-        {
-            _animator.SetFloat(_xVelocityHash, _rigidbody.velocity.x);
-            _animator.SetFloat(_zVelocityHash, -_rigidbody.velocity.y);
-        }
-    }
-
-    private float GetMaxSpeed()
-    {
-        if (_inputManager.Run)
-            return _sprintSpeed;
-
-        return _walkSpeed;
-    }
-
-    private void CameraMovements()
+    private void HandleCameraMovements()
     {
         float mouse_x = _inputManager.Look.x;
         float mouse_y = _inputManager.Look.y;
@@ -234,12 +195,82 @@ public class PlayerController : MonoBehaviour
         _xRotation -= mouse_y * _mouseSensitivity * Time.deltaTime;
         _xRotation = Mathf.Clamp(_xRotation, _xRotationUpperLimit, _xRotationLowerLimit);
 
-
         _firstPersonCamera.localRotation = Quaternion.Euler(_xRotation, 0.0f, 0.0f);
 
-        if(use)
-            transform.Rotate(Vector3.up, mouse_x * _mouseSensitivity * Time.deltaTime);
-        else
-            transform.Rotate(Vector3.up * mouse_x * _mouseSensitivity * Time.smoothDeltaTime);
+        transform.Rotate(Vector3.up, mouse_x * _mouseSensitivity * Time.fixedDeltaTime);
+    }
+
+    private void HandleAnimations()
+    {
+        if (_hasAnimator)
+        {
+            _animator.SetFloat(_speedHash, _currentSpeed);
+        }
+    }
+
+    private void HandleJump()
+    {
+        if (_playerIsGrounded)
+        {
+            _rb.AddForce(transform.up * _jumpForce, ForceMode.VelocityChange);
+            _playerIsGrounded = false;
+        }
+    }
+
+    private void StickPlayerToGround()
+    {
+        if(!_useGravity)
+            return;
+
+        if (_playerIsGrounded)
+        {
+            _rb.AddForce(transform.up * _stickToGroundGravity, ForceMode.VelocityChange);
+        }
+    }
+    private bool IsGrounded()
+    {
+        if(_celestialBody != null)
+        {
+            Vector3 relativeVelocity = _rb.velocity - _celestialBody.Velocity;
+            if(relativeVelocity.y <= _jumpForce * 0.5f)
+            {
+                float sphereCastRadius = _capsuleCollider.radius * _groundCheckRadiusMultiplier;
+                float sphereCastTravelDistance = _capsuleCollider.bounds.extents.y + sphereCastRadius + _groundCheckDistance;
+
+                //TODO: Add LayerMask?
+                return Physics.SphereCast(_rb.position, sphereCastRadius, -transform.up, out _groundCheckHit, sphereCastTravelDistance);
+            }
+        }
+        return false;
+    }
+    private float GetSmoothVelocityTime()
+    {
+        return _playerIsGrounded ? _vSmoothTime : _airSmoothTime;
+    }
+
+    private float GetMovementSpeed()
+    {
+        if (_inputManager.Run)
+            return _runSpeed;
+
+        return _walkSpeed;
+    }
+
+    private Vector2 GetLookInput()
+    {
+        return new Vector3(_inputManager.Look.x, _inputManager.Look.y);
+    }
+
+    private Vector3 GetMoveInput()
+    {
+        return new Vector3(_inputManager.Move.x, 0.0f, _inputManager.Move.y);
+    }
+
+    private void RelocatePlayer(Vector3 toPos)
+    {
+        transform.position = toPos;
+        Vector3 spawnRotation = toPos.normalized;
+        Quaternion rotation = Quaternion.FromToRotation(transform.up, spawnRotation) * transform.rotation;
+        transform.rotation = rotation;
     }
 }

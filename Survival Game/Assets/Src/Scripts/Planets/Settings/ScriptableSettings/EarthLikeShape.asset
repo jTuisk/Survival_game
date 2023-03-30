@@ -16,12 +16,12 @@ MonoBehaviour:
   resolution: 4
   noiseLayers:
   - enabled: 1
-    useFirstLayerAsMask: 1
+    useFirstLayerAsMask: 0
     noiseSettings:
       filterType: 0
       simpleNoiseSettings:
-        strength: 0.11
-        baseRoughness: 1.03
+        strength: 0.39
+        baseRoughness: 0.82
         roughness: 1.59
         numLayers: 1
         presistence: 0.5
@@ -39,15 +39,15 @@ MonoBehaviour:
   - enabled: 1
     useFirstLayerAsMask: 1
     noiseSettings:
-      filterType: 0
+      filterType: 1
       simpleNoiseSettings:
         strength: 0.68
-        baseRoughness: 0.3
+        baseRoughness: 2.29
         roughness: 1.36
         numLayers: 2
         presistence: 0.5
         center: {x: -2.49, y: 9.16, z: 4.92}
-        minValue: 0
+        minValue: 0.3
       rigidNoiseSettings:
         strength: 0.29
         baseRoughness: 0.3

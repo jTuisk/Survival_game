@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: EarthLikeNature
   m_EditorClassIdentifier: 
   forestLayers:
-  - enabled: 1
+  - enabled: 0
     forestSettings:
-      spawnType: 0
+      spawnType: 1
       randomTrees:
         seed: 0
         trees:
@@ -34,4 +34,3 @@ MonoBehaviour:
         maxElevationHeight: 0
         forestSize: 0
         minDistance: 0
-  mineralLayers: []

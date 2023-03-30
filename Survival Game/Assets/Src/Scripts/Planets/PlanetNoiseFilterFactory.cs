@@ -34,21 +34,4 @@ public static class PlanetNoiseFilterFactory
         }
     }
 
-    public static IMineralNoiseFilter CreateMineralNoiseFilter(PlanetMineralSettings mineralSettings, int seed)
-    {
-        switch (mineralSettings.mineralType)
-        {
-            case PlanetMineralSettings.MineralSpawnType.BasicMine:
-                return new PlanetBasicMineralFilter(mineralSettings.basicMine, seed);
-
-            case PlanetMineralSettings.MineralSpawnType.SmallMine:
-                return new PlanetSmallMineFilter(mineralSettings.smallMine, seed);
-
-            case PlanetMineralSettings.MineralSpawnType.LargeMine:
-                return new PlanetLargeMineFilter(mineralSettings.largeMine, seed);
-
-            default:
-                return null;
-        }
-    }
 }

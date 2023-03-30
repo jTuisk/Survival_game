@@ -9,7 +9,7 @@ public class PlanetNoiseSettings
     public FilterType filterType;
 
     public SimpleNoiseSettings simpleNoiseSettings;
-    public RigidNoiseSettings rigidNoiseSettings;
+    public RidgeNoiseSettings ridgeNoiseSettings;
 
     [System.Serializable]
     public class SimpleNoiseSettings
@@ -25,7 +25,7 @@ public class PlanetNoiseSettings
     }
 
     [System.Serializable]
-    public class RigidNoiseSettings : SimpleNoiseSettings
+    public class RidgeNoiseSettings : SimpleNoiseSettings
     {
         public float weightMultiplier = 1f;
     }

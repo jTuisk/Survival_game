@@ -12,7 +12,7 @@ public static class PlanetNoiseFilterFactory
                 return new PlanetSimpleNoiseFilter(noiseSettings.simpleNoiseSettings, seed);
 
             case PlanetNoiseSettings.FilterType.Rigid:
-                return new PlanetRigidNoiseFilter(noiseSettings.rigidNoiseSettings, seed);
+                return new PlanetRidgeNoiseFilter(noiseSettings.ridgeNoiseSettings, seed);
 
             default:
                 return null;

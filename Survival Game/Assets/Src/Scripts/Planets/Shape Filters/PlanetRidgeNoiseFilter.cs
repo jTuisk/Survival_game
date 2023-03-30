@@ -2,12 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlanetRigidNoiseFilter : IShapeNoiseFilter
+public class PlanetRidgeNoiseFilter : IShapeNoiseFilter
 {
-    PlanetNoiseSettings.RigidNoiseSettings noiseSettings;
+    PlanetNoiseSettings.RidgeNoiseSettings noiseSettings;
     Noise noise;
 
-    public PlanetRigidNoiseFilter(PlanetNoiseSettings.RigidNoiseSettings noiseSettings, int seed)
+    public PlanetRidgeNoiseFilter(PlanetNoiseSettings.RidgeNoiseSettings noiseSettings, int seed)
     {
         this.noiseSettings = noiseSettings;
         noise = new Noise(seed);
@@ -16,7 +16,7 @@ public class PlanetRigidNoiseFilter : IShapeNoiseFilter
     public float Evaluate(Vector3 pointOnSphere)
     {
         float noiseValue = 0f;
-        float frequency = noiseSettings.baseRoughness;
+        float frequency = noiseSettings.baseRoughness; 
         float amplitude = 1f;
         float weight = 1f;
         

@@ -31,6 +31,7 @@ public class PlanetSimpleNoiseFilter : IShapeNoiseFilter
 
         return noiseValue * noiseSettings.strength;
     }
+
     public void SetSeed(int seed)
     {
         noise = new Noise(seed);

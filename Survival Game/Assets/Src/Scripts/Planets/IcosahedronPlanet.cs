@@ -344,6 +344,7 @@ public class IcosahedronPlanet : MonoBehaviour
         Debug.Log("OnShapeSettingsUpdated");
         _shapeGenerator.ResetMinMax();
         _mesh.Clear();
+        _shapeGenerator.UpdateSettings(shapeSettings, _seed);
         GenerateMesh();
     }
 

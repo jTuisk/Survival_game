@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using Game.SolarSystem.Planet;
 
 [CustomEditor(typeof(IcosahedronPlanet))]
 public class IcosahedronPlanetEditor : Editor

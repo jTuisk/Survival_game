@@ -23,7 +23,11 @@ namespace Game.SolarSystem.Temperature
         [SerializeField] TemperatureSensor[] nearestSensors;
 
         [SerializeField] bool applySeasonModifier = true;
-        
+
+        public float GetCurrentTemperature()
+        {
+            return temperatureData.currentTemperature;
+        }
 
         private void Awake()
         {
@@ -111,7 +115,7 @@ namespace Game.SolarSystem.Temperature
                     finalTempChange += tempChange[i];
                 }
                 finalTempChange /= tempChange.Length; // Add season/month modifier!!
-                Debug.Log($"final sun temp change: {finalTempChange}");
+                //Debug.Log($"final sun temp change: {finalTempChange}");
                 ChangeTemp(finalTempChange);
                 AverageOutSensorsTemperature();
             }

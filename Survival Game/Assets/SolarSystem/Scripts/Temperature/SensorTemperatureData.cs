@@ -7,7 +7,7 @@ namespace Game.SolarSystem.Temperature
     [System.Serializable]
     public class SensorTemperatureData
     {
-        [ReadOnly] public float currentTemperature = 0f;
+        public float currentTemperature = 0f;
         public float startTemperature = 15f;
         public float minTemperature = -30f;
         public float maxTempature = 70f;

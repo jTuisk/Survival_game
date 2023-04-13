@@ -247,7 +247,7 @@ namespace Game.Player.Controller
 
             if (playerIsGrounded)
             {
-                _rb.AddForce(player.transform.up * stickToGroundGravity, ForceMode.Acceleration);
+                //_rb.AddForce(player.transform.up * stickToGroundGravity, ForceMode.Acceleration);
             }
         }
 

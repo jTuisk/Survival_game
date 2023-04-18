@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: MoonShape
   m_EditorClassIdentifier: 
   radius: 1.78388
-  resolution: 3
+  resolution: 5
   noiseLayers:
   - enabled: 1
     useFirstLayerAsMask: 0
@@ -23,7 +23,7 @@ MonoBehaviour:
         strength: 0.14
         baseRoughness: 0.29
         roughness: 1.65
-        numLayers: 5
+        numLayers: 3
         presistence: 0
         center: {x: 3.27, y: 0.66, z: 0}
         minValue: 0
@@ -39,21 +39,42 @@ MonoBehaviour:
   - enabled: 1
     useFirstLayerAsMask: 1
     noiseSettings:
-      filterType: 1
+      filterType: 0
       simpleNoiseSettings:
-        strength: 0.28
+        strength: 3.24
         baseRoughness: 0.29
         roughness: 1.65
         numLayers: 5
         presistence: 0
-        center: {x: 3.27, y: 0.66, z: 0}
+        center: {x: 7.49, y: 2.07, z: 0}
         minValue: 0
       ridgeNoiseSettings:
-        strength: 2.04
+        strength: 0.99
         baseRoughness: 7.15
         roughness: 0.99
-        numLayers: 6
-        presistence: 1.2
+        numLayers: 2
+        presistence: 0.48
+        center: {x: 1.42, y: 1.47, z: 0}
+        minValue: 0.2
+        weightMultiplier: 0.21
+  - enabled: 1
+    useFirstLayerAsMask: 1
+    noiseSettings:
+      filterType: 1
+      simpleNoiseSettings:
+        strength: 3.24
+        baseRoughness: 0.29
+        roughness: 1.65
+        numLayers: 5
+        presistence: 0
+        center: {x: 7.49, y: 2.07, z: 0}
+        minValue: 0
+      ridgeNoiseSettings:
+        strength: 0.9
+        baseRoughness: 2.31
+        roughness: 0.99
+        numLayers: 2
+        presistence: 0.48
         center: {x: 1.42, y: 1.47, z: 0}
         minValue: 0.2
         weightMultiplier: 0.21

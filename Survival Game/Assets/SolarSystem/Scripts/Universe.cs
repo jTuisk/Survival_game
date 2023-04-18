@@ -9,6 +9,6 @@ namespace Game.SolarSystem
         public const float GravitationalConstant = 1f; // 6.67 × 10-11 
         public const float PhysicsTimeStep = 0.01f;
         public const float VoidTemperature = -270f;
-        public const float VoidTemperatureStrength = 0.00004337f;
+        public const float VoidTemperatureStrength = 0.00014337f;
     }
 }

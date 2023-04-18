@@ -1,4 +1,15 @@
-# TKO_3123
+# TKO_3123 DONE
+# TKO_3124
 
-
-Currently working procedural planet.
+TODO:
+	*Items
+	*Items handler/manager
+	*Inventory system
+	
+	*Player skills
+		**woodcutting
+		**mining
+	
+	*Building
+	*Animals (AI)
+	*Combat system

@@ -7,9 +7,12 @@ TODO:
 	*Items handler/manager
 	*Inventory system
 	
+	
 	*Player skills
-		**woodcutting
-		**mining
+		*crafting
+		*woodcutting
+		*mining
+		
 	
 	*Building
 	*Animals (AI)

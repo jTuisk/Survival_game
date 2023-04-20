@@ -10,7 +10,9 @@ namespace Game.SolarSystem.Planet.Settings
         public enum FilterType { Simple, Rigid };
         public FilterType filterType;
 
+        [ConditionalHide("filterType", 0)]
         public SimpleNoiseSettings simpleNoiseSettings;
+        [ConditionalHide("filterType", 1)]
         public RidgeNoiseSettings ridgeNoiseSettings;
 
         [System.Serializable]

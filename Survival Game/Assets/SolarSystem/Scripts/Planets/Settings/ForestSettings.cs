@@ -10,7 +10,9 @@ namespace Game.SolarSystem.Planet.Settings
         public enum SpawnType { RandomTrees, Forest }
         public SpawnType spawnType;
 
+        [ConditionalHide("spawnType", 0)]
         public RandomTrees randomTrees;
+        [ConditionalHide("spawnType", 1)]
         public Forest forest;
 
         [System.Serializable]

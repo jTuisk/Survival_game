@@ -13,59 +13,11 @@ namespace Game.Player.Inventory
     {
         public ItemScriptableObject slotItem;
         public int itemQuantity;
-        public TextMeshProUGUI slotText;
-        public TextMeshProUGUI quantityText;
-        public Image slotImage;
 
         public InventorySlot(ItemScriptableObject slotItem = null, int itemQuantity = -1)
         {
             this.slotItem = slotItem;
             this.itemQuantity = itemQuantity;
-        }
-
-        public void UpdateSlotUI()
-        {
-            UpdateText();
-            UpdateQuantityText();
-            UpdateImage();
-        }
-
-        public void UpdateText()
-        {
-            if (slotItem != null)
-            {
-                slotText.text = slotItem.item.name;
-            }
-            else
-            {
-                slotText.text = "";
-            }
-            
-        }
-        public void UpdateQuantityText()
-        {
-            if(slotItem != null && slotItem.item.maxStackAmount > 1)
-            {
-                quantityText.enabled = true;
-                quantityText.text = itemQuantity.ToString();
-            }
-            else
-            {
-                quantityText.enabled = false;
-            }
-        }
-
-        public void UpdateImage()
-        {
-            if (slotItem != null && slotItem.item.icon != null)
-            {
-                slotImage.enabled = true;
-                slotImage.sprite = slotItem.item.icon;
-            }
-            else
-            {
-                slotImage.enabled = false;
-            }
         }
 
         public void SetItem(ItemScriptableObject item, int quantity = 1)

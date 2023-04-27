@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Game.Player.Items;
+using Game.UI;
 
 
 namespace Game.Player.Inventory
@@ -13,11 +14,15 @@ namespace Game.Player.Inventory
         public bool dropOverQuantityItems = true;
         [SerializeField, ReadOnly] private uint inventorySize;
         [SerializeField] private InventorySlot[] slots;
+        private UI_InventorySystemHandler UIinventoryHandler;
 
-        public InventoryContainer(uint size)
+        public InventorySlot[] GetSlots() => slots;
+
+        public InventoryContainer(uint size, UI_InventorySystemHandler UIinventoryHandler)
         {
             inventorySize = size;
             InitializeSlots();
+            this.UIinventoryHandler = UIinventoryHandler;
         }
 
         private void InitializeSlots()
@@ -70,6 +75,7 @@ namespace Game.Player.Inventory
                     for (int i = 0; i < addAmount.Length; i++)
                     {
                         slots[i].AddQuantity(addAmount[i]);
+                        UIinventoryHandler.UpdateSlot(slots[i], i);
                     }
 
                     for (int i = 0; i < emptySlotIndexs.Length; i++)
@@ -80,6 +86,7 @@ namespace Game.Player.Inventory
                         int newSlotQuantity = Mathf.Min(quantity, item.item.maxStackAmount);
                         slots[emptySlotIndexs[i]].SetItem(item, newSlotQuantity);
                         quantity -= newSlotQuantity;
+                        UIinventoryHandler.UpdateSlot(slots[emptySlotIndexs[i]], emptySlotIndexs[i]);
                     }
                     return true;
                 }
@@ -96,6 +103,7 @@ namespace Game.Player.Inventory
                 for (int i = 0; i < addAmount.Length; i++)
                 {
                     slots[i].AddQuantity(addAmount[i]);
+                    UIinventoryHandler.UpdateSlot(slots[i], i);
                 }
                 return true;
             }

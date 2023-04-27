@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Game.Player.Item
+namespace Game.Player.Items
 {
     [CreateAssetMenu(menuName = "Scriptable Objects/Items/New Item")]
     public class ItemScriptableObject : ScriptableObject
@@ -10,13 +10,7 @@ namespace Game.Player.Item
         public enum ItemType { Other, Weapon, Armor, Food, Drink, Potion }
         public ItemType itemType = ItemType.Other;
 
-        [ConditionalHide("itemType", 0)]
+        public bool canInteract = true;
         public Item item;
-
-        [ConditionalHide("itemType", new int[] {1, 2})]
-        public WearableItem wearableItem;
-
-        [ConditionalHide("itemType", new int[] {3, 4, 5})]
-        public UsableItem usableItem;
     }
 }

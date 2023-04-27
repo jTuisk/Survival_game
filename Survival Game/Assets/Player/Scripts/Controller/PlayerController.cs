@@ -4,6 +4,7 @@ using UnityEngine;
 using Game.SolarSystem;
 using Game.SolarSystem.Planet;
 using Game.Player.Input;
+using Game.Player.Inventory;
 
 namespace Game.Player.Controller
 {
@@ -63,10 +64,15 @@ namespace Game.Player.Controller
 
         [SerializeField] float playerMass = 80.0f;
 
+        private InteractionHandler interactionHandler;
+        public InteractionSettingsScriptableObject interactionData;
+        public InventorySystem inventory; 
+
         private void Awake()
         {
             HideCursor.ShowCurors(false, true);
             _inputManager = GetComponent<InputManager>();
+            interactionHandler = new InteractionHandler(_inputManager, interactionData, inventory);
             InitializeRigidbody();
             InitializeAnimator();
         }
@@ -96,6 +102,11 @@ namespace Game.Player.Controller
             _hasAnimator = animator != null ? true : TryGetComponent<Animator>(out animator);
 
             _speedHash = Animator.StringToHash("Speed");
+        }
+
+        private void Update()
+        {
+            interactionHandler.Handle();
         }
 
         private void FixedUpdate()
@@ -151,7 +162,7 @@ namespace Game.Player.Controller
                  Vector3 acceleration = forceDir * Universe.GravitationalConstant * gravityForce * celestialBody.data.mass * 100000f / sqrDst;
                  _rb.AddForce(acceleration, ForceMode.Acceleration);*/ 
                 
-                Debug.Log("Apply Gravity!");
+                //Debug.Log("Apply Gravity!");
                 _rb.AddForce(player.transform.up * -gravityForce, ForceMode.Acceleration);
             }
         }
@@ -280,7 +291,7 @@ namespace Game.Player.Controller
             return false;
         }*/
 
-        private  bool IsGrounded()
+        private bool IsGrounded()
         {
             // Sphere must not overlay terrain at origin otherwise no collision will be detected
             // so rayRadius should not be larger than controller's capsule collider radius
@@ -304,12 +315,12 @@ namespace Game.Player.Controller
                     if(Physics.SphereCast(rayOrigin, rayRadius, rayDir, out hit, groundedRayDst, walkableMask))
                     {
                         Debug.DrawRay(rayOrigin, -player.up * rayRadius, Color.green);
-                        Debug.Log($"Hit: {hit.collider.name}");
+                        //Debug.Log($"Hit: {hit.collider.name}");
                     }
                     else
                     {
 
-                        Debug.Log($"No hit");
+                        //Debug.Log($"No hit");
                         Debug.DrawRay(rayOrigin, -player.up * rayRadius, Color.red);
                     }
                 }

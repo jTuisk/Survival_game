@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 8742831875532189946}
   - component: {fileID: 3145584714176634323}
   - component: {fileID: 7995934425362746882}
+  - component: {fileID: 4501037891604163465}
   m_Layer: 0
   m_Name: Big stone
   m_TagString: Untagged
@@ -83,3 +84,17 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &4501037891604163465
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7656670199768724534}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 32224e420fb60414794ee9ba25134956, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemData: {fileID: 11400000, guid: 96c1c758304e78840a1deb666e75ebc8, type: 2}
+  quantity: 1

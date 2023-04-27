@@ -16,6 +16,7 @@ namespace Game.Player.Input
         public bool Run { get; private set; }
         public bool Jump { get; private set; }
 
+        public bool Interact { get; private set; }
 
         /*
         public bool MoveIsPressed { get; private set; }
@@ -30,6 +31,7 @@ namespace Game.Player.Input
         private InputAction _lookAction;
         private InputAction _runAction;
         private InputAction _jumpAction;
+        private InputAction _InteractAction;
 
         private void Awake()
         {
@@ -38,6 +40,7 @@ namespace Game.Player.Input
             _lookAction = _currentMap.FindAction("Look");
             _runAction = _currentMap.FindAction("Run");
             _jumpAction = _currentMap.FindAction("Jump");
+            _InteractAction = _currentMap.FindAction("Interact");
 
             _moveAction.performed += SetMove;
             _moveAction.canceled += SetMove;
@@ -50,6 +53,9 @@ namespace Game.Player.Input
 
             _jumpAction.performed += SetJump;
             _jumpAction.canceled += SetJump;
+
+            _InteractAction.performed += SetInteract;
+            _InteractAction.canceled += SetInteract;
         }
         private void SetMove(InputAction.CallbackContext context)
         {
@@ -69,6 +75,11 @@ namespace Game.Player.Input
         private void SetJump(InputAction.CallbackContext context)
         {
             Jump = context.ReadValueAsButton();
+        }
+
+        private void SetInteract(InputAction.CallbackContext context)
+        {
+            Interact = context.ReadValueAsButton();
         }
 
         private void OnEnable()

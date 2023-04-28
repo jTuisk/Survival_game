@@ -4,6 +4,7 @@ using UnityEngine;
 using Game.Player.Input;
 using Game.Player.Items;
 using Game.Player.Inventory;
+using Game.UI;
 
 namespace Game.Player.Controller
 {
@@ -13,23 +14,12 @@ namespace Game.Player.Controller
         private InputManager inputManager;
         private InteractionSettingsScriptableObject settingsData;
         private InventorySystem inventory;
-        private GameObject tabMenu;
 
         public InteractionHandler(InputManager inputManager, InteractionSettingsScriptableObject settings, InventorySystem inventory)
         {
             this.inputManager = inputManager;
             this.settingsData = settings;
             this.inventory = inventory;
-            Init();
-        }
-
-        private void Init()
-        {
-            if(tabMenu == null)
-            {
-                tabMenu = GameObject.Find("TabMenu");
-                tabMenu?.SetActive(false);
-            }
         }
 
         public void Handle()
@@ -91,17 +81,11 @@ namespace Game.Player.Controller
             }
             else
             {
-                if (tabMenu != null)
+                if (inputManager.Tab && settings.canOpen)
                 {
-                    if (inputManager.Tab && settings.canOpen)
-                    {
-                        tabMenu.SetActive(!tabMenu.activeInHierarchy);
-                        settings.timer = settings.interval;
-                    }
-                }
-                else
-                {
-                    tabMenu = GameObject.Find("TabMenu");
+
+                    UIManager.Instance.ChangeUI(1);
+                    settings.timer = settings.interval;
                 }
             }
         }

@@ -5,6 +5,8 @@ using Game.SolarSystem;
 using Game.SolarSystem.Planet;
 using Game.Player.Input;
 using Game.Player.Inventory;
+using Game.UI;
+using Game.Player;
 
 namespace Game.Player.Controller
 {
@@ -216,6 +218,9 @@ namespace Game.Player.Controller
 
         private void HandleCameraMovements()
         {
+            if (!PlayerSettings.Instance.canRotateCamera)
+                return;
+
             float mouse_x = _inputManager.Look.x;
             float mouse_y = _inputManager.Look.y;
             firstPersonCamera.position = firstPersonCameraPosition.position;
@@ -347,6 +352,9 @@ namespace Game.Player.Controller
 
         private Vector3 GetMoveInput()
         {
+            if (!PlayerSettings.Instance.canMove)
+                return Vector3.zero;
+
             return new Vector3(_inputManager.Move.x, 0.0f, _inputManager.Move.y);
         }
 

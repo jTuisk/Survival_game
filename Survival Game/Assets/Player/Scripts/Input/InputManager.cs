@@ -17,6 +17,7 @@ namespace Game.Player.Input
         public bool Jump { get; private set; }
 
         public bool Interact { get; private set; }
+        public bool Tab { get; private set; }
 
         /*
         public bool MoveIsPressed { get; private set; }
@@ -32,6 +33,7 @@ namespace Game.Player.Input
         private InputAction _runAction;
         private InputAction _jumpAction;
         private InputAction _InteractAction;
+        private InputAction _Tab;
 
         private void Awake()
         {
@@ -41,6 +43,7 @@ namespace Game.Player.Input
             _runAction = _currentMap.FindAction("Run");
             _jumpAction = _currentMap.FindAction("Jump");
             _InteractAction = _currentMap.FindAction("Interact");
+            _Tab = _currentMap.FindAction("Tab");
 
             _moveAction.performed += SetMove;
             _moveAction.canceled += SetMove;
@@ -56,6 +59,9 @@ namespace Game.Player.Input
 
             _InteractAction.performed += SetInteract;
             _InteractAction.canceled += SetInteract;
+
+            _Tab.performed += SetTab;
+            _Tab.canceled += SetTab;
         }
         private void SetMove(InputAction.CallbackContext context)
         {
@@ -80,6 +86,11 @@ namespace Game.Player.Input
         private void SetInteract(InputAction.CallbackContext context)
         {
             Interact = context.ReadValueAsButton();
+        }
+
+        private void SetTab(InputAction.CallbackContext context)
+        {
+            Tab = context.ReadValueAsButton();
         }
 
         private void OnEnable()

@@ -20,3 +20,7 @@ MonoBehaviour:
     itemLayer:
       serializedVersion: 2
       m_Bits: 128
+  tabMenu:
+    canOpen: 1
+    interval: 0.2
+    timer: -0.0009916327

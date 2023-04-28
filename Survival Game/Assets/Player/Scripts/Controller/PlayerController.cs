@@ -114,7 +114,6 @@ namespace Game.Player.Controller
             HandleMovement();
         }
 
-
         private void HandleMovement()
         {
             if (Time.timeScale == 0)

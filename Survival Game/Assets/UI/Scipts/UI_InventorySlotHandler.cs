@@ -20,7 +20,6 @@ namespace Game.UI
 
         public void UpdateData(InventorySlot inventorySlot)
         {
-            Debug.Log("Updating");
             UpdateIcon(inventorySlot.slotItem.item.icon);
             UpdateText(inventorySlot.itemQuantity);
         }
@@ -32,7 +31,7 @@ namespace Game.UI
 
         public void UpdateText(int quantity)
         {
-            if(quantity > 0)
+            if(quantity > 1)
             {
                 tmpText.text = quantity.ToString();
             }

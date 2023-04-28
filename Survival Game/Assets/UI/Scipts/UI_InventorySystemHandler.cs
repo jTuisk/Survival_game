@@ -10,6 +10,8 @@ namespace Game.UI
     {
         public GameObject UI_slotsPrefab;
         public InventorySystem inventorySystem;
+        public InventoryContainer inventoryContainer;
+
         private Dictionary<UI_InventorySlotHandler, InventorySlot> slots;
 
         private void Awake()
@@ -24,9 +26,11 @@ namespace Game.UI
                 GameObject.Destroy(child.gameObject);
             }
 
+            inventorySystem.InitUIContainerData();
+
             slots = new Dictionary<UI_InventorySlotHandler, InventorySlot>();
 
-            var containerSlots = inventorySystem.inventoryContainer.GetSlots();
+            var containerSlots = inventoryContainer.GetSlots();
 
             for (int i = 0; i < containerSlots.Length; i++)
             {
@@ -37,11 +41,6 @@ namespace Game.UI
 
         public void UpdateSlot(InventorySlot slot, int n)
         {
-            Debug.Log(slots.Count);
-            foreach(var s in slots)
-            {
-                Debug.Log($"{s.Key} - {s.Value} - {s.Value.Equals(slot)}");
-            }
             var uiSlot = slots.ElementAt(n).Key;
 
             if(uiSlot != null)
@@ -49,6 +48,7 @@ namespace Game.UI
                 uiSlot.UpdateData(slot);
             }
         }
+
         public void UpdateSlot(InventorySlot slot)
         {
             Debug.Log(slots.Count);

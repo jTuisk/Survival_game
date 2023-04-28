@@ -9,19 +9,26 @@ namespace Game.Player.Inventory
     [ExecuteInEditMode]
     public class InventorySystem : MonoBehaviour
     {
-        public uint inventorySize = 1;
-        public InventoryContainer inventoryContainer;
-        public UI_InventorySystemHandler inventorySystemHandler;
+        public uint primaryContainerSize = 1;
+        public InventoryContainer primaryContainer;
+        public UI_InventorySystemHandler primaryUIHandler;
 
-        public void Awake()
+        public virtual void Awake()
         {
-            inventoryContainer = new InventoryContainer(inventorySize, inventorySystemHandler);
+            primaryContainer = new InventoryContainer(primaryContainerSize, primaryUIHandler);
         }
 
-        public bool AddToContainer(ItemScriptableObject item, int quantity = 1)
+        public virtual bool AddItem(InteractiveItem item, int quantity = 1)
         {
+            return primaryContainer.AddItem(item, quantity);
+        }
 
-            return false;
+        public virtual void InitUIContainerData()
+        {
+            if (primaryContainer != null)
+            {
+                primaryUIHandler.inventoryContainer = primaryContainer;
+            }
         }
     }
 }

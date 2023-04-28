@@ -11,38 +11,50 @@ namespace Game.Player.Controller
     public class InteractionHandler
     {
         private InputManager inputManager;
-        private InteractionSettingsScriptableObject settings;
+        private InteractionSettingsScriptableObject settingsData;
         private InventorySystem inventory;
+        private GameObject tabMenu;
 
         public InteractionHandler(InputManager inputManager, InteractionSettingsScriptableObject settings, InventorySystem inventory)
         {
             this.inputManager = inputManager;
-            this.settings = settings;
+            this.settingsData = settings;
             this.inventory = inventory;
+            Init();
+        }
+
+        private void Init()
+        {
+            if(tabMenu == null)
+            {
+                tabMenu = GameObject.Find("TabMenu");
+                tabMenu?.SetActive(false);
+            }
         }
 
         public void Handle()
         {
             HandleItemPickup();
+            HandleTabButton();
         }
 
 
         private void HandleItemPickup()
         {
-            var itemPickup = settings.itemPickup;
+            var settings = settingsData.itemPickup;
 
-            if (itemPickup.timer > 0f)
+            if (settings.timer > 0f)
             {
-                itemPickup.timer -= Time.deltaTime;
-                Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * itemPickup.distance, Color.blue);
+                settings.timer -= Time.deltaTime;
+                Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * settings.distance, Color.blue);
             }
             else
             {
-                if (inputManager.Interact && itemPickup.canPickup)
+                if (inputManager.Interact && settings.canPickup)
                 {
                     RaycastHit hit;
 
-                    if(Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, itemPickup.distance, itemPickup.itemLayer.value))
+                    if(Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, settings.distance, settings.itemLayer.value))
                     {
                         InteractiveItem iItem = hit.transform.GetComponent<InteractiveItem>();
 
@@ -50,22 +62,46 @@ namespace Game.Player.Controller
                         {
                             Item item = iItem.itemData.item;
                             Debug.Log($"id: {item.id}, name:{item.name}");
-                            if (iItem.Pickup(inventory.inventoryContainer))
+                            if (iItem.Pickup(inventory))
                             {
-                                itemPickup.timer = itemPickup.interval;
-                                Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * itemPickup.distance, Color.green);
+                                settings.timer = settings.interval;
+                                Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * settings.distance, Color.green);
                             }
                             else
                             {
-                                itemPickup.timer = itemPickup.interval/10;
-                                Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * itemPickup.distance, Color.cyan);
+                                settings.timer = settings.interval/10;
+                                Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * settings.distance, Color.cyan);
                             }
                         }
                     }
                     else
                     {
-                        Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * itemPickup.distance, Color.red);
+                        Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * settings.distance, Color.red);
                     }
+                }
+            }
+        }
+
+        private void HandleTabButton()
+        {
+            var settings = settingsData.tabMenu;
+            if (settings.timer > 0)
+            {
+                settings.timer -= Time.deltaTime;
+            }
+            else
+            {
+                if (tabMenu != null)
+                {
+                    if (inputManager.Tab && settings.canOpen)
+                    {
+                        tabMenu.SetActive(!tabMenu.activeInHierarchy);
+                        settings.timer = settings.interval;
+                    }
+                }
+                else
+                {
+                    tabMenu = GameObject.Find("TabMenu");
                 }
             }
         }

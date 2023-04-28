@@ -33,22 +33,28 @@ namespace Game.Player.Inventory
 
         public int PreCheckAdd(int amount = 0)
         {
-            return Mathf.Max(0, slotItem.item.maxStackAmount - (itemQuantity + amount));
+            int newQuantity = (itemQuantity + amount);
+            if(newQuantity <= slotItem.item.maxStackAmount)
+            {
+                return amount;
+            }
+            else
+            {
+                return amount - (newQuantity - slotItem.item.maxStackAmount);
+            }
         }
 
-        public int AddQuantity(int add)
+        public void AddQuantity(int add)
         {
             int newQuantity = itemQuantity + add;
             int maxStack = slotItem.item.maxStackAmount;
             if (newQuantity <= maxStack)
             {
                 itemQuantity = newQuantity;
-                return 0;
             }
             else
             {
                 itemQuantity = maxStack;
-                return maxStack - newQuantity;
             }
         }
 

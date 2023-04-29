@@ -1,16 +1,16 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using System.Linq;
-using Game.Misc;
+using UnityEngine;
 using Game.Player;
+using Game.Player.Inventory;
 
 namespace Game.UI
 {
     public class UIManager : MonoBehaviour
     {
         public static UIManager Instance { get; private set; }
+
+        public InventorySystem inventorySystem;
 
         public int defaultGroupIndex;
         private UI_Group activeGroup;
@@ -19,8 +19,6 @@ namespace Game.UI
 
         private void Awake()
         {
-            // If there is an instance, and it's not me, delete myself.
-
             if (Instance != null && Instance != this)
             {
                 Destroy(this);
@@ -33,10 +31,36 @@ namespace Game.UI
 
         private void Start()
         {
+
             ChangeUI(defaultGroupIndex);
+            SetContainers(-1);
         }
 
-        public void ChangeUI(int groupIndex)
+
+        public void SetContainers(int chestIndex)
+        {
+            if(inventorySystem != null)
+            {
+                if (activeGroup.inventoryGroup.activeToolbar != null)
+                {
+                    activeGroup.inventoryGroup.activeToolbar.SetNewContainer(inventorySystem.ToolBarContainer);
+                }
+
+                if (activeGroup.inventoryGroup.activeBackpack != null)
+                {
+                    activeGroup.inventoryGroup.activeBackpack.SetNewContainer(inventorySystem.BackpackContainer);
+                }
+
+                if (activeGroup.inventoryGroup.activeChest != null)
+                {
+                    activeGroup.inventoryGroup.activeChest.SetNewContainer(inventorySystem.GetChestContainer(chestIndex));
+                }
+            }
+            UpdateSlots();
+        }
+
+
+        public void ChangeUI(int groupIndex, int chestIndex = -1)
         {
             groupIndex = groupIndex > uiGroups.Length ? uiGroups.Length - 1 : groupIndex;
 
@@ -51,9 +75,11 @@ namespace Game.UI
 
                 activeGroup?.visible.ForEach(go => go.SetActive(true));
                 activeGroup?.disabled.ForEach(go => go.SetActive(false));
+                SetContainers(chestIndex);
+
                 //TODO:
-                    //Set inventoryGroup data
-                    //Refresh inventory slots!
+                //Set inventoryGroup data
+                //Refresh inventory slots!
             }
             else
             {
@@ -64,13 +90,58 @@ namespace Game.UI
             }
         }
 
+        public void UpdateSlots()
+        {
+
+            if (activeGroup.inventoryGroup.activeToolbar != null)
+            {
+                activeGroup.inventoryGroup.activeToolbar.UpdateSlots();
+            }
+
+            if (activeGroup.inventoryGroup.activeBackpack != null)
+            {
+                activeGroup.inventoryGroup.activeBackpack.UpdateSlots();
+            }
+
+            if (activeGroup.inventoryGroup.activeChest != null)
+            {
+                activeGroup.inventoryGroup.activeChest.UpdateSlots();
+            }
+        }
+        /***
+         *  Three UI Menus with different inventory UI bars
+         *  
+         *  Ingame
+         *      toolbar
+         *      
+         *  TabMenu
+         *      toolbar
+         *      backpack
+         *      
+         *  ChestMenu
+         *      toolbar
+         *      backpack
+         *      chest
+         * 
+         * 
+         *  toolbar is always PlayerInventory.primaryContainer
+         *  backpack is always PlayerInventory.backpackContainer
+         * 
+         * 
+         *  chest always different InventorySystem.primaryContainer that needs to set up.
+         * 
+         *  So we need to pair up each active UI_InventorySystemHandler with selectedContainer.
+         *  
+         * 
+         * 
+         * 
+         */
+
         public void ChangeUI(string name) 
         {
             UI_Group group = uiGroups.First(x => x.Equals(name));
             ChangeUI(0); //Redo this to get group index
         }
-
-
 
         [System.Serializable]
         public class UI_Group
@@ -97,7 +168,7 @@ namespace Game.UI
         [System.Serializable]
         public class UI_InventoryGroup
         {
-            public UI_InventorySystemHandler activeToolBar;
+            public UI_InventorySystemHandler activeToolbar;
             public UI_InventorySystemHandler activeBackpack;
             public UI_InventorySystemHandler activeChest;
         }

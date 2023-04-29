@@ -9,19 +9,34 @@ namespace Game.UI
 {
     public class UI_InventorySlotHandler : MonoBehaviour
     {
-
+        private Sprite defaultSprite;
         [SerializeField] Image icon;
         [SerializeField] TextMeshProUGUI tmpText;
 
-        public void Start()
+        private void Awake()
+        {
+            defaultSprite = icon.sprite;
+        }
+
+        private void Start()
         {
             UpdateText(0);
         }
 
         public void UpdateData(InventorySlot inventorySlot)
         {
-            UpdateIcon(inventorySlot.slotItem.item.icon);
-            UpdateText(inventorySlot.itemQuantity);
+            if(inventorySlot != null)
+            {
+                if(inventorySlot.slotItem != null)
+                    UpdateIcon(inventorySlot.slotItem.item.icon);
+
+                UpdateText(inventorySlot.itemQuantity);
+            }
+            else
+            {
+                UpdateIcon(defaultSprite);
+                UpdateText(0);
+            }
         }
 
         public void UpdateIcon(Sprite newSprite)

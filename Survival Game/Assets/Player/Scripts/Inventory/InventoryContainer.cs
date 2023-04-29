@@ -10,25 +10,20 @@ namespace Game.Player.Inventory
     [System.Serializable]
     public class InventoryContainer
     {
-
-        public bool dropOverQuantityItems = true;
-        [SerializeField, ReadOnly] private uint inventorySize;
+        public bool dropOverQuantityItems = true; //TODO
         [SerializeField] private InventorySlot[] slots;
-        private UI_InventorySystemHandler UIinventoryHandler;
 
         public InventorySlot[] GetSlots() => slots;
 
-        public InventoryContainer(uint size, UI_InventorySystemHandler UIinventoryHandler)
+        public InventoryContainer(uint size)
         {
-            inventorySize = size;
-            InitializeSlots();
-            this.UIinventoryHandler = UIinventoryHandler;
+            InitializeSlots(size);
         }
 
-        private void InitializeSlots()
+        private void InitializeSlots(uint size)
         {
 
-            slots = new InventorySlot[inventorySize];
+            slots = new InventorySlot[size];
             for (int i = 0; i < slots.Length; i++)
             {
                 slots[i] = new InventorySlot();
@@ -73,7 +68,7 @@ namespace Game.Player.Inventory
                     for (int i = 0; i < addAmount.Length; i++)
                     {
                         slots[i].AddQuantity(addAmount[i]);
-                        UIinventoryHandler.UpdateSlot(slots[i], i);
+                        UIManager.Instance.UpdateSlots(); 
                     }
 
                     for (int i = 0; i < emptySlotIndexs.Length; i++)
@@ -84,7 +79,7 @@ namespace Game.Player.Inventory
                         int newSlotQuantity = Mathf.Min(quantity, itemData.item.maxStackAmount);
                         slots[emptySlotIndexs[i]].SetItem(itemData, newSlotQuantity);
                         quantity -= newSlotQuantity;
-                        UIinventoryHandler.UpdateSlot(slots[emptySlotIndexs[i]], emptySlotIndexs[i]);
+                        UIManager.Instance.UpdateSlots();
                     }
                     return true;
                 }
@@ -101,7 +96,7 @@ namespace Game.Player.Inventory
                 for (int i = 0; i < addAmount.Length; i++)
                 {
                     slots[i].AddQuantity(addAmount[i]);
-                    UIinventoryHandler.UpdateSlot(slots[i], i);
+                    UIManager.Instance.UpdateSlots();
                 }
                 return true;
             }

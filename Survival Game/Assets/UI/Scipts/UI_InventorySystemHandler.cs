@@ -9,24 +9,50 @@ namespace Game.UI
     public class UI_InventorySystemHandler : MonoBehaviour
     {
         public GameObject UI_slotsPrefab;
-        public InventorySystem inventorySystem;
-        public InventoryContainer inventoryContainer;
+        [SerializeField] private InventoryContainer inventoryContainer;
+        private Dictionary<UI_InventorySlotHandler, InventorySlot> uiSlots;
 
-        private Dictionary<UI_InventorySlotHandler, InventorySlot> slots;
-
-        private void Awake()
-        {
-            Init();
-        }
-
-        private void Init()
+        public void SetNewContainer(InventoryContainer newContainer)
         {
             foreach (Transform child in transform)
             {
                 GameObject.Destroy(child.gameObject);
             }
 
-            inventorySystem.InitUIContainerData();
+            uiSlots = new Dictionary<UI_InventorySlotHandler, InventorySlot>();
+
+            var containerSlots = inventoryContainer.GetSlots();
+
+            Debug.Log($"length {containerSlots.Length} / {inventoryContainer.GetSlots().Length} ");
+
+            for(int i = 0; i < containerSlots.Length; i++)
+            {
+                GameObject go = Instantiate(UI_slotsPrefab, transform);
+                Debug.Log($"i: {i} go: {go.name}, cSlot: {containerSlots[i]}");
+                uiSlots.Add(go.GetComponent<UI_InventorySlotHandler>(), containerSlots[i]);
+            }
+        }
+
+        public void UpdateSlots()
+        {
+            foreach (var slot in uiSlots)
+            {
+                if (slot.Value != null)
+                {
+                    slot.Key.UpdateData(slot.Value);
+                }
+            }
+        }
+
+        /*
+        public void Init()
+        {
+            foreach (Transform child in transform)
+            {
+                GameObject.Destroy(child.gameObject);
+            }
+
+            //inventorySystem.InitUIContainerData();
 
             slots = new Dictionary<UI_InventorySlotHandler, InventorySlot>();
 
@@ -49,6 +75,17 @@ namespace Game.UI
             }
         }
 
+        public void UpdateSlots()
+        {
+            foreach(var slot in slots)
+            {
+                if(slot.Value != null)
+                {
+                    slot.Key.UpdateData(slot.Value);
+                }
+            }
+        }
+
         public void UpdateSlot(InventorySlot slot)
         {
             Debug.Log(slots.Count);
@@ -61,6 +98,6 @@ namespace Game.UI
             {
                 uiSlot.UpdateData(slot);
             }
-        }
+        }*/
     }
 }

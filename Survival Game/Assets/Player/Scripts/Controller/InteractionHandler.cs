@@ -13,13 +13,11 @@ namespace Game.Player.Controller
     {
         private InputManager inputManager;
         private InteractionSettingsScriptableObject settingsData;
-        private InventorySystem inventory;
 
-        public InteractionHandler(InputManager inputManager, InteractionSettingsScriptableObject settings, InventorySystem inventory)
+        public InteractionHandler(InputManager inputManager, InteractionSettingsScriptableObject settings)
         {
             this.inputManager = inputManager;
             this.settingsData = settings;
-            this.inventory = inventory;
         }
 
         public void Handle()
@@ -52,7 +50,7 @@ namespace Game.Player.Controller
                         {
                             Item item = iItem.itemData.item;
                             Debug.Log($"id: {item.id}, name:{item.name}");
-                            if (iItem.Pickup(inventory))
+                            if (iItem.Pickup())
                             {
                                 settings.timer = settings.interval;
                                 Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * settings.distance, Color.green);

@@ -11,16 +11,22 @@ namespace Game.Player.Items
         public ItemScriptableObject itemData;
         public int quantity = 1;
 
-        public GameObject quantityTextOverlay;
+        public GameObject quantityCanvas;
         public TextMeshProUGUI quantityText;
 
-        public bool Pickup(InventorySystem inventory)
+        private void Update()
+        {
+            UpdateQuantityText();
+            quantityCanvas.transform.LookAt(transform.position + Camera.main.transform.rotation * Vector3.forward, Camera.main.transform.rotation * Vector3.up);
+        }
+
+        public bool Pickup()
         {
             if (itemData != null)
             {
                 if (itemData.canInteract)
                 {
-                    if(inventory.AddItem(this, quantity))
+                    if(InventorySystem.Instance.AddItem(this, quantity))
                     {
                         //Play sound
                         //Special "smoke style" particles around object that was pickedup.
@@ -57,14 +63,17 @@ namespace Game.Player.Items
 
         private void UpdateQuantityText()
         {
-            if(quantity > 1)
+            if (quantityCanvas == null || quantityText == null)
+                return;
+
+            if (quantity > 0)
             {
-                quantityTextOverlay.SetActive(true);
+                quantityCanvas.SetActive(true);
                 quantityText.text = quantity.ToString();
             }
             else
             {
-                quantityTextOverlay.SetActive(false);
+                quantityCanvas.SetActive(false);
                 quantityText.text = "";
             }
         }

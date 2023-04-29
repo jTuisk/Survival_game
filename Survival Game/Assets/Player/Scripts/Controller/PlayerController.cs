@@ -68,13 +68,12 @@ namespace Game.Player.Controller
 
         private InteractionHandler interactionHandler;
         public InteractionSettingsScriptableObject interactionData;
-        public InventorySystem inventory; 
 
         private void Awake()
         {
             HideCursor.ShowCurors(false, true);
             _inputManager = GetComponent<InputManager>();
-            interactionHandler = new InteractionHandler(_inputManager, interactionData, inventory);
+            interactionHandler = new InteractionHandler(_inputManager, interactionData);
             InitializeRigidbody();
             InitializeAnimator();
         }

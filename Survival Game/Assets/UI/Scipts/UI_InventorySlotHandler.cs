@@ -18,11 +18,6 @@ namespace Game.UI
             defaultSprite = icon.sprite;
         }
 
-        private void Start()
-        {
-            UpdateText(0);
-        }
-
         public void UpdateData(InventorySlot inventorySlot)
         {
             if(inventorySlot != null)
@@ -39,12 +34,12 @@ namespace Game.UI
             }
         }
 
-        public void UpdateIcon(Sprite newSprite)
+        private void UpdateIcon(Sprite newSprite)
         {
             icon.sprite = newSprite;
         }
 
-        public void UpdateText(int quantity)
+        private void UpdateText(int quantity)
         {
             if(quantity > 1)
             {

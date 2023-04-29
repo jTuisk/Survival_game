@@ -18,17 +18,14 @@ namespace Game.UI
             {
                 GameObject.Destroy(child.gameObject);
             }
-
+            inventoryContainer = newContainer;
             uiSlots = new Dictionary<UI_InventorySlotHandler, InventorySlot>();
 
             var containerSlots = inventoryContainer.GetSlots();
 
-            Debug.Log($"length {containerSlots.Length} / {inventoryContainer.GetSlots().Length} ");
-
             for(int i = 0; i < containerSlots.Length; i++)
             {
                 GameObject go = Instantiate(UI_slotsPrefab, transform);
-                Debug.Log($"i: {i} go: {go.name}, cSlot: {containerSlots[i]}");
                 uiSlots.Add(go.GetComponent<UI_InventorySlotHandler>(), containerSlots[i]);
             }
         }

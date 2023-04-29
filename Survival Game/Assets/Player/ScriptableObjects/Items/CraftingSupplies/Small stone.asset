@@ -13,13 +13,13 @@ MonoBehaviour:
   m_Name: Small stone
   m_EditorClassIdentifier: 
   itemType: 0
-  item:
-    canInteract: 1
+  canInteract: 1
+  itemData:
     prefab: {fileID: 8274992492237006316, guid: 1066e78c2cc660c43a838d7fe1cd38ca, type: 3}
     icon: {fileID: 21300000, guid: dd84d2534e560f6408bed25058939e5c, type: 3}
-    id: 5001
-    name: Small stone
+    id: 1004
+    name: Small stones
     description: N/A
-    weight: 1
-    value: 0.01
-    maxStackAmount: 20
+    weight: 0
+    value: 0
+    maxStackAmount: 1

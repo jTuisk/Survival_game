@@ -13,13 +13,13 @@ MonoBehaviour:
   m_Name: Log
   m_EditorClassIdentifier: 
   itemType: 0
-  item:
-    canInteract: 1
+  canInteract: 1
+  itemData:
     prefab: {fileID: 4773331027673144575, guid: 8db9c10da91a9944fbb42c406cae7034, type: 3}
     icon: {fileID: 21300000, guid: 722f5961c03a50d4aad3d43d0781e082, type: 3}
-    id: 5002
+    id: 1002
     name: Log
     description: N/A
-    weight: 12
-    value: 1.5
-    maxStackAmount: 4
+    weight: 0
+    value: 0
+    maxStackAmount: 1

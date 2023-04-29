@@ -13,13 +13,13 @@ MonoBehaviour:
   m_Name: Campfire
   m_EditorClassIdentifier: 
   itemType: 0
-  item:
-    canInteract: 1
+  canInteract: 1
+  itemData:
     prefab: {fileID: 6049989598073441416, guid: 72fd41512519c36478dd4fc6694d2f71, type: 3}
-    icon: {fileID: 21300000, guid: ca5fc56cd87a4274faeab9710c5d71a5, type: 3}
-    id: 1000
+    icon: {fileID: 21300000, guid: ab26cbc82a51f8a4abac07fcb38b2a50, type: 3}
+    id: 1
     name: Campfire
     description: N/A
-    weight: 3
-    value: 1
+    weight: 0
+    value: 0
     maxStackAmount: 1

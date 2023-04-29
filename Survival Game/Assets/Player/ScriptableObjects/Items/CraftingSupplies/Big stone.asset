@@ -13,13 +13,13 @@ MonoBehaviour:
   m_Name: Big stone
   m_EditorClassIdentifier: 
   itemType: 0
-  item:
-    canInteract: 1
+  canInteract: 1
+  itemData:
     prefab: {fileID: 7656670199768724534, guid: 45e1de483bbe81d4e91dfae93c0011a5, type: 3}
     icon: {fileID: 21300000, guid: 6736dee3e082d2b448e0cc0f3e87a037, type: 3}
-    id: 5000
+    id: 1001
     name: Big stone
     description: N/A
-    weight: 10
-    value: 0.5
-    maxStackAmount: 5
+    weight: 0
+    value: 0
+    maxStackAmount: 1

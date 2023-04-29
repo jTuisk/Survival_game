@@ -13,13 +13,13 @@ MonoBehaviour:
   m_Name: Plank
   m_EditorClassIdentifier: 
   itemType: 0
-  item:
-    canInteract: 1
+  canInteract: 1
+  itemData:
     prefab: {fileID: 8609770103480640018, guid: d0f51b90438cb654a827c75cde70a1b5, type: 3}
     icon: {fileID: 21300000, guid: 63af95cf7bff89c408a4b72b9700ba65, type: 3}
-    id: 5003
+    id: 1003
     name: Plank
     description: N/A
-    weight: 2
-    value: 2
-    maxStackAmount: 20
+    weight: 0
+    value: 0
+    maxStackAmount: 1

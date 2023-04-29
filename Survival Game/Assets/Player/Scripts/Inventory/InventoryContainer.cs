@@ -43,6 +43,45 @@ namespace Game.Player.Inventory
             slots[GetSlotIndex(slot)].SetItem(item, quantity);
         }
 
+        public bool AddItem(InteractiveItem item, ref int quantity)
+        {
+            ItemScriptableObject itemData = item.itemData;
+            int startQuantity = quantity;
+
+            int[] slotsIndexs = GetItemSlotIndexs(itemData).ToArray();
+
+            //Add item to slot where the same item already exists
+            for (int i = 0; i < slotsIndexs.Length; i++) 
+            {
+                if (quantity <= 0)
+                    return true;
+
+                slots[slotsIndexs[i]].AddQuantity(ref quantity);
+            }
+
+            //Add item to new empty slot
+            if (quantity > 0)
+            {
+                int[] emptySlotIndexs = GetEmptySlotIndexs();
+
+                for (int i = 0; i < emptySlotIndexs.Length; i++)
+                {
+                    if (quantity <= 0)
+                        return true;
+
+                    slots[emptySlotIndexs[i]].SetItem(itemData);
+                    slots[emptySlotIndexs[i]].AddQuantity(ref quantity);
+                }
+            }
+            else
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        /*
         public bool AddItem(InteractiveItem item, int quantity = 1)
         {
             ItemScriptableObject itemData = item.itemData;
@@ -61,7 +100,7 @@ namespace Game.Player.Inventory
             {
                 int[] emptySlotIndexs = GetEmptySlotIndexs();
 
-                bool enoughRoom = (emptySlotIndexs.Length * itemData.item.maxStackAmount) >= quantity;
+                bool enoughRoom = (emptySlotIndexs.Length * itemData.itemData.maxStackAmount) >= quantity;
 
                 if (enoughRoom)
                 {
@@ -76,7 +115,7 @@ namespace Game.Player.Inventory
                         if (quantity <= 0)
                             break;
 
-                        int newSlotQuantity = Mathf.Min(quantity, itemData.item.maxStackAmount);
+                        int newSlotQuantity = Mathf.Min(quantity, itemData.itemData.maxStackAmount);
                         slots[emptySlotIndexs[i]].SetItem(itemData, newSlotQuantity);
                         quantity -= newSlotQuantity;
                         UIManager.Instance.UpdateSlots();
@@ -87,7 +126,7 @@ namespace Game.Player.Inventory
                 {
                     //Display not enough room warning
                     //play sounds?
-                    Debug.Log($"Not enought room to pickup {startQuantity} * {itemData.item.name}");
+                    Debug.Log($"Not enought room to pickup {startQuantity} * {itemData.itemData.name}");
                     return false;
                 }
             }
@@ -102,7 +141,7 @@ namespace Game.Player.Inventory
             }
             return false;
         }
-
+    */
         #endregion
 
 

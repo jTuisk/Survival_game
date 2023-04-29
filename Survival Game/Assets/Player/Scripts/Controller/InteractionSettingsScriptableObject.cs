@@ -14,7 +14,8 @@ namespace Game.Player.Controller
         public class ItemPickup
         {
             public bool canPickup = true;
-            public float interval = 0.5f;
+            public float cooldown = 0.5f;
+            public float failCooldown = 0.4f;
             public float timer = 0f;
             public float distance = 1f;
             public LayerMask itemLayer;

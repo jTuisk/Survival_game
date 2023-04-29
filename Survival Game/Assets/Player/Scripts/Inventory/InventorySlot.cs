@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using Game.Player.Items;
+using Game.UI;
 
 
 namespace Game.Player.Inventory
@@ -20,7 +21,7 @@ namespace Game.Player.Inventory
             this.itemQuantity = itemQuantity;
         }
 
-        public void SetItem(ItemScriptableObject item, int quantity = 1)
+        public void SetItem(ItemScriptableObject item, int quantity = 0)
         {
             slotItem = item;
             itemQuantity = quantity;
@@ -34,20 +35,20 @@ namespace Game.Player.Inventory
         public int PreCheckAdd(int amount = 0)
         {
             int newQuantity = (itemQuantity + amount);
-            if(newQuantity <= slotItem.item.maxStackAmount)
+            if(newQuantity <= slotItem.itemData.maxStackAmount)
             {
                 return amount;
             }
             else
             {
-                return amount - (newQuantity - slotItem.item.maxStackAmount);
+                return amount - (newQuantity - slotItem.itemData.maxStackAmount);
             }
         }
 
         public void AddQuantity(int add)
         {
             int newQuantity = itemQuantity + add;
-            int maxStack = slotItem.item.maxStackAmount;
+            int maxStack = slotItem.itemData.maxStackAmount;
             if (newQuantity <= maxStack)
             {
                 itemQuantity = newQuantity;
@@ -56,6 +57,18 @@ namespace Game.Player.Inventory
             {
                 itemQuantity = maxStack;
             }
+        }
+
+        public void AddQuantity(ref int amount)
+        {
+            int quantityLeft = slotItem.itemData.maxStackAmount - itemQuantity;
+            int addAmount = Mathf.Min(quantityLeft, amount);
+            addAmount = Mathf.Max(addAmount, 0);
+            Debug.Log($"IS-AQ: amount: {amount}, qL: {quantityLeft}, {Mathf.Min(quantityLeft, amount)} / {addAmount}");
+            //IS-AQ: qL: 0, 0 / 0
+            itemQuantity += addAmount;
+            amount -= addAmount;
+            UIManager.Instance.UpdateSlots();
         }
 
         public int PreCheckRemove(int amount)

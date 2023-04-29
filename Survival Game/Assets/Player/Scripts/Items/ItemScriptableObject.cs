@@ -11,6 +11,6 @@ namespace Game.Player.Items
         public ItemType itemType = ItemType.Other;
 
         public bool canInteract = true;
-        public Item item;
+        public Item itemData;
     }
 }

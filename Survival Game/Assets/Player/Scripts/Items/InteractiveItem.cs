@@ -26,17 +26,29 @@ namespace Game.Player.Items
             {
                 if (itemData.canInteract)
                 {
-                    if(InventorySystem.Instance.AddItem(this, quantity))
+                    /*if(InventorySystem.Instance.AddItem(this, ref quantity))
                     {
+                        Debug.Log($"II - quantity: {quantity}");
+                        UpdateQuantityText();
                         //Play sound
                         //Special "smoke style" particles around object that was pickedup.
-                        Destroy(gameObject);
+                        if (quantity < 1)
+                        {
+                            Destroy(gameObject);
+                        }
                         return true;
+                    }*/
+                    InventorySystem.Instance.AddItem(this, ref quantity);
+                    UpdateQuantityText();
+                    if (quantity < 1)
+                    {
+                        Destroy(gameObject);
                     }
+                    return true;
                 }
                 else
                 {
-                    Debug.Log($"Item: {itemData.item.id} - {itemData.item.name}, interaction is disabled!");
+                    Debug.Log($"Item: {itemData.itemData.id} - {itemData.itemData.name}, interaction is disabled!");
                 }
             }
             else

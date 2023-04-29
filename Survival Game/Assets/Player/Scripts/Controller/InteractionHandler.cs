@@ -48,16 +48,16 @@ namespace Game.Player.Controller
 
                         if(iItem != null)
                         {
-                            Item item = iItem.itemData.item;
+                            Item item = iItem.itemData.itemData;
                             Debug.Log($"id: {item.id}, name:{item.name}");
                             if (iItem.Pickup())
                             {
-                                settings.timer = settings.interval;
+                                settings.timer = settings.cooldown;
                                 Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * settings.distance, Color.green);
                             }
                             else
                             {
-                                settings.timer = settings.interval/10;
+                                settings.timer = settings.failCooldown;
                                 Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * settings.distance, Color.cyan);
                             }
                         }

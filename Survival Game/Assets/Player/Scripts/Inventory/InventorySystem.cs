@@ -20,7 +20,7 @@ namespace Game.Player.Inventory
         public InventoryContainer ToolBarContainer => toolbarContainer;
         public InventoryContainer BackpackContainer => backpackContainer;
 
-        public virtual void Awake()
+        public void Awake()
         {
             if (Instance != null && Instance != this)
             {
@@ -36,14 +36,12 @@ namespace Game.Player.Inventory
             chestContainers = new List<InventoryContainer>();
         }
 
-        public virtual bool AddItem(InteractiveItem item, int quantity = 1)
+        public void AddItem(InteractiveItem item, ref int quantity)
         {
-            if(!toolbarContainer.AddItem(item, quantity))
+            if(!toolbarContainer.AddItem(item, ref quantity)) //this ref doesn't update quantity value..
             {
-                return backpackContainer.AddItem(item, quantity);
+                backpackContainer.AddItem(item, ref quantity);
             }
-
-            return true;
         }
 
         public InventoryContainer GetChestContainer(int index)
@@ -57,9 +55,9 @@ namespace Game.Player.Inventory
             return chestContainers[chestContainers.Count-1];
         }
 
-        public bool AddItemToChest(int chestIndex, InteractiveItem item, int quantity = 1)
+        public bool AddItemToChest(int chestIndex, InteractiveItem item, ref int quantity)
         {
-            return chestContainers[chestIndex].AddItem(item, quantity);
+            return chestContainers[chestIndex].AddItem(item, ref quantity);
         }
     }
 }

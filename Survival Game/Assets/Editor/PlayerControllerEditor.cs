@@ -10,7 +10,6 @@ public class PlayerControllerEditor : Editor
 {
     SerializedProperty player;
     SerializedProperty interactionData;
-    SerializedProperty inventory;
 
     bool gravityDataGroup;
     SerializedProperty[] gravityData;
@@ -44,7 +43,6 @@ public class PlayerControllerEditor : Editor
     {
         player = serializedObject.FindProperty("player");
         interactionData = serializedObject.FindProperty("interactionData");
-        inventory = serializedObject.FindProperty("inventory");
 
         gravityData = new SerializedProperty[gravityPropertyNames.Length];
         InitializePropertys(gravityData, gravityPropertyNames);
@@ -69,7 +67,6 @@ public class PlayerControllerEditor : Editor
     {
         EditorGUILayout.PropertyField(player);
         EditorGUILayout.PropertyField(interactionData);
-        EditorGUILayout.PropertyField(inventory);
 
 
         gravityDataGroup = EditorGUILayout.BeginFoldoutHeaderGroup(gravityDataGroup, "Gravity settings");

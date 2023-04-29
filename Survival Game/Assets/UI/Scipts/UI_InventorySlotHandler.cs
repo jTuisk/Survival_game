@@ -23,7 +23,7 @@ namespace Game.UI
             if(inventorySlot != null)
             {
                 if(inventorySlot.slotItem != null)
-                    UpdateIcon(inventorySlot.slotItem.item.icon);
+                    UpdateIcon(inventorySlot.slotItem.itemData.icon);
 
                 UpdateText(inventorySlot.itemQuantity);
             }

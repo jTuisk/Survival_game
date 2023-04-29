@@ -14,12 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemType: 3
   canInteract: 1
-  item:
+  itemData:
     prefab: {fileID: 6964320959356982224, guid: 78270576881717b4795f0431e50679ca, type: 3}
     icon: {fileID: 21300000, guid: 2655095363062d3478256d38cee431c9, type: 3}
-    id: 7001
+    id: 3000
     name: Chicken wing
     description: N/A
-    weight: 0.5
-    value: 8
-    maxStackAmount: 10
+    weight: 1
+    value: 0
+    maxStackAmount: 7

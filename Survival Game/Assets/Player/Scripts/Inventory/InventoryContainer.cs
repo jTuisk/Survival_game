@@ -87,33 +87,6 @@ namespace Game.Player.Inventory
             RemoveItem(GetSlotIndex(slot));
         }
 
-        public void RemoveItem(ItemScriptableObject item)
-        {
-            RemoveItem(GetItemSlotIndex(item));
-        }
-
-        public bool RemoveItem(ItemScriptableObject item, int amount)
-        {
-
-            int[] itemIndexs = GetItemSlotIndexs(item).ToArray();
-            int[] removeAmount = new int[itemIndexs.Length];
-
-            for(int i = 0; i < itemIndexs.Length; i++)
-            {
-                removeAmount[i] = slots[itemIndexs[i]].PreCheckRemove(amount);
-                amount -= removeAmount[i];
-            }
-
-            if(amount == 0)
-            {
-                for (int i = 0; i < removeAmount.Length; i++)
-                {
-                    slots[i].RemoveItem(removeAmount[i]);
-                }
-                return true;
-            }
-            return false;
-        }
         #endregion
 
 
@@ -147,7 +120,7 @@ namespace Game.Player.Inventory
         {
             for (int i = 0; i < slots.Length; i++)
             {
-                if (slots[i].slotItem.Equals(item))
+                if (slots[i].item.Equals(item))
                 {
                     return i;
                 }
@@ -161,7 +134,7 @@ namespace Game.Player.Inventory
 
             for (int i = 0; i < slots.Length; i++)
             {
-                if (slots[i].slotItem != null && slots[i].slotItem.Equals(item))
+                if (slots[i].item != null && slots[i].item.Equals(item))
                 {
                     itemIndexs.Add(i);
                 }
@@ -173,7 +146,7 @@ namespace Game.Player.Inventory
         {
             for (int i = 0; i < slots.Length; i++)
             {
-                if (slots[i].slotItem == null)
+                if (slots[i].item == null)
                     return i;
             }
             return -1;
@@ -183,7 +156,7 @@ namespace Game.Player.Inventory
             List<int> indexs = new List<int>();
             for (int i = 0; i < slots.Length; i++)
             {
-                if (slots[i].slotItem == null)
+                if (slots[i].item == null)
                     indexs.Add(i);
             }
 

@@ -12,9 +12,10 @@ namespace Game.Player.Controller
 {
     public class PlayerController : MonoBehaviour
     {
+        public static PlayerController Instance;
+
         private InputManager _inputManager;
         private Rigidbody _rb;
-
 
         [SerializeField] Transform player;
         [SerializeField] bool randomLocationAtStart = true;
@@ -71,7 +72,15 @@ namespace Game.Player.Controller
 
         private void Awake()
         {
-            HideCursor.ShowCurors(false, true);
+            if (Instance != null && Instance != this)
+            {
+                Destroy(this);
+            }
+            else
+            {
+                Instance = this;
+            }
+
             _inputManager = GetComponent<InputManager>();
             interactionHandler = new InteractionHandler(_inputManager, interactionData);
             InitializeRigidbody();
@@ -113,6 +122,21 @@ namespace Game.Player.Controller
         private void FixedUpdate()
         {
             HandleMovement();
+        }
+
+        public Vector3 GetPlayerLocation()
+        {
+            return player.transform.position;
+        }
+
+        public Vector3 GetPlayerFoward()
+        {
+            return player.transform.forward;
+        }
+
+        public bool ShiftIsPressed()
+        {
+            return _inputManager.Shift;
         }
 
         private void HandleMovement()

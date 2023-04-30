@@ -1,9 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
 using Game.Player.Items;
+using Game.Player.Controller;
 using Game.UI;
 
 
@@ -12,83 +9,71 @@ namespace Game.Player.Inventory
     [System.Serializable]
     public class InventorySlot
     {
-        public ItemScriptableObject slotItem;
+        public ItemScriptableObject item;
         public int itemQuantity;
 
         public InventorySlot(ItemScriptableObject slotItem = null, int itemQuantity = -1)
         {
-            this.slotItem = slotItem;
+            this.item = slotItem;
             this.itemQuantity = itemQuantity;
         }
 
         public void SetItem(ItemScriptableObject item, int quantity = 0)
         {
-            slotItem = item;
+            this.item = item;
             itemQuantity = quantity;
+            UIManager.Instance?.UpdateSlots();
+        }
+
+        public void SetQuantity(int newQuantity)
+        {
+            itemQuantity = newQuantity;
+            if(itemQuantity < 1)
+            {
+                item = null;
+            }
+            UIManager.Instance?.UpdateSlots();
         }
 
         public void ClearSlot()
         {
             SetItem(null, -1);
-        }
-
-        public int PreCheckAdd(int amount = 0)
-        {
-            int newQuantity = (itemQuantity + amount);
-            if(newQuantity <= slotItem.itemData.maxStackAmount)
-            {
-                return amount;
-            }
-            else
-            {
-                return amount - (newQuantity - slotItem.itemData.maxStackAmount);
-            }
-        }
-
-        public void AddQuantity(int add)
-        {
-            int newQuantity = itemQuantity + add;
-            int maxStack = slotItem.itemData.maxStackAmount;
-            if (newQuantity <= maxStack)
-            {
-                itemQuantity = newQuantity;
-            }
-            else
-            {
-                itemQuantity = maxStack;
-            }
+            UIManager.Instance?.UpdateSlots();
         }
 
         public void AddQuantity(ref int amount)
         {
-            int quantityLeft = slotItem.itemData.maxStackAmount - itemQuantity;
+            int quantityLeft = item.itemData.maxStackAmount - itemQuantity;
             int addAmount = Mathf.Min(quantityLeft, amount);
             addAmount = Mathf.Max(addAmount, 0);
-            Debug.Log($"IS-AQ: amount: {amount}, qL: {quantityLeft}, {Mathf.Min(quantityLeft, amount)} / {addAmount}");
-            //IS-AQ: qL: 0, 0 / 0
             itemQuantity += addAmount;
             amount -= addAmount;
             UIManager.Instance?.UpdateSlots();
         }
 
-        public int PreCheckRemove(int amount)
+        public void DropItemToGround(int quantity)
         {
-            int newQuantity = amount - itemQuantity;
-            return newQuantity < 0 ? newQuantity + itemQuantity : newQuantity;
-        }
-
-        public void RemoveItem(int remove)
-        {
-            int newQuantity = itemQuantity - remove;
-
-            if(newQuantity > 0)
+            if (quantity == -1)
             {
-                itemQuantity = newQuantity;
+                quantity = itemQuantity;
             }
             else
             {
+                quantity = Mathf.Min(quantity, itemQuantity);
+            }
+
+            if (quantity > 0)
+            {
+                GameObject groundItem = CreateItemGameObject();
+                groundItem.GetComponent<InteractiveItem>().quantity = itemQuantity;
+                groundItem.transform.position = PlayerController.Instance.GetPlayerLocation() + PlayerController.Instance.GetPlayerFoward()*0.5f;
                 ClearSlot();
             }
+        }
+
+        private GameObject CreateItemGameObject()
+        {
+            return GameObject.Instantiate(item.itemData.prefab, InventorySystem.Instance.planetItemsParent);
         }
     }
 }

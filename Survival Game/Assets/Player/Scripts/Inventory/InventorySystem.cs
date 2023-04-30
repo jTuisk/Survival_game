@@ -9,8 +9,9 @@ namespace Game.Player.Inventory
     [ExecuteInEditMode]
     public class InventorySystem : MonoBehaviour
     {
-        public GameObject item;
-        public int amount = 4;
+        public StartItem[] startingItems;
+
+        public Transform planetItemsParent;
 
         public static InventorySystem Instance { get; private set; }
         public uint toolbarContainerSize = 7;
@@ -39,7 +40,68 @@ namespace Game.Player.Inventory
             chestContainers = new List<InventoryContainer>();
 
             //Remove after testing
-            toolbarContainer.ForceSetItem(0, item.GetComponent<InteractiveItem>().itemData, amount);
+            AddStartingItems();
+        }
+
+        //Remove after testing
+        private void AddStartingItems()
+        {
+            for(int i = 0; i < startingItems.Length; i++)
+            {
+                toolbarContainer.ForceSetItem(i, startingItems[i].item.GetComponent<InteractiveItem>().itemData, startingItems[i].amount);
+                backpackContainer.ForceSetItem(i, startingItems[i].item.GetComponent<InteractiveItem>().itemData, startingItems[i].amount);
+            }
+        }
+
+        public void SwapItemSlots(InventorySlot from, InventorySlot to)
+        {
+            if (from == null || to == null)
+                return;
+
+            InventorySlot tempSlot = new InventorySlot(to.item, to.itemQuantity);
+            to.SetItem(from.item, from.itemQuantity);
+            from.SetItem(tempSlot.item, tempSlot.itemQuantity);
+            UIManager.Instance?.UpdateSlots();
+        }
+
+        public void SplitItemBetweenSlots(InventorySlot from, InventorySlot to)
+        {
+            if(from.item != null && to.item == null)
+            {
+                int halfQuantity = (int)Mathf.Floor(from.itemQuantity / 2);
+                Debug.Log($"half: {halfQuantity}");
+                if(halfQuantity > 0)
+                {
+                    from.SetQuantity(from.itemQuantity - halfQuantity);
+                    to.SetItem(from.item, halfQuantity);
+                }
+                else
+                {
+                    SwapItemSlots(from, to);
+                }
+            }
+        }
+
+        public void CombineItemSlots(InventorySlot from, InventorySlot to)
+        {
+            if (from != null && from.item.Equals(to.item))
+            {
+                to.AddQuantity(ref from.itemQuantity);
+                if(from.itemQuantity <= 0)
+                {
+                    from.ClearSlot();
+                }
+            }
+            else
+            {
+                SwapItemSlots(from, to);
+            }
+        }
+
+        public void DropItem(InventorySlot item, int quantity = -1)
+        {
+            //if quantity equals -1, then drop everything.
+            item.DropItemToGround(quantity);
         }
 
         public void AddItem(InteractiveItem item, ref int quantity)
@@ -64,6 +126,14 @@ namespace Game.Player.Inventory
         public bool AddItemToChest(int chestIndex, InteractiveItem item, ref int quantity)
         {
             return chestContainers[chestIndex].AddItem(item, ref quantity);
+        }
+
+        //Remove after testing
+        [System.Serializable]
+        public class StartItem
+        {
+            public GameObject item;
+            public int amount;
         }
     }
 }

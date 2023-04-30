@@ -9,9 +9,12 @@ namespace Game.UI
     {
         public static UIManager Instance { get; private set; }
 
+        public Canvas canvas;
+
         public InventorySystem inventorySystem;
 
         public int defaultGroupIndex;
+
         private UI_Group activeGroup;
         public UI_Group[] uiGroups;
         public UI_Group ActiveGroup => activeGroup;
@@ -33,7 +36,7 @@ namespace Game.UI
             ChangeUI(defaultGroupIndex);
         }
 
-        public void SetContainers(int chestIndex)
+        public void SetContainers(int chestIndex = -1)
         {
             if(inventorySystem != null)
             {

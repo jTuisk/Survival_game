@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using Game.Player;
 using Game.Player.Inventory;
@@ -31,11 +30,8 @@ namespace Game.UI
 
         private void Start()
         {
-
             ChangeUI(defaultGroupIndex);
-            SetContainers(-1);
         }
-
 
         public void SetContainers(int chestIndex)
         {
@@ -59,7 +55,6 @@ namespace Game.UI
             UpdateSlots();
         }
 
-
         public void ChangeUI(int groupIndex, int chestIndex = -1)
         {
             groupIndex = groupIndex > uiGroups.Length ? uiGroups.Length - 1 : groupIndex;
@@ -76,10 +71,6 @@ namespace Game.UI
                 activeGroup?.visible.ForEach(go => go.SetActive(true));
                 activeGroup?.disabled.ForEach(go => go.SetActive(false));
                 SetContainers(chestIndex);
-
-                //TODO:
-                //Set inventoryGroup data
-                //Refresh inventory slots!
             }
             else
             {
@@ -107,40 +98,6 @@ namespace Game.UI
             {
                 activeGroup.inventoryGroup.activeChest.UpdateSlots();
             }
-        }
-        /***
-         *  Three UI Menus with different inventory UI bars
-         *  
-         *  Ingame
-         *      toolbar
-         *      
-         *  TabMenu
-         *      toolbar
-         *      backpack
-         *      
-         *  ChestMenu
-         *      toolbar
-         *      backpack
-         *      chest
-         * 
-         * 
-         *  toolbar is always PlayerInventory.primaryContainer
-         *  backpack is always PlayerInventory.backpackContainer
-         * 
-         * 
-         *  chest always different InventorySystem.primaryContainer that needs to set up.
-         * 
-         *  So we need to pair up each active UI_InventorySystemHandler with selectedContainer.
-         *  
-         * 
-         * 
-         * 
-         */
-
-        public void ChangeUI(string name) 
-        {
-            UI_Group group = uiGroups.First(x => x.Equals(name));
-            ChangeUI(0); //Redo this to get group index
         }
 
         [System.Serializable]

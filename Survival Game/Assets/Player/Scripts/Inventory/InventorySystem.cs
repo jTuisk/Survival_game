@@ -9,6 +9,9 @@ namespace Game.Player.Inventory
     [ExecuteInEditMode]
     public class InventorySystem : MonoBehaviour
     {
+        public GameObject item;
+        public int amount = 4;
+
         public static InventorySystem Instance { get; private set; }
         public uint toolbarContainerSize = 7;
         public uint backpackContainerSize = 24;
@@ -34,11 +37,14 @@ namespace Game.Player.Inventory
             toolbarContainer = new InventoryContainer(toolbarContainerSize);
             backpackContainer = new InventoryContainer(backpackContainerSize);
             chestContainers = new List<InventoryContainer>();
+
+            //Remove after testing
+            toolbarContainer.ForceSetItem(0, item.GetComponent<InteractiveItem>().itemData, amount);
         }
 
         public void AddItem(InteractiveItem item, ref int quantity)
         {
-            if(!toolbarContainer.AddItem(item, ref quantity)) //this ref doesn't update quantity value..
+            if(!toolbarContainer.AddItem(item, ref quantity))
             {
                 backpackContainer.AddItem(item, ref quantity);
             }

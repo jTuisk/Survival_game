@@ -10,7 +10,6 @@ namespace Game.Player.Inventory
     [System.Serializable]
     public class InventoryContainer
     {
-        public bool dropOverQuantityItems = true; //TODO
         [SerializeField] private InventorySlot[] slots;
 
         public InventorySlot[] GetSlots() => slots;
@@ -32,15 +31,9 @@ namespace Game.Player.Inventory
 
         #region ADD
 
-
-        public void ForceAddItem(ItemScriptableObject item, int quantity = 1)
+        public void ForceSetItem(int slotIndex, ItemScriptableObject item, int quantity)
         {
-            slots[GetEmptySlotIndex()].SetItem(item, quantity);
-        }
-
-        public void ForceAddItem(InventorySlot slot, ItemScriptableObject item, int quantity = 1)
-        {
-            slots[GetSlotIndex(slot)].SetItem(item, quantity);
+            slots[slotIndex].SetItem(item, quantity);
         }
 
         public bool AddItem(InteractiveItem item, ref int quantity)
@@ -80,68 +73,6 @@ namespace Game.Player.Inventory
 
             return false;
         }
-
-        /*
-        public bool AddItem(InteractiveItem item, int quantity = 1)
-        {
-            ItemScriptableObject itemData = item.itemData;
-
-            int startQuantity = quantity;
-            int[] slotsIndexs = GetItemSlotIndexs(itemData).ToArray();
-            int[] addAmount = new int[slotsIndexs.Length];
-
-            for (int i = 0; i < slotsIndexs.Length; i++)
-            {
-                addAmount[i] = slots[slotsIndexs[i]].PreCheckAdd(quantity);
-                quantity -= addAmount[i];
-            }
-
-            if(quantity > 0)
-            {
-                int[] emptySlotIndexs = GetEmptySlotIndexs();
-
-                bool enoughRoom = (emptySlotIndexs.Length * itemData.itemData.maxStackAmount) >= quantity;
-
-                if (enoughRoom)
-                {
-                    for (int i = 0; i < addAmount.Length; i++)
-                    {
-                        slots[i].AddQuantity(addAmount[i]);
-                        UIManager.Instance.UpdateSlots(); 
-                    }
-
-                    for (int i = 0; i < emptySlotIndexs.Length; i++)
-                    {
-                        if (quantity <= 0)
-                            break;
-
-                        int newSlotQuantity = Mathf.Min(quantity, itemData.itemData.maxStackAmount);
-                        slots[emptySlotIndexs[i]].SetItem(itemData, newSlotQuantity);
-                        quantity -= newSlotQuantity;
-                        UIManager.Instance.UpdateSlots();
-                    }
-                    return true;
-                }
-                else
-                {
-                    //Display not enough room warning
-                    //play sounds?
-                    Debug.Log($"Not enought room to pickup {startQuantity} * {itemData.itemData.name}");
-                    return false;
-                }
-            }
-            else if(quantity == 0)
-            {
-                for (int i = 0; i < addAmount.Length; i++)
-                {
-                    slots[i].AddQuantity(addAmount[i]);
-                    UIManager.Instance.UpdateSlots();
-                }
-                return true;
-            }
-            return false;
-        }
-    */
         #endregion
 
 

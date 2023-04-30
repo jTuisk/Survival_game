@@ -68,7 +68,7 @@ namespace Game.Player.Inventory
             //IS-AQ: qL: 0, 0 / 0
             itemQuantity += addAmount;
             amount -= addAmount;
-            UIManager.Instance.UpdateSlots();
+            UIManager.Instance?.UpdateSlots();
         }
 
         public int PreCheckRemove(int amount)

@@ -26,18 +26,6 @@ namespace Game.Player.Items
             {
                 if (itemData.canInteract)
                 {
-                    /*if(InventorySystem.Instance.AddItem(this, ref quantity))
-                    {
-                        Debug.Log($"II - quantity: {quantity}");
-                        UpdateQuantityText();
-                        //Play sound
-                        //Special "smoke style" particles around object that was pickedup.
-                        if (quantity < 1)
-                        {
-                            Destroy(gameObject);
-                        }
-                        return true;
-                    }*/
                     InventorySystem.Instance.AddItem(this, ref quantity);
                     UpdateQuantityText();
                     if (quantity < 1)

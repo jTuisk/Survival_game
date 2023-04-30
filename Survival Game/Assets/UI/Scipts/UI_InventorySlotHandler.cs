@@ -13,6 +13,9 @@ namespace Game.UI
         [SerializeField] Image icon;
         [SerializeField] TextMeshProUGUI tmpText;
 
+        private Vector3 startPos;
+        private Vector3 endPos;
+
         private void Awake()
         {
             defaultSprite = icon.sprite;
@@ -50,7 +53,6 @@ namespace Game.UI
                 tmpText.text = "";
             }
         }
-
     }
 
 }

@@ -24,7 +24,7 @@ namespace Game.Player.Inventory
         public InventoryContainer ToolBarContainer => toolbarContainer;
         public InventoryContainer BackpackContainer => backpackContainer;
 
-        public void Awake()
+        private void Awake()
         {
             if (Instance != null && Instance != this)
             {

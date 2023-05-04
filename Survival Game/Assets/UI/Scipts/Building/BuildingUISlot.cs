@@ -14,7 +14,6 @@ namespace Game.UI.Building
         public Color defaultBackgroundColor;
         public Color selectedBackgroundColor;
 
-
         public GameObject buildingPart;
 
         private bool isSelected;
@@ -50,7 +49,10 @@ namespace Game.UI.Building
 
         private void CreateBuildingPart()
         {
+            GameManager.Instance.gameStatus = GameManager.GameStatus.Ingame_building;
             Debug.Log($"Building {buildingPart?.name}");
+            Instantiate(buildingPart, transform.root);
+            UIManager.Instance.ChangeUI(4);
         }
     }
 

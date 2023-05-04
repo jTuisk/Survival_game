@@ -11,13 +11,20 @@ namespace Game.Player.Items
         public ItemScriptableObject itemData;
         public int quantity = 1;
 
+        public bool displayQuantityText = true;
         public GameObject quantityCanvas;
         public TextMeshProUGUI quantityText;
 
+
         private void Update()
         {
-            UpdateQuantityText();
-            quantityCanvas.transform.LookAt(transform.position + Camera.main.transform.rotation * Vector3.forward, Camera.main.transform.rotation * Vector3.up);
+
+            quantityCanvas.SetActive(displayQuantityText);
+            if (displayQuantityText)
+            {
+                UpdateQuantityText();
+                quantityCanvas.transform.LookAt(transform.position + Camera.main.transform.rotation * Vector3.forward, Camera.main.transform.rotation * Vector3.up);
+            }
         }
 
         public bool Pickup()
@@ -65,6 +72,8 @@ namespace Game.Player.Items
         {
             if (quantityCanvas == null || quantityText == null)
                 return;
+
+            quantityCanvas.SetActive(displayQuantityText);
 
             if (quantity > 0)
             {

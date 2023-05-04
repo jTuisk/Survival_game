@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemPickup:
     canPickup: 1
-    interval: 0.8
+    cooldown: 0.5
+    failCooldown: 0.4
     timer: -0.0042444947
     distance: 1
     itemLayer:
@@ -24,3 +25,10 @@ MonoBehaviour:
     canOpen: 1
     interval: 0.2
     timer: -0.0009916327
+  building:
+    interval: 0.5
+    timer: 0
+    distance: 1
+    itemLayer:
+      serializedVersion: 2
+      m_Bits: 512

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2714597233770528687}
   - component: {fileID: 2483877904874419191}
   - component: {fileID: 2120541569906270807}
-  m_Layer: 7
+  m_Layer: 9
   m_Name: QuantityText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -147,7 +147,7 @@ GameObject:
   - component: {fileID: 2805233379571325060}
   - component: {fileID: 8121337040815201785}
   - component: {fileID: 6682635291999084687}
-  m_Layer: 7
+  m_Layer: 9
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -248,8 +248,9 @@ GameObject:
   - component: {fileID: 6726609268559396657}
   - component: {fileID: 6263297283884846476}
   - component: {fileID: -2686404130488723026}
-  - component: {fileID: 7502073194336445770}
-  m_Layer: 7
+  - component: {fileID: -4855122835677829566}
+  - component: {fileID: -715685692871497874}
+  m_Layer: 9
   m_Name: Door
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -337,19 +338,35 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemData: {fileID: 11400000, guid: 3600bbebbf9c68347ac75b620e6374c8, type: 2}
   quantity: 1
+  displayQuantityText: 0
   quantityCanvas: {fileID: 4283909171623394111}
   quantityText: {fileID: 2120541569906270807}
---- !u!64 &7502073194336445770
-MeshCollider:
+--- !u!65 &-4855122835677829566
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4406731442780069309}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 2619086233303812490, guid: 1623feaef017d5046b0d2d9401f41ca2, type: 3}
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1.9499999, z: 0.1}
+  m_Center: {x: 0, y: 0.97499996, z: -0.000000007450581}
+--- !u!114 &-715685692871497874
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4406731442780069309}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49d7ee3583e60e346a3cc0ca67afc99c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  objectIsPlaced: 0
+  toObject: {fileID: 4406731442780069309, guid: f9d15e8db05935440af12fa6ab92f2f1, type: 3}
+  errorBlueprintMaterial: {fileID: 2100000, guid: ee929f77793394c40896d08d66262261, type: 2}
+  triggeredObjects: []

@@ -8,7 +8,8 @@ namespace Game.Player.Controller
     public class InteractionSettingsScriptableObject : ScriptableObject
     {
         public ItemPickup itemPickup;
-        public TabMenu tabMenu;
+        public Interfaceses interfaceses;
+        public Building building;
 
         [System.Serializable]
         public class ItemPickup
@@ -22,11 +23,20 @@ namespace Game.Player.Controller
         }
 
         [System.Serializable]
-        public class TabMenu
+        public class Interfaceses
         {
             public bool canOpen = true;
             public float interval = 0.1f;
             public float timer = 0f;
+        }
+
+        [System.Serializable]
+        public class Building
+        {
+            public float interval = 0.5f;
+            public float timer = 0f;
+            public float distance = 1f;
+            public LayerMask itemLayer;
         }
     }
 }

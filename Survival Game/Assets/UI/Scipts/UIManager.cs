@@ -7,6 +7,7 @@ namespace Game.UI
 {
     public class UIManager : MonoBehaviour
     {
+        public bool useCustomUI = false;
         public static UIManager Instance { get; private set; }
 
         public Canvas canvas;
@@ -16,8 +17,13 @@ namespace Game.UI
         public int defaultGroupIndex;
 
         private UI_Group activeGroup;
+
+        public List<GameObject> allUIElements;
+
         public UI_Group[] uiGroups;
         public UI_Group ActiveGroup => activeGroup;
+
+        public int activeChestIndex;
 
         private void Awake()
         {
@@ -34,6 +40,11 @@ namespace Game.UI
         private void Start()
         {
             ChangeUI(defaultGroupIndex);
+        }
+
+        private void Update()
+        {
+            UpdateUIComparedToGameStatus();
         }
 
         public void SetContainers(int chestIndex = -1)
@@ -56,6 +67,41 @@ namespace Game.UI
                 }
             }
             UpdateSlots();
+        }
+
+        private void UpdateUIComparedToGameStatus()
+        {
+            if (!useCustomUI)
+            {
+                UI_Group nextGroup = activeGroup;
+                if (activeGroup.status == GameManager.Instance.gameStatus)
+                    return;
+
+                foreach (UI_Group group in uiGroups)
+                {
+                    if(group.status == GameManager.Instance.gameStatus)
+                    {
+                        ChangeUI(group);
+                    }
+                }
+            }
+        }
+
+        private void ChangeUI(UI_Group toGroup)
+        {
+            activeGroup = toGroup;
+            allUIElements.ForEach(go => go.SetActive(false));
+            activeGroup?.visible.ForEach(go => go.SetActive(true));
+
+            /*foreach (GameObject element in allUIElements)
+            {
+                element.SetActive(false);
+            }
+
+            foreach(GameObject visibleElement in toGroup.visible)
+            {
+                visibleElement.SetActive(true);
+            }*/
         }
 
         public void ChangeUI(int groupIndex, int chestIndex = -1)
@@ -106,6 +152,7 @@ namespace Game.UI
         [System.Serializable]
         public class UI_Group
         {
+            public GameManager.GameStatus status;
             public string name;
             public bool showCuror = false;
             public bool lockCursor = true;

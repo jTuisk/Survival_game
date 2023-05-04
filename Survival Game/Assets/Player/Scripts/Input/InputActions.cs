@@ -114,13 +114,49 @@ public partial class @InputActions : IInputActionCollection2, IDisposable
                     ""id"": ""16acc4a3-1bdb-4acd-b610-35f4b29f1a22"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
+                    ""interactions"": ""Press"",
+                    ""initialStateCheck"": true
                 },
                 {
                     ""name"": ""Shift"",
                     ""type"": ""Button"",
                     ""id"": ""9c1e6e5f-1a56-4412-b514-409fceb6d219"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Snap"",
+                    ""type"": ""Button"",
+                    ""id"": ""e3b673f0-df34-4db6-82ca-b642262a694c"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Esc"",
+                    ""type"": ""Button"",
+                    ""id"": ""d8f73994-015c-4780-b2ac-b9a4b06cc5e0"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Q"",
+                    ""type"": ""Button"",
+                    ""id"": ""b7613517-1ef1-492b-9534-422f491d0644"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""E"",
+                    ""type"": ""Button"",
+                    ""id"": ""77bee1a0-7400-4100-b262-245ec87c9098"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -292,6 +328,50 @@ public partial class @InputActions : IInputActionCollection2, IDisposable
                     ""action"": ""Shift"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1560dff9-69ea-49ca-908c-8cd4b27110e1"",
+                    ""path"": ""<Keyboard>/t"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Snap"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d13285cd-5050-4fb2-af47-8a3e68fc7691"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Esc"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a559e642-eece-415c-99c2-57aa2da136ac"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Q"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0b993320-c6ea-457a-87f9-69488bc8c343"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""E"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -311,6 +391,10 @@ public partial class @InputActions : IInputActionCollection2, IDisposable
         m_Player_Interact = m_Player.FindAction("Interact", throwIfNotFound: true);
         m_Player_Tab = m_Player.FindAction("Tab", throwIfNotFound: true);
         m_Player_Shift = m_Player.FindAction("Shift", throwIfNotFound: true);
+        m_Player_Snap = m_Player.FindAction("Snap", throwIfNotFound: true);
+        m_Player_Esc = m_Player.FindAction("Esc", throwIfNotFound: true);
+        m_Player_Q = m_Player.FindAction("Q", throwIfNotFound: true);
+        m_Player_E = m_Player.FindAction("E", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -381,6 +465,10 @@ public partial class @InputActions : IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Interact;
     private readonly InputAction m_Player_Tab;
     private readonly InputAction m_Player_Shift;
+    private readonly InputAction m_Player_Snap;
+    private readonly InputAction m_Player_Esc;
+    private readonly InputAction m_Player_Q;
+    private readonly InputAction m_Player_E;
     public struct PlayerActions
     {
         private @InputActions m_Wrapper;
@@ -396,6 +484,10 @@ public partial class @InputActions : IInputActionCollection2, IDisposable
         public InputAction @Interact => m_Wrapper.m_Player_Interact;
         public InputAction @Tab => m_Wrapper.m_Player_Tab;
         public InputAction @Shift => m_Wrapper.m_Player_Shift;
+        public InputAction @Snap => m_Wrapper.m_Player_Snap;
+        public InputAction @Esc => m_Wrapper.m_Player_Esc;
+        public InputAction @Q => m_Wrapper.m_Player_Q;
+        public InputAction @E => m_Wrapper.m_Player_E;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -438,6 +530,18 @@ public partial class @InputActions : IInputActionCollection2, IDisposable
                 @Shift.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnShift;
                 @Shift.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnShift;
                 @Shift.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnShift;
+                @Snap.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSnap;
+                @Snap.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSnap;
+                @Snap.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSnap;
+                @Esc.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnEsc;
+                @Esc.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnEsc;
+                @Esc.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnEsc;
+                @Q.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnQ;
+                @Q.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnQ;
+                @Q.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnQ;
+                @E.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnE;
+                @E.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnE;
+                @E.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnE;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -475,6 +579,18 @@ public partial class @InputActions : IInputActionCollection2, IDisposable
                 @Shift.started += instance.OnShift;
                 @Shift.performed += instance.OnShift;
                 @Shift.canceled += instance.OnShift;
+                @Snap.started += instance.OnSnap;
+                @Snap.performed += instance.OnSnap;
+                @Snap.canceled += instance.OnSnap;
+                @Esc.started += instance.OnEsc;
+                @Esc.performed += instance.OnEsc;
+                @Esc.canceled += instance.OnEsc;
+                @Q.started += instance.OnQ;
+                @Q.performed += instance.OnQ;
+                @Q.canceled += instance.OnQ;
+                @E.started += instance.OnE;
+                @E.performed += instance.OnE;
+                @E.canceled += instance.OnE;
             }
         }
     }
@@ -492,5 +608,9 @@ public partial class @InputActions : IInputActionCollection2, IDisposable
         void OnInteract(InputAction.CallbackContext context);
         void OnTab(InputAction.CallbackContext context);
         void OnShift(InputAction.CallbackContext context);
+        void OnSnap(InputAction.CallbackContext context);
+        void OnEsc(InputAction.CallbackContext context);
+        void OnQ(InputAction.CallbackContext context);
+        void OnE(InputAction.CallbackContext context);
     }
 }

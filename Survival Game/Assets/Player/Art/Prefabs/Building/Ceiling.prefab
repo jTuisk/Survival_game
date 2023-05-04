@@ -12,8 +12,8 @@ GameObject:
   - component: {fileID: 5929109129592830941}
   - component: {fileID: 1239680013174868305}
   - component: {fileID: 4736118201769796432}
-  - component: {fileID: -6861671541007909868}
-  m_Layer: 7
+  - component: {fileID: -8797576630418402729}
+  m_Layer: 0
   m_Name: Ceiling
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -100,10 +100,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemData: {fileID: 11400000, guid: f8b40124eff850643a450baf2efffd2b, type: 2}
   quantity: 1
+  displayQuantityText: 0
   quantityCanvas: {fileID: 6641979218142110597}
   quantityText: {fileID: 1682921341620945194}
---- !u!64 &-6861671541007909868
-MeshCollider:
+--- !u!65 &-8797576630418402729
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -112,10 +113,9 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 3633865748600368068, guid: 1623feaef017d5046b0d2d9401f41ca2, type: 3}
+  serializedVersion: 2
+  m_Size: {x: 2, y: 0.19999999, z: 2}
+  m_Center: {x: 0, y: 0.099999994, z: 0}
 --- !u!1 &1314483578837660400
 GameObject:
   m_ObjectHideFlags: 0
@@ -127,7 +127,7 @@ GameObject:
   - component: {fileID: 330539473942866793}
   - component: {fileID: 397781937881969314}
   - component: {fileID: 1682921341620945194}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: QuantityText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -263,7 +263,7 @@ GameObject:
   - component: {fileID: 187906064287758156}
   - component: {fileID: 1919956434804882498}
   - component: {fileID: 6817377606394676568}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2402442378947640733}
   - component: {fileID: 7794595673737755584}
   - component: {fileID: 2640348636193971780}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -113,8 +113,8 @@ GameObject:
   - component: {fileID: 8759864734300124452}
   - component: {fileID: 6092826252162783867}
   - component: {fileID: -3437539745963107661}
-  - component: {fileID: 364764634362572429}
-  m_Layer: 7
+  - component: {fileID: 3531998649014414075}
+  m_Layer: 0
   m_Name: Wall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -201,10 +201,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemData: {fileID: 11400000, guid: 5f6037beadad9344e932656e54cfd7dc, type: 2}
   quantity: 1
+  displayQuantityText: 0
   quantityCanvas: {fileID: 2852859019993148735}
   quantityText: {fileID: 8021496337869822737}
---- !u!64 &364764634362572429
-MeshCollider:
+--- !u!65 &3531998649014414075
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -213,10 +214,9 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 8733429697405204941, guid: 1623feaef017d5046b0d2d9401f41ca2, type: 3}
+  serializedVersion: 2
+  m_Size: {x: 2, y: 2.3, z: 0.3}
+  m_Center: {x: 0, y: 1.15, z: 0}
 --- !u!1 &6675615081051643299
 GameObject:
   m_ObjectHideFlags: 0
@@ -228,7 +228,7 @@ GameObject:
   - component: {fileID: 2074441399589793237}
   - component: {fileID: 3589870865453655252}
   - component: {fileID: 8021496337869822737}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: QuantityText
   m_TagString: Untagged
   m_Icon: {fileID: 0}

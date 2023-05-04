@@ -139,6 +139,21 @@ namespace Game.Player.Controller
             return _inputManager.Shift;
         }
 
+        public bool SnapIsPressed()
+        {
+            return _inputManager.Snap;
+        }
+
+        public bool EscIsPressed()
+        {
+            return _inputManager.Esc;
+        }
+
+        public InputManager InputManager
+        {
+            get { return _inputManager; }
+        }
+
         private void HandleMovement()
         {
             if (Time.timeScale == 0)

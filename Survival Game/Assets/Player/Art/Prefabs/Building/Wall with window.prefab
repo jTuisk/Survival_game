@@ -12,8 +12,8 @@ GameObject:
   - component: {fileID: 7786526008032064091}
   - component: {fileID: 6922177261549892730}
   - component: {fileID: -7375129819602344248}
-  - component: {fileID: -251986027537742850}
-  m_Layer: 7
+  - component: {fileID: -4760909343930433453}
+  m_Layer: 0
   m_Name: Wall with window
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -100,10 +100,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemData: {fileID: 11400000, guid: 44142bd1dcff72240a24c85c83d01f92, type: 2}
   quantity: 1
+  displayQuantityText: 0
   quantityCanvas: {fileID: 8285654299619168550}
   quantityText: {fileID: 2143949104666317041}
---- !u!64 &-251986027537742850
-MeshCollider:
+--- !u!65 &-4760909343930433453
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -112,10 +113,9 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 5592415555468847437, guid: 1623feaef017d5046b0d2d9401f41ca2, type: 3}
+  serializedVersion: 2
+  m_Size: {x: 2, y: 2.2999997, z: 0.3}
+  m_Center: {x: 0, y: 1.1499999, z: 0}
 --- !u!1 &3530291227688696400
 GameObject:
   m_ObjectHideFlags: 0
@@ -127,7 +127,7 @@ GameObject:
   - component: {fileID: 6576745049521086252}
   - component: {fileID: 5139739310695819883}
   - component: {fileID: 2143949104666317041}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: QuantityText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -263,7 +263,7 @@ GameObject:
   - component: {fileID: 6158844884272304994}
   - component: {fileID: 3688959418456960001}
   - component: {fileID: 6807797737358765079}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}

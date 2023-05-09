@@ -13,6 +13,7 @@ namespace Game.Player
         [Header("Building")]
         public bool buildingPartSnapping = true;
         public float distanceFromPlayer = 1.5f;
+        public float maxDistanceFromPlayer = 3f;
         public float rotationSpeed = 1f;
         public Transform placeBuildingObjectTo;
         public bool canBuild = true;

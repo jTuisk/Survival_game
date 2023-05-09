@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Celestial
   - BuildingBlueprints
+  - SnapPoint
   layers:
   - Default
   - TransparentFX

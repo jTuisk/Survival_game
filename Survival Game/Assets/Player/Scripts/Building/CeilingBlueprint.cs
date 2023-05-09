@@ -2,17 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CeilingBlueprint : MonoBehaviour
+namespace Game.Player.Building
 {
-    // Start is called before the first frame update
-    void Start()
+    public class CeilingBlueprint : ContstructionBlueprint
     {
-        
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }

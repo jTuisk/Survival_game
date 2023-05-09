@@ -50,6 +50,5 @@ namespace Game.UI.Building
                 canChangeSnap = false;
             }
         }
-
     }
 }

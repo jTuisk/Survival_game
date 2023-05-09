@@ -49,10 +49,9 @@ namespace Game.UI.Building
 
         private void CreateBuildingPart()
         {
-            GameManager.Instance.gameStatus = GameManager.GameStatus.Ingame_building;
+            GameManager.Instance.gameStatus = GameManager.GameStatus.Ingame_placing_blueprints;
             Debug.Log($"Building {buildingPart?.name}");
             Instantiate(buildingPart, transform.root);
-            UIManager.Instance.ChangeUI(4);
         }
     }
 

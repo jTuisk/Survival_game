@@ -23,7 +23,10 @@ namespace Game.UI
         public UI_Group[] uiGroups;
         public UI_Group ActiveGroup => activeGroup;
 
-        public int activeChestIndex;
+
+        [SerializeField] UI_InventorySystemHandler toolbar;
+        [SerializeField] UI_InventorySystemHandler backpack;
+        [SerializeField] UI_InventorySystemHandler chest;
 
         private void Awake()
         {
@@ -39,113 +42,95 @@ namespace Game.UI
 
         private void Start()
         {
-            ChangeUI(defaultGroupIndex);
+            InitInventoryContainers();
         }
 
-        private void Update()
+        private void LateUpdate()
         {
             UpdateUIComparedToGameStatus();
         }
 
-        public void SetContainers(int chestIndex = -1)
+        private void InitInventoryContainers()
         {
-            if(inventorySystem != null)
+            if (inventorySystem != null)
             {
-                if (activeGroup.inventoryGroup.activeToolbar != null)
+                if (toolbar != null)
                 {
-                    activeGroup.inventoryGroup.activeToolbar.SetNewContainer(inventorySystem.ToolBarContainer);
+                    toolbar.SetNewContainer(inventorySystem.ToolBarContainer);
                 }
 
-                if (activeGroup.inventoryGroup.activeBackpack != null)
+                if (backpack != null)
                 {
-                    activeGroup.inventoryGroup.activeBackpack.SetNewContainer(inventorySystem.BackpackContainer);
+                    backpack.SetNewContainer(inventorySystem.BackpackContainer);
                 }
-
-                if (activeGroup.inventoryGroup.activeChest != null)
-                {
-                    activeGroup.inventoryGroup.activeChest.SetNewContainer(inventorySystem.GetChestContainer(chestIndex));
-                }
+                UpdateSlots();
             }
-            UpdateSlots();
+        }
+
+        public void UpdateSlots()
+        {
+            if (toolbar != null)
+            {
+                toolbar.UpdateSlots();
+            }
+
+            if (backpack != null)
+            {
+                backpack.UpdateSlots();
+            }
+            if (chest != null)
+            {
+                chest.UpdateSlots();
+            }
+        }
+
+        public void SetActiveChest(int newChestIndex)
+        {
+            if (chest != null)
+            {
+                chest.SetNewContainer(inventorySystem.GetChestContainer(newChestIndex));
+                chest.UpdateSlots();
+            }
         }
 
         private void UpdateUIComparedToGameStatus()
         {
-            if (!useCustomUI)
+
+            if (!useCustomUI && GameManager.Instance != null)
             {
-                UI_Group nextGroup = activeGroup;
-                if (activeGroup.status == GameManager.Instance.gameStatus)
+                if (activeGroup != null && activeGroup.status == GameManager.Instance.gameStatus)
                     return;
+
+                //Debug.Log($"active group {activeGroup?.name}, status: {activeGroup?.status}/{GameManager.Instance.gameStatus}");
 
                 foreach (UI_Group group in uiGroups)
                 {
                     if(group.status == GameManager.Instance.gameStatus)
                     {
                         ChangeUI(group);
+                        break;
                     }
                 }
             }
         }
 
+
         private void ChangeUI(UI_Group toGroup)
         {
-            activeGroup = toGroup;
-            allUIElements.ForEach(go => go.SetActive(false));
-            activeGroup?.visible.ForEach(go => go.SetActive(true));
-
-            /*foreach (GameObject element in allUIElements)
+            if (activeGroup == null || !activeGroup.Equals(toGroup))
             {
-                element.SetActive(false);
-            }
+                activeGroup = toGroup;
 
-            foreach(GameObject visibleElement in toGroup.visible)
-            {
-                visibleElement.SetActive(true);
-            }*/
-        }
-
-        public void ChangeUI(int groupIndex, int chestIndex = -1)
-        {
-            groupIndex = groupIndex > uiGroups.Length ? uiGroups.Length - 1 : groupIndex;
-
-            UI_Group uiGroup = uiGroups[groupIndex];
-
-            if (activeGroup == null || !activeGroup.Equals(uiGroup))
-            {
-                activeGroup = uiGroup;
-                HideCursor.ShowCurors(activeGroup.showCuror, activeGroup.lockCursor);
                 PlayerSettings.Instance.canMove = !activeGroup.lockMovement;
                 PlayerSettings.Instance.canRotateCamera = !activeGroup.lockView;
+                HideCursor.ShowCurors(activeGroup.showCuror, activeGroup.lockCursor);
 
+                allUIElements.ForEach(go => go.SetActive(false));
                 activeGroup?.visible.ForEach(go => go.SetActive(true));
-                activeGroup?.disabled.ForEach(go => go.SetActive(false));
-                SetContainers(chestIndex);
             }
             else
             {
-                if (!activeGroup.Equals(uiGroups[defaultGroupIndex]))
-                {
-                    ChangeUI(defaultGroupIndex);
-                }
-            }
-        }
-
-        public void UpdateSlots()
-        {
-
-            if (activeGroup.inventoryGroup.activeToolbar != null)
-            {
-                activeGroup.inventoryGroup.activeToolbar.UpdateSlots();
-            }
-
-            if (activeGroup.inventoryGroup.activeBackpack != null)
-            {
-                activeGroup.inventoryGroup.activeBackpack.UpdateSlots();
-            }
-
-            if (activeGroup.inventoryGroup.activeChest != null)
-            {
-                activeGroup.inventoryGroup.activeChest.UpdateSlots();
+                ChangeUI(uiGroups[0]);
             }
         }
 
@@ -160,24 +145,12 @@ namespace Game.UI
             public bool lockMovement = false;
 
             public List<GameObject> visible;
-            public List<GameObject> disabled;
-
-            public UI_InventoryGroup inventoryGroup;
-
 
             public override bool Equals(object obj)
             {
                 UI_Group other = obj as UI_Group;
                 return other.name.Equals(name);
             }
-        }
-
-        [System.Serializable]
-        public class UI_InventoryGroup
-        {
-            public UI_InventorySystemHandler activeToolbar;
-            public UI_InventorySystemHandler activeBackpack;
-            public UI_InventorySystemHandler activeChest;
         }
     }
 }

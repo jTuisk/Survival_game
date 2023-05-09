@@ -24,12 +24,12 @@ namespace Game.Player.Input
         public bool Q { get; private set; }
         public bool E { get; private set; }
         public bool AttackIsPressed { get; private set; }
+        public bool BlockIsPressed { get; private set; }
 
         /*
         public bool MoveIsPressed { get; private set; }
         public bool JumpIsPressed { get; private set; }
         public bool CrouchIsPressed { get; private set; }
-        public bool BlockIsPressed { get; private set; }
         public bool PauseIsPressed { get; private set; }*/
 
         private InputActionMap _currentMap;
@@ -45,6 +45,7 @@ namespace Game.Player.Input
         private InputAction _Q;
         private InputAction _E;
         private InputAction _attackAction;
+        private InputAction _blockAction;
 
         private void Awake()
         {
@@ -61,6 +62,7 @@ namespace Game.Player.Input
             _Q = _currentMap.FindAction("Q");
             _E = _currentMap.FindAction("E");
             _attackAction = _currentMap.FindAction("Attack");
+            _blockAction = _currentMap.FindAction("Block");
 
             _moveAction.performed += SetMove;
             _moveAction.canceled += SetMove;
@@ -97,6 +99,9 @@ namespace Game.Player.Input
 
             _attackAction.performed += SetAttack;
             _attackAction.canceled += SetAttack;
+
+            _blockAction.performed += SetBlock;
+            _blockAction.canceled += SetBlock;
         }
         private void SetMove(InputAction.CallbackContext context)
         {
@@ -150,6 +155,10 @@ namespace Game.Player.Input
         private void SetAttack(InputAction.CallbackContext context)
         {
             AttackIsPressed = context.ReadValueAsButton();
+        }
+        private void SetBlock(InputAction.CallbackContext context)
+        {
+            BlockIsPressed = context.ReadValueAsButton();
         }
 
         private void OnEnable()

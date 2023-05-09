@@ -18,12 +18,13 @@ namespace Game.UI
             {
                 GameObject.Destroy(child.gameObject);
             }
+
             inventoryContainer = newContainer;
             uiSlots = new Dictionary<UI_InventorySlotHandler, InventorySlot>();
 
             var containerSlots = inventoryContainer.GetSlots();
 
-            for(int i = 0; i < containerSlots.Length; i++)
+            for (int i = 0; i < containerSlots.Length; i++)
             {
                 GameObject go = Instantiate(UI_slotsPrefab, transform);
                 uiSlots.Add(go.GetComponent<UI_InventorySlotHandler>(), containerSlots[i]);
@@ -32,6 +33,9 @@ namespace Game.UI
 
         public void UpdateSlots()
         {
+            if (uiSlots == null)
+                return;
+
             foreach (var slot in uiSlots)
             {
                 if (slot.Value != null)

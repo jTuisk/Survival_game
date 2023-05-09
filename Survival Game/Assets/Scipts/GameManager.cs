@@ -20,9 +20,9 @@ namespace Game
             {
                 Instance = this;
             }
-
         }
-        public enum GameStatus { MainMenu, PauseMenu, EndMenu, Ingame, Ingame_building, Ingame_Crafting, Ingame_Iventory }
+
+        public enum GameStatus { MainMenu, PauseMenu, EndMenu, Ingame, Ingame_select_building_part, Ingame_placing_blueprints, Ingame_Crafting, Ingame_Iventory , Ingame_Chest}
     }
 
 }

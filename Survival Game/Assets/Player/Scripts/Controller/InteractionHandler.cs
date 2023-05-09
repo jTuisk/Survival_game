@@ -55,9 +55,22 @@ namespace Game.Player.Controller
                     RaycastHit hit;
                     if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, settings.distance, settings.itemLayer.value))
                     {
-                        settings.timer = settings.interval;
+
                         BlueprintHandler buildingObject = hit.transform.GetComponent<BlueprintHandler>();
+                        settings.timer = settings.interval;
                         buildingObject.PlaceRequiredItems();
+                    }
+                }
+                if (inputManager.BlockIsPressed && GameManager.Instance.gameStatus == GameManager.GameStatus.Ingame_placing_blueprints)
+                {
+                    RaycastHit hit;
+                    if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, settings.distance, settings.itemLayer.value))
+                    {
+
+                        BlueprintHandler buildingObject = hit.transform.GetComponent<BlueprintHandler>();
+                        settings.timer = settings.interval;
+                        if (buildingObject != null)
+                            GameObject.Destroy(buildingObject.gameObject);
                     }
                 }
             }
@@ -127,27 +140,49 @@ namespace Game.Player.Controller
                         case GameManager.GameStatus.Ingame:
                             if (inputManager.Tab)
                             {
-                                UIManager.Instance.ChangeUI(1);
-                                settings.timer = settings.interval;
-                                GameManager.Instance.gameStatus = GameManager.GameStatus.Ingame_Iventory;
+                                OpenUI(GameManager.GameStatus.Ingame_Iventory);
                             }
 
                             if (inputManager.Q)
                             {
-                                UIManager.Instance.ChangeUI(3);
-                                settings.timer = settings.interval;
-                                //GameManager.Instance.gameStatus = GameManager.GameStatus.Ingame_building;
+                                OpenUI(GameManager.GameStatus.Ingame_select_building_part);
                             }
                             break;
 
-                        default: //Displays default ui
-                            UIManager.Instance.ChangeUI(0);
-                            settings.timer = settings.interval;
-                            GameManager.Instance.gameStatus = GameManager.GameStatus.Ingame;
+                        case GameManager.GameStatus.Ingame_Iventory:
+                            if (inputManager.Tab || inputManager.Esc)
+                            {
+                                OpenUI(GameManager.GameStatus.Ingame);
+                            }
+                            break;
+
+                        case GameManager.GameStatus.Ingame_select_building_part:
+                        case GameManager.GameStatus.Ingame_placing_blueprints:
+                            if (inputManager.Esc)
+                            {
+                                OpenUI(GameManager.GameStatus.Ingame);
+                            }
+                            if (inputManager.Q)
+                            {
+                                OpenUI(GameManager.GameStatus.Ingame_select_building_part);
+                            }
+                            break;
+
+                        default:
+                            Debug.Log($"GameStatus: {GameManager.Instance.gameStatus} interaction is not set!");
+                            OpenUI(GameManager.GameStatus.Ingame);
                             break;
                     }
                 }
             }
+        }
+
+        private void OpenUI(GameManager.GameStatus setGameStatus)
+        {
+            var settings = settingsData.interfaceses;
+
+            settings.timer = settings.interval;
+            GameManager.Instance.gameStatus = setGameStatus;
         }
     }
 }

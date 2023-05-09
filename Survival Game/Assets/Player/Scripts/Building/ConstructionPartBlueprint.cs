@@ -2,35 +2,39 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Game.Player.Items;
+using Game.Player.Inventory;
 using Game.Player.Controller;
+using Game.UI.Building;
 
 namespace Game.Player.Building
 {
-    public class ContstructionBlueprint : MonoBehaviour
+    public class ConstructionPartBlueprint : MonoBehaviour
     {
         [SerializeField, ReadOnly] bool blueprintIsPlaced = false;
         
         [Header("Blueprint of ")]
         [SerializeField] GameObject finishedPart;
-        [SerializeField] ConstructionRequiredItem[] requiredItems;
+        [SerializeField] List<ConstructionRequiredItem> requiredItems;
 
         [Header("Snapping")]
         [SerializeField] Transform snapPointsParent;
         GameObject[] snapPoints;
 
         [Header("Position/Rotation/Raycast")]
-        [SerializeField] bool canPlaceToSnapPoint = true;
         [SerializeField, ReadOnly] Vector3 rayHitPosition;
         [SerializeField] LayerMask layerMasks;
         const int defaultLayer = 9;
         const int ignoreRayCastLayer = 2;
+        [SerializeField] float rotationSpeed = 50f;
 
         [Header("Materials")]
-        [SerializeField] Renderer renderer;
+        [SerializeField] Renderer goRenderer;
         [SerializeField] Material falseBlueprintMaterial;
         private Material defaultBlueprintMaterial;
 
-        //[Header("UI")]
+        [Header("UI")]
+        [SerializeField] Transform uiParent;
+        [SerializeField] GameObject uiSlotPrefab;
 
         [Header("Others")]
         [SerializeField, ReadOnly] List<GameObject> triggeredObjects;
@@ -52,15 +56,23 @@ namespace Game.Player.Building
             if (!blueprintIsPlaced && GameManager.Instance.gameStatus != GameManager.GameStatus.Ingame_placing_blueprints)
                 Destroy(gameObject);
 
+
+
+
             if (actionTimer > 0)
             {
                 actionTimer -= Time.deltaTime;
             }
+
             HandlePlayerInput();
+            InitializeRequirmentUI();
         }
 
         protected virtual void FixedUpdate()
         {
+            if (blueprintIsPlaced || GameManager.Instance.gameStatus != GameManager.GameStatus.Ingame_placing_blueprints)
+                return;
+
             ShootRaycast();
             MoveBlueprint();
         }
@@ -77,19 +89,44 @@ namespace Game.Player.Building
             }
         }
 
+        public void PlaceRequiredItems()
+        {
+            foreach(var reqItem in requiredItems)
+            {
+                Debug.Log($"reqItem: {reqItem.item.name}, quantity: {reqItem.quantity}, player has: {InventorySystem.Instance.ItemQuantity(reqItem.item)} ");
+
+                InventorySystem.Instance.RemoveItems(reqItem.item, ref reqItem.quantity);
+            }
+
+            requiredItems.RemoveAll(reqItem => reqItem.quantity <= 0);
+
+            Debug.Log($"reqCount: {requiredItems.Count}");
+            InitializeRequirmentUI();
+
+            if (requiredItems.Count == 0)
+            {
+                GameObject go = Instantiate(finishedPart, transform.parent);
+                go.transform.position = transform.position;
+                go.transform.rotation = transform.rotation;
+                go.transform.localScale = transform.localScale;
+
+                Destroy(gameObject);
+            }
+        }
+
         protected virtual void HandlePlayerInput()
         {
-            if (GameManager.Instance.gameStatus != GameManager.GameStatus.Ingame_placing_blueprints)
+            if (blueprintIsPlaced || GameManager.Instance.gameStatus != GameManager.GameStatus.Ingame_placing_blueprints)
                 return;
-            /*if (PlayerController.Instance.InputManager.Q)
-                    {
-                        RotateObject(1f);
-                    }
 
-                    else */
             if (PlayerController.Instance.InputManager.E)
             {
-                RotateBlueprint();
+                RotateBlueprint(1);
+            }
+
+            else if (PlayerController.Instance.InputManager.R)
+            {
+                RotateBlueprint(-1);
             }
 
             if (PlayerController.Instance.InputManager.Esc)
@@ -103,16 +140,37 @@ namespace Game.Player.Building
             }
         }
 
-        protected virtual void RotateBlueprint()
+        protected virtual void RotateBlueprint(int dir)
         {
-            Debug.LogError("Rotation!");
+            transform.Rotate(transform.rotation * transform.up * rotationSpeed * dir * Time.deltaTime);
+        }
+
+        private void InitializeRequirmentUI()
+        {
+            uiParent.gameObject.SetActive(blueprintIsPlaced && requiredItems.Count != 0);
+
+            if (!blueprintIsPlaced)
+                return;
+
+            if (uiParent != null)
+            {
+                foreach(Transform t in uiParent.transform)
+                {
+                    Destroy(t.gameObject);
+                }
+                if(uiSlotPrefab  != null)
+                {
+                    foreach (var reqItem in requiredItems)
+                    {
+                        GameObject slot = Instantiate(uiSlotPrefab, uiParent);
+                        slot.GetComponent<MissingItemsUIHandler>().UpdateData(reqItem.item.itemData.icon, reqItem.quantity);
+                    }
+                }
+            }
         }
 
         public void Placeblueprint()
         {
-            if (GameManager.Instance.gameStatus != GameManager.GameStatus.Ingame_placing_blueprints)
-                return;
-
             Debug.Log("Place blueprint! "+ CanPlace());
             actionTimer = actionInterval;
             if (CanPlace())
@@ -139,17 +197,34 @@ namespace Game.Player.Building
 
             RaycastHit hit;
 
-            Debug.DrawRay(camera.position, camera.forward * 10f, Color.red);
+            Debug.DrawRay(camera.position, camera.forward * PlayerSettings.Instance.maxDistanceFromPlayer, Color.red);
 
             if (Physics.Raycast(camera.position, camera.forward, out hit, PlayerSettings.Instance.maxDistanceFromPlayer, layerMasks))
             {
-                Debug.DrawLine(camera.position, hit.point, Color.green);
-                rayHitPosition = hit.point;
+                if(hit.transform.tag == "SnapPoint")
+                {
+                    Debug.DrawLine(camera.position, hit.point, Color.cyan);
+                    Vector3 vector3 = hit.point.normalized;
+
+                    rayHitPosition = hit.point; //calculate new position value that does denays overlapping.
+                    transform.rotation = hit.transform.rotation; //hit.transform.parent.rotation;
+                }
+                else
+                {
+                    Debug.DrawLine(camera.position, hit.point, Color.green);
+                    rayHitPosition = hit.point;
+                }
             }
             else
             {
                 rayHitPosition = camera.position + camera.forward * PlayerSettings.Instance.maxDistanceFromPlayer;
             }
+        }
+
+        protected virtual void CleanLists()
+        {
+            triggeredObjects.RemoveAll(x => x == null);
+            triggeredSnapObjects.RemoveAll(x => x == null);
         }
 
         protected virtual void MoveBlueprint()
@@ -158,11 +233,12 @@ namespace Game.Player.Building
                 return;
 
             Vector3 finalPosition = rayHitPosition;
-            Debug.Log($"snapObjects: {triggeredSnapObjects.Count}");
+            //Debug.Log($"snapObjects: {triggeredSnapObjects.Count}");
 
-            if(triggeredSnapObjects.Count == 1)
+            CleanLists();
+            if (triggeredSnapObjects.Count == 1)
             {
-                rayHitPosition.y = triggeredSnapObjects[0].transform.position.y;
+                finalPosition.y = triggeredSnapObjects[0].transform.position.y;
             }
 
             transform.position = finalPosition;
@@ -181,7 +257,6 @@ namespace Game.Player.Building
             }
         }
 
-
         protected virtual bool CanPlace()
         {
             if (blueprintIsPlaced)
@@ -190,14 +265,20 @@ namespace Game.Player.Building
             if (triggeredObjects.Count == 0)
                 return true;
 
+            if (triggeredObjects.Count == 1 && triggeredObjects[0].layer == 9) // figure better way to achive this..
+                return true;
+
+            if (triggeredObjects.Count == 2 && triggeredObjects[0].layer == 9 && triggeredObjects[1].layer == 9) // figure better way to achive this..
+                return true;
 
             return false;
         }
 
         private void UpdateMaterial()
         {
-            renderer.material = CanPlace() || blueprintIsPlaced ? defaultBlueprintMaterial : falseBlueprintMaterial;
+            goRenderer.material = CanPlace() || blueprintIsPlaced ? defaultBlueprintMaterial : falseBlueprintMaterial;
         }
+
 
         protected virtual void OnTriggerEnter(Collider other)
         {
@@ -219,6 +300,7 @@ namespace Game.Player.Building
         protected virtual void OnTriggerExit(Collider other)
         {
             triggeredObjects.Remove(other.gameObject);
+            triggeredSnapObjects.Remove(other.gameObject);
             UpdateMaterial();
         }
 

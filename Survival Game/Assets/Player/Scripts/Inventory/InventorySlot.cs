@@ -35,6 +35,16 @@ namespace Game.Player.Inventory
             UIManager.Instance?.UpdateSlots();
         }
 
+        public void RemoveQuantity(ref int amount)
+        {
+            int finalQuantity = itemQuantity - amount;
+            int removedAmount = Mathf.Max(finalQuantity, 0);
+            removedAmount = Mathf.Min(removedAmount, amount);
+            itemQuantity -= removedAmount;
+            amount -= removedAmount;
+            UIManager.Instance?.UpdateSlots();
+        }
+
         public void ClearSlot()
         {
             SetItem(null, -1);

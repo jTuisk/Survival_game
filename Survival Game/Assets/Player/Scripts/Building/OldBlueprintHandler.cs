@@ -6,7 +6,7 @@ using Game.Player.Items;
 
 namespace Game.Player.Building
 {
-    public class BlueprintHandler : MonoBehaviour
+    public class OldBlueprintHandler : MonoBehaviour
     {
         private Transform player;
         [SerializeField] bool objectIsPlaced = false;
@@ -31,7 +31,7 @@ namespace Game.Player.Building
         [SerializeField] BlueprintSettings blueprintSettings;
         public BlueprintSettings BlueprintSettings => blueprintSettings;
 
-        BlueprintHandler snappedTo;
+        OldBlueprintHandler snappedTo;
 
         // Start is called before the first frame update
         void Awake()
@@ -138,7 +138,7 @@ namespace Game.Player.Building
             if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit))
             {
                 Debug.DrawLine(Camera.main.transform.position, hit.transform.position);
-                BlueprintHandler hitBpHandler = hit.transform.gameObject.GetComponent<BlueprintHandler>();
+                OldBlueprintHandler hitBpHandler = hit.transform.gameObject.GetComponent<OldBlueprintHandler>();
                 if (hitBpHandler != null) // 
                 {
                     snappedTo = hitBpHandler;

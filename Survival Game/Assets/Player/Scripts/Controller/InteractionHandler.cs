@@ -55,8 +55,8 @@ namespace Game.Player.Controller
                     RaycastHit hit;
                     if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, settings.distance, settings.itemLayer.value))
                     {
-
-                        BlueprintHandler buildingObject = hit.transform.GetComponent<BlueprintHandler>();
+                        
+                        ConstructionPartBlueprint buildingObject = hit.transform.GetComponent<ConstructionPartBlueprint> ();
                         settings.timer = settings.interval;
                         buildingObject.PlaceRequiredItems();
                     }
@@ -67,7 +67,7 @@ namespace Game.Player.Controller
                     if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, settings.distance, settings.itemLayer.value))
                     {
 
-                        BlueprintHandler buildingObject = hit.transform.GetComponent<BlueprintHandler>();
+                        ConstructionPartBlueprint buildingObject = hit.transform.GetComponent<ConstructionPartBlueprint> ();
                         settings.timer = settings.interval;
                         if (buildingObject != null)
                             GameObject.Destroy(buildingObject.gameObject);
@@ -157,6 +157,12 @@ namespace Game.Player.Controller
                             break;
 
                         case GameManager.GameStatus.Ingame_select_building_part:
+                            if (inputManager.Esc || inputManager.Q)
+                            {
+                                OpenUI(GameManager.GameStatus.Ingame);
+                            }
+                            break;
+
                         case GameManager.GameStatus.Ingame_placing_blueprints:
                             if (inputManager.Esc)
                             {

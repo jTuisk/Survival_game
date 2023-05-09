@@ -87,6 +87,58 @@ namespace Game.Player.Inventory
             RemoveItem(GetSlotIndex(slot));
         }
 
+        public bool RemoveQuantity(ItemScriptableObject item, ref int quantity)
+        {
+            List<int> slotsIndexs = GetItemSlotIndexs(item);
+            int startQuantity = quantity;
+
+            for (int i = 0; i < slotsIndexs.Count; i++)
+            {
+                if (quantity <= 0)
+                    return true;
+
+                slots[slotsIndexs[i]].RemoveQuantity(ref quantity);
+            }
+            return false;
+        }
+
+        public bool eqwe(InteractiveItem item, ref int quantity)
+        {
+            ItemScriptableObject itemData = item.itemData;
+            int startQuantity = quantity;
+
+            int[] slotsIndexs = GetItemSlotIndexs(itemData).ToArray();
+
+            //Add item to slot where the same item already exists
+            for (int i = 0; i < slotsIndexs.Length; i++)
+            {
+                if (quantity <= 0)
+                    return true;
+
+                slots[slotsIndexs[i]].AddQuantity(ref quantity);
+            }
+
+            //Add item to new empty slot
+            if (quantity > 0)
+            {
+                int[] emptySlotIndexs = GetEmptySlotIndexs();
+
+                for (int i = 0; i < emptySlotIndexs.Length; i++)
+                {
+                    if (quantity <= 0)
+                        return true;
+
+                    slots[emptySlotIndexs[i]].SetItem(itemData);
+                    slots[emptySlotIndexs[i]].AddQuantity(ref quantity);
+                }
+            }
+            else
+            {
+                return true;
+            }
+
+            return false;
+        }
         #endregion
 
 
@@ -106,6 +158,19 @@ namespace Game.Player.Inventory
 
 
         #region GETTERS
+
+        public int GetItemAmount(ItemScriptableObject item)
+        {
+            int totalAmount = 0;
+            List<int> itemIndexs = GetItemSlotIndexs(item);
+
+            for(int i = 0; i < itemIndexs.Count; i++)
+            {
+                totalAmount += slots[itemIndexs[i]].itemQuantity;
+            }
+            return totalAmount;
+        }
+
         public int GetSlotIndex(InventorySlot slot)
         {
             for(int i = 0; i < slots.Length; i++)

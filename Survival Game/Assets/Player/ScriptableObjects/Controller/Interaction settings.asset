@@ -16,18 +16,18 @@ MonoBehaviour:
     canPickup: 1
     cooldown: 0.5
     failCooldown: 0.4
-    timer: -0.0042444947
+    timer: -0.0025387714
     distance: 1
     itemLayer:
       serializedVersion: 2
       m_Bits: 128
-  tabMenu:
+  interfaceses:
     canOpen: 1
     interval: 0.2
-    timer: -0.0009916327
+    timer: -0.0031050942
   building:
     interval: 0.5
-    timer: 0
+    timer: -0.0058554374
     distance: 1
     itemLayer:
       serializedVersion: 2

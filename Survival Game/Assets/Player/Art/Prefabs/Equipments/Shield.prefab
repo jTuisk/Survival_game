@@ -237,7 +237,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemData: {fileID: 11400000, guid: d3f42e9208535104a9fef2ecf7a5b3e6, type: 2}
   quantity: 1
-  quantityCanvas: {fileID: 9099957966562205016}
+  displayQuantityText: 1
+  canvas: {fileID: 9099957966562205016}
   quantityText: {fileID: 7866175804579786017}
 --- !u!64 &1490894516102027094
 MeshCollider:

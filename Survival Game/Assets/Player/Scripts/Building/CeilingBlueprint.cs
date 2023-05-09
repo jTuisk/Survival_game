@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Game.Player.Building
 {
-    public class CeilingBlueprint : ContstructionBlueprint
+    public class CeilingBlueprint : ConstructionPartBlueprint
     {
 
     }

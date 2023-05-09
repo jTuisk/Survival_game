@@ -353,5 +353,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemData: {fileID: 11400000, guid: 56d39deaffed0be428b7856b6cb87f43, type: 2}
   quantity: 1
-  quantityCanvas: {fileID: 4351413917086566810}
+  displayQuantityText: 1
+  canvas: {fileID: 4351413917086566810}
   quantityText: {fileID: 1625166983205249249}

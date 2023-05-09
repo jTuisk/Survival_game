@@ -205,5 +205,4 @@ namespace Game.UI
             Debug.Log($"Click item slot: {gameObject.name}, item: {ActiveInventorySlot?.item?.itemData.name}, quantity: {ActiveInventorySlot?.itemQuantity}");
         }
     }
-
 }

@@ -112,6 +112,29 @@ namespace Game.Player.Inventory
             }
         }
 
+        public bool HasItemQuantity(ItemScriptableObject item, int quantity)
+        {
+            return ItemQuantity(item) >= quantity;
+        }
+
+        public int ItemQuantity(ItemScriptableObject item)
+        {
+            int totalAmount = 0;
+
+            totalAmount += toolbarContainer.GetItemAmount(item);
+            totalAmount += backpackContainer.GetItemAmount(item);
+
+            return totalAmount;
+        }
+
+        public void RemoveItems(ItemScriptableObject item, ref int quantity)
+        {
+            if (!toolbarContainer.RemoveQuantity(item, ref quantity))
+            {
+                backpackContainer.RemoveQuantity(item, ref quantity);
+            }
+        }
+
         public InventoryContainer GetChestContainer(int index)
         {
             return chestContainers[index];

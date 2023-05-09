@@ -12,18 +12,18 @@ namespace Game.Player.Items
         public int quantity = 1;
 
         public bool displayQuantityText = true;
-        public GameObject quantityCanvas;
+        public GameObject canvas;
         public TextMeshProUGUI quantityText;
 
 
         private void Update()
         {
 
-            quantityCanvas.SetActive(displayQuantityText);
+            quantityText.gameObject.SetActive(displayQuantityText);
             if (displayQuantityText)
             {
                 UpdateQuantityText();
-                quantityCanvas.transform.LookAt(transform.position + Camera.main.transform.rotation * Vector3.forward, Camera.main.transform.rotation * Vector3.up);
+                canvas.transform.LookAt(transform.position + Camera.main.transform.rotation * Vector3.forward, Camera.main.transform.rotation * Vector3.up);
             }
         }
 
@@ -70,19 +70,19 @@ namespace Game.Player.Items
 
         private void UpdateQuantityText()
         {
-            if (quantityCanvas == null || quantityText == null)
+            if (canvas == null || quantityText == null)
                 return;
 
-            quantityCanvas.SetActive(displayQuantityText);
+            canvas.SetActive(displayQuantityText);
 
             if (quantity > 0)
             {
-                quantityCanvas.SetActive(true);
+                canvas.SetActive(true);
                 quantityText.text = quantity.ToString();
             }
             else
             {
-                quantityCanvas.SetActive(false);
+                canvas.SetActive(false);
                 quantityText.text = "";
             }
         }

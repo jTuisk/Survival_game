@@ -249,7 +249,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemData: {fileID: 11400000, guid: f917956ed50b9e849810dbc3b376904f, type: 2}
   quantity: 1
-  quantityCanvas: {fileID: 8533136286667280074}
+  displayQuantityText: 1
+  canvas: {fileID: 8533136286667280074}
   quantityText: {fileID: 1847455604771026005}
 --- !u!1 &8533136286667280074
 GameObject:

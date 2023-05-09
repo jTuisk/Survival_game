@@ -23,6 +23,7 @@ namespace Game.Player.Input
         public bool Esc { get; private set; }
         public bool Q { get; private set; }
         public bool E { get; private set; }
+        public bool R { get; private set; }
         public bool AttackIsPressed { get; private set; }
         public bool BlockIsPressed { get; private set; }
 
@@ -44,6 +45,7 @@ namespace Game.Player.Input
         private InputAction _Esc;
         private InputAction _Q;
         private InputAction _E;
+        private InputAction _R;
         private InputAction _attackAction;
         private InputAction _blockAction;
 
@@ -61,6 +63,7 @@ namespace Game.Player.Input
             _Esc = _currentMap.FindAction("Esc");
             _Q = _currentMap.FindAction("Q");
             _E = _currentMap.FindAction("E");
+            _R = _currentMap.FindAction("R");
             _attackAction = _currentMap.FindAction("Attack");
             _blockAction = _currentMap.FindAction("Block");
 
@@ -96,6 +99,9 @@ namespace Game.Player.Input
 
             _E.performed += SetE;
             _E.canceled += SetE;
+            
+            _R.performed += SetR;
+            _R.canceled += SetR;
 
             _attackAction.performed += SetAttack;
             _attackAction.canceled += SetAttack;
@@ -151,6 +157,10 @@ namespace Game.Player.Input
         private void SetE(InputAction.CallbackContext context)
         {
             E = context.ReadValueAsButton();
+        }
+        private void SetR(InputAction.CallbackContext context)
+        {
+            R = context.ReadValueAsButton();
         }
         private void SetAttack(InputAction.CallbackContext context)
         {

@@ -161,6 +161,15 @@ public partial class @InputActions : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""R"",
+                    ""type"": ""Button"",
+                    ""id"": ""508e7a54-043d-4648-b498-76422a2f4197"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -372,6 +381,17 @@ public partial class @InputActions : IInputActionCollection2, IDisposable
                     ""action"": ""E"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""20b2ca07-c636-435a-81d5-3d79c1307bad"",
+                    ""path"": ""<Keyboard>/r"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""R"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -395,6 +415,7 @@ public partial class @InputActions : IInputActionCollection2, IDisposable
         m_Player_Esc = m_Player.FindAction("Esc", throwIfNotFound: true);
         m_Player_Q = m_Player.FindAction("Q", throwIfNotFound: true);
         m_Player_E = m_Player.FindAction("E", throwIfNotFound: true);
+        m_Player_R = m_Player.FindAction("R", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -469,6 +490,7 @@ public partial class @InputActions : IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Esc;
     private readonly InputAction m_Player_Q;
     private readonly InputAction m_Player_E;
+    private readonly InputAction m_Player_R;
     public struct PlayerActions
     {
         private @InputActions m_Wrapper;
@@ -488,6 +510,7 @@ public partial class @InputActions : IInputActionCollection2, IDisposable
         public InputAction @Esc => m_Wrapper.m_Player_Esc;
         public InputAction @Q => m_Wrapper.m_Player_Q;
         public InputAction @E => m_Wrapper.m_Player_E;
+        public InputAction @R => m_Wrapper.m_Player_R;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -542,6 +565,9 @@ public partial class @InputActions : IInputActionCollection2, IDisposable
                 @E.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnE;
                 @E.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnE;
                 @E.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnE;
+                @R.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnR;
+                @R.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnR;
+                @R.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnR;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -591,6 +617,9 @@ public partial class @InputActions : IInputActionCollection2, IDisposable
                 @E.started += instance.OnE;
                 @E.performed += instance.OnE;
                 @E.canceled += instance.OnE;
+                @R.started += instance.OnR;
+                @R.performed += instance.OnR;
+                @R.canceled += instance.OnR;
             }
         }
     }
@@ -612,5 +641,6 @@ public partial class @InputActions : IInputActionCollection2, IDisposable
         void OnEsc(InputAction.CallbackContext context);
         void OnQ(InputAction.CallbackContext context);
         void OnE(InputAction.CallbackContext context);
+        void OnR(InputAction.CallbackContext context);
     }
 }

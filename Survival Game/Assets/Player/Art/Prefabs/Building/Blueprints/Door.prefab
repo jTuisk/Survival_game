@@ -540,7 +540,7 @@ MonoBehaviour:
   rayHitPosition: {x: 0, y: 0, z: 0}
   layerMasks:
     serializedVersion: 2
-    m_Bits: 520
+    m_Bits: 1544
   rotationSpeed: 50
   goRenderer: {fileID: 6263297283884846476}
   falseBlueprintMaterial: {fileID: 2100000, guid: ee929f77793394c40896d08d66262261, type: 2}
@@ -591,7 +591,7 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.2, y: 0.2, z: 0.1}
+  m_Size: {x: 0.2, y: 0.2, z: 0.15}
   m_Center: {x: 0, y: 0.1, z: 0}
 --- !u!1 &5305245653067531610
 GameObject:
@@ -636,7 +636,7 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.2, y: 0.2, z: 0.1}
+  m_Size: {x: 0.2, y: 0.2, z: 0.15}
   m_Center: {x: 0, y: 0.1, z: 0}
 --- !u!1 &6104625894181882935
 GameObject:
@@ -681,7 +681,7 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.2, y: 0.2, z: 0.1}
+  m_Size: {x: 0.2, y: 0.2, z: 0.15}
   m_Center: {x: 0, y: 0.1, z: 0}
 --- !u!1 &7055932040327193913
 GameObject:
@@ -726,7 +726,7 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.2, y: 0.2, z: 0.1}
+  m_Size: {x: 0.2, y: 0.2, z: 0.15}
   m_Center: {x: 0, y: 0.1, z: 0}
 --- !u!1 &7301084027012682305
 GameObject:

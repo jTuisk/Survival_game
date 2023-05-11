@@ -10,8 +10,13 @@ namespace Game.Player.Building
 {
     public class ConstructionPartBlueprint : MonoBehaviour
     {
+        public enum ConstructionPartType {Wall, Ceiling, Foundation, Other}
+
         [SerializeField, ReadOnly] bool blueprintIsPlaced = false;
-        
+
+        [SerializeField] ConstructionPartType type;
+        public ConstructionPartType Type => type;
+
         [Header("Blueprint of ")]
         [SerializeField] GameObject finishedPart;
         [SerializeField] List<ConstructionRequiredItem> requiredItems;
@@ -22,15 +27,19 @@ namespace Game.Player.Building
 
         [Header("Position/Rotation/Raycast")]
         [SerializeField, ReadOnly] Vector3 rayHitPosition;
+        [SerializeField, ReadOnly] Quaternion rayHitRotation;
         [SerializeField] LayerMask layerMasks;
         const int defaultLayer = 9;
         const int ignoreRayCastLayer = 2;
-        [SerializeField] float rotationSpeed = 50f;
+        [SerializeField] float rotationSpeed = 5f;
+        [SerializeField, ReadOnly] Vector3 rotationAmount;
+        Transform lastSnapPointHit;
+        bool falseSnapPoint;
 
         [Header("Materials")]
         [SerializeField] Renderer goRenderer;
         [SerializeField] Material falseBlueprintMaterial;
-        private Material defaultBlueprintMaterial;
+        Material defaultBlueprintMaterial;
 
         [Header("UI")]
         [SerializeField] Transform uiParent;
@@ -43,15 +52,16 @@ namespace Game.Player.Building
         float actionInterval = 0.5f;
 
 
-        protected virtual void Start()
+
+        void Start()
         {
             defaultBlueprintMaterial = gameObject.GetComponent<Renderer>().material;
             triggeredObjects = new List<GameObject>();
             InitializeSnapPoints();
-            SetLayer(gameObject, true, ignoreRayCastLayer);
+            SetLayer(gameObject, ignoreRayCastLayer);
         }
 
-        protected virtual void Update()
+        void Update()
         {
             if (!blueprintIsPlaced && GameManager.Instance.gameStatus != GameManager.GameStatus.Ingame_placing_blueprints)
                 Destroy(gameObject);
@@ -68,7 +78,7 @@ namespace Game.Player.Building
             InitializeRequirmentUI();
         }
 
-        protected virtual void FixedUpdate()
+        void FixedUpdate()
         {
             if (blueprintIsPlaced || GameManager.Instance.gameStatus != GameManager.GameStatus.Ingame_placing_blueprints)
                 return;
@@ -77,14 +87,18 @@ namespace Game.Player.Building
             MoveBlueprint();
         }
 
-        private void SetLayer(GameObject go, bool childs, int layer)
+        void SetLayer(GameObject go, int layer)
         {
             go.layer = layer;
-            if (childs)
+            
+            foreach(Transform child in go.transform)
             {
-                foreach(var collider in go.GetComponentsInChildren<Collider>())
+                child.gameObject.layer = layer;
+
+                Transform grandchild;
+                if(child.TryGetComponent<Transform>(out grandchild))
                 {
-                    collider.gameObject.layer = layer;
+                    SetLayer(child.gameObject, layer);
                 }
             }
         }
@@ -114,7 +128,7 @@ namespace Game.Player.Building
             }
         }
 
-        protected virtual void HandlePlayerInput()
+        void HandlePlayerInput()
         {
             if (blueprintIsPlaced || GameManager.Instance.gameStatus != GameManager.GameStatus.Ingame_placing_blueprints)
                 return;
@@ -140,12 +154,13 @@ namespace Game.Player.Building
             }
         }
 
-        protected virtual void RotateBlueprint(int dir)
+        void RotateBlueprint(int dir)
         {
-            transform.Rotate(transform.rotation * transform.up * rotationSpeed * dir * Time.deltaTime);
+            rotationAmount += Vector3.up * dir * rotationSpeed * Time.deltaTime;
+            //transform.Rotate(transform.rotation * transform.up * rotationSpeed * dir * Time.deltaTime);
         }
 
-        private void InitializeRequirmentUI()
+        void InitializeRequirmentUI()
         {
             uiParent.gameObject.SetActive(blueprintIsPlaced && requiredItems.Count != 0);
 
@@ -176,7 +191,7 @@ namespace Game.Player.Building
             if (CanPlace())
             {
                 blueprintIsPlaced = true;
-                SetLayer(gameObject, true, defaultLayer);
+                SetLayer(gameObject, defaultLayer);
                 gameObject.transform.parent = PlayerSettings.Instance.placeBuildingObjectTo;
                 GameManager.Instance.gameStatus = GameManager.GameStatus.Ingame;
             }
@@ -204,47 +219,166 @@ namespace Game.Player.Building
                 if(hit.transform.tag == "SnapPoint")
                 {
                     Debug.DrawLine(camera.position, hit.point, Color.cyan);
-                    Vector3 vector3 = hit.point.normalized;
 
-                    rayHitPosition = hit.point; //calculate new position value that does denays overlapping.
-                    transform.rotation = hit.transform.rotation; //hit.transform.parent.rotation;
+                    if (lastSnapPointHit != null && lastSnapPointHit == hit.transform)
+                        return;
+
+                    falseSnapPoint = false;
+
+                    Transform hitTransform = hit.transform;
+
+
+                    ConstructionPartBlueprint hitBlueprint = hitTransform.GetComponentInParent<ConstructionPartBlueprint>();
+                    Vector3 centerPoint = GetSnapPointsCenterPoint();
+                    Vector3 hitCenterPoint = hitBlueprint.GetSnapPointsCenterPoint();
+
+
+                    lastSnapPointHit = hitTransform;
+                    rayHitPosition = hitTransform.position;
+                    rayHitRotation = hitTransform.parent.rotation;
+
+                    switch (type)
+                    {
+                        case ConstructionPartType.Wall:
+                            if (hitBlueprint.Type == ConstructionPartType.Wall)
+                            {
+                                if (hitTransform.name == "Left" || hitTransform.name == "Right")
+                                {
+                                    rayHitPosition += GetDirection(hitCenterPoint, hitTransform.position) * Vector3.Distance(hitCenterPoint, hitTransform.position); //Move object next to snapped object.
+                                    rayHitPosition += GetDirection(centerPoint, transform.position) * hitTransform.localPosition.y / 2; //Set height same as snapped object.
+                                }
+                                else if (hitTransform.name == "Bottom")
+                                {
+                                    falseSnapPoint = true;
+                                }
+                            }
+                            if(hitBlueprint.Type == ConstructionPartType.Foundation)
+                            {
+                                rayHitRotation = Quaternion.LookRotation((hitTransform.position - hitCenterPoint), Vector3.up);
+                                rotationAmount = Vector3.zero;
+                            }
+                            break;
+
+                        case ConstructionPartType.Foundation:
+                            if(hitBlueprint.Type == ConstructionPartType.Foundation)
+                            {
+                                rayHitPosition += GetDirection(hitCenterPoint, hitTransform.position) * Vector3.Distance(hitCenterPoint, hitTransform.position);
+                            }
+                            else if(hitBlueprint.Type == ConstructionPartType.Wall)
+                            {
+                                if (hitTransform.name == "Bottom")
+                                {
+                                    rayHitPosition += GetDirection(snapPoints[0].transform.position, centerPoint) * Vector3.Distance(snapPoints[0].transform.position, centerPoint);
+                                    rotationAmount = Vector3.zero;
+                                }
+                                else
+                                {
+                                    falseSnapPoint = true;
+                                }
+                            }
+
+                            break;
+
+                        case ConstructionPartType.Ceiling:
+                            if (hitBlueprint.Type == ConstructionPartType.Ceiling)
+                            {
+                                rayHitPosition += GetDirection(hitCenterPoint, hitTransform.position) * Vector3.Distance(hitCenterPoint, hitTransform.position); 
+                            }
+                            else if (hitBlueprint.Type == ConstructionPartType.Wall)
+                            {
+                                if (hitTransform.name == "Top") // || hitTransform.name == "Left" || hitTransform.name == "Rigt"
+                                {
+                                    rayHitPosition += GetDirection(snapPoints[0].transform.position, centerPoint) * Vector3.Distance(snapPoints[0].transform.position, centerPoint);
+                                    rotationAmount = Vector3.zero;
+                                }
+                                else
+                                {
+                                    falseSnapPoint = true;
+                                }
+                            }
+
+                            break;
+
+                        default:
+                            Debug.Log("Construction part type snap point settings is not set!");
+                            break;
+                    }
                 }
                 else
                 {
+                    
                     Debug.DrawLine(camera.position, hit.point, Color.green);
+                    lastSnapPointHit = null;
                     rayHitPosition = hit.point;
                 }
             }
             else
             {
+                lastSnapPointHit = null;
                 rayHitPosition = camera.position + camera.forward * PlayerSettings.Instance.maxDistanceFromPlayer;
             }
         }
 
-        protected virtual void CleanLists()
+        Vector3 GetFurthestSnapPointFrom(Vector3 fromPos)
+        {
+            Vector3 furthest = Vector3.zero;
+            float furthestDistance = float.MaxValue;
+
+            foreach(GameObject go in snapPoints)
+            {
+                float distance = Vector3.Distance(fromPos, go.transform.position);
+                if(distance < furthestDistance)
+                {
+                    furthestDistance = distance;
+                    furthest = go.transform.position;
+                }
+            }
+            return furthest;
+        }
+
+        public Vector3 GetSnapPointsCenterPoint()
+        {
+            Vector3 centerPoint = Vector3.zero;
+
+            foreach (GameObject point in snapPoints)
+                centerPoint += point.transform.position;
+
+            centerPoint /= snapPoints.Length;
+
+            return centerPoint;
+        }
+
+        Vector3 GetDirection(Vector3 from, Vector3 to)
+        {
+            return (to - from).normalized;
+        }
+
+        void CleanLists()
         {
             triggeredObjects.RemoveAll(x => x == null);
             triggeredSnapObjects.RemoveAll(x => x == null);
         }
 
-        protected virtual void MoveBlueprint()
+        void MoveBlueprint()
         {
             if (blueprintIsPlaced)
                 return;
 
-            Vector3 finalPosition = rayHitPosition;
-            //Debug.Log($"snapObjects: {triggeredSnapObjects.Count}");
 
-            CleanLists();
-            if (triggeredSnapObjects.Count == 1)
+            Quaternion finalRotation = Quaternion.Euler(rotationAmount);
+
+            if(lastSnapPointHit != null && !falseSnapPoint)
             {
-                finalPosition.y = triggeredSnapObjects[0].transform.position.y;
+                Debug.Log("rotation!");
+                finalRotation *= rayHitRotation; // + rotation;
             }
 
-            transform.position = finalPosition;
+            transform.rotation = finalRotation;
+
+            transform.position = rayHitPosition;
         }
 
-        protected virtual void InitializeSnapPoints()
+        void InitializeSnapPoints()
         {
             if (snapPointsParent == null)
                 return;
@@ -257,30 +391,35 @@ namespace Game.Player.Building
             }
         }
 
-        protected virtual bool CanPlace()
+        bool CanPlace()
         {
+            CleanLists();
+
             if (blueprintIsPlaced)
                 return false;
 
             if (triggeredObjects.Count == 0)
                 return true;
 
-            if (triggeredObjects.Count == 1 && triggeredObjects[0].layer == 9) // figure better way to achive this..
+            if (falseSnapPoint && lastSnapPointHit != null)
+                return false;
+
+            if (triggeredObjects.Count == 1 && triggeredObjects[0].layer == 9 && lastSnapPointHit != null)
                 return true;
 
-            if (triggeredObjects.Count == 2 && triggeredObjects[0].layer == 9 && triggeredObjects[1].layer == 9) // figure better way to achive this..
+            if (triggeredObjects.Count == 2 && triggeredObjects[0].layer == 9 && triggeredObjects[1].layer == 9 && lastSnapPointHit != null)
                 return true;
 
             return false;
         }
 
-        private void UpdateMaterial()
+        void UpdateMaterial()
         {
             goRenderer.material = CanPlace() || blueprintIsPlaced ? defaultBlueprintMaterial : falseBlueprintMaterial;
         }
 
 
-        protected virtual void OnTriggerEnter(Collider other)
+        void OnTriggerEnter(Collider other)
         {
             if (!triggeredObjects.Contains(other.gameObject))
             {
@@ -297,7 +436,7 @@ namespace Game.Player.Building
             UpdateMaterial();
         }
 
-        protected virtual void OnTriggerExit(Collider other)
+        void OnTriggerExit(Collider other)
         {
             triggeredObjects.Remove(other.gameObject);
             triggeredSnapObjects.Remove(other.gameObject);

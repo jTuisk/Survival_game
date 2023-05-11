@@ -327,9 +327,9 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 632623178251381145}
   - {fileID: 748550483539054528}
   - {fileID: 3439215446560551593}
-  - {fileID: 632623178251381145}
   - {fileID: 767389776163171672}
   m_Father: {fileID: 151594921831501330}
   m_RootOrder: 2
@@ -408,8 +408,8 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.4, y: 0.3, z: 0.4}
-  m_Center: {x: 0, y: 0.15, z: 0}
+  m_Size: {x: 0.4, y: 0.4, z: 0.4}
+  m_Center: {x: 0, y: 0.2, z: 0}
 --- !u!1 &4781837783586328466
 GameObject:
   m_ObjectHideFlags: 0
@@ -507,7 +507,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3012204496332256076}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &8710513975570773899
 BoxCollider:
@@ -520,8 +520,8 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.4, y: 0.3, z: 0.4}
-  m_Center: {x: 0, y: 0.15, z: 0}
+  m_Size: {x: 0.4, y: 0.4, z: 0.4}
+  m_Center: {x: 0, y: 0.2, z: 0}
 --- !u!1 &5549060532126529235
 GameObject:
   m_ObjectHideFlags: 0
@@ -653,7 +653,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3012204496332256076}
-  m_RootOrder: 2
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &8614056756310479887
 BoxCollider:
@@ -666,8 +666,8 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.4, y: 0.3, z: 0.4}
-  m_Center: {x: 0, y: 0.15, z: 0}
+  m_Size: {x: 0.4, y: 0.4, z: 0.4}
+  m_Center: {x: 0, y: 0.2, z: 0}
 --- !u!1 &7899098606540311272
 GameObject:
   m_ObjectHideFlags: 0
@@ -698,7 +698,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3012204496332256076}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &193322360626807326
 BoxCollider:
@@ -711,8 +711,8 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.4, y: 0.3, z: 0.4}
-  m_Center: {x: 0, y: 0.15, z: 0}
+  m_Size: {x: 0.4, y: 0.4, z: 0.4}
+  m_Center: {x: 0, y: 0.2, z: 0}
 --- !u!1 &7918285486502258392
 GameObject:
   m_ObjectHideFlags: 0
@@ -845,6 +845,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   blueprintIsPlaced: 0
+  type: 2
   finishedPart: {fileID: 7918285486502258392, guid: 1f0138783125dad47941d13f76bf0660, type: 3}
   requiredItems:
   - item: {fileID: 11400000, guid: def1cafa2f9ccc54f97a14f9cc8a2663, type: 2}
@@ -853,10 +854,12 @@ MonoBehaviour:
     quantity: 6
   snapPointsParent: {fileID: 3012204496332256076}
   rayHitPosition: {x: 0, y: 0, z: 0}
+  rayHitRotation: {x: 0, y: 0, z: 0, w: 0}
   layerMasks:
     serializedVersion: 2
-    m_Bits: 520
+    m_Bits: 1544
   rotationSpeed: 50
+  rotationAmount: {x: 0, y: 0, z: 0}
   goRenderer: {fileID: 5156566030688136853}
   falseBlueprintMaterial: {fileID: 2100000, guid: ee929f77793394c40896d08d66262261, type: 2}
   uiParent: {fileID: 5147619311929627140}

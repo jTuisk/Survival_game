@@ -13,13 +13,13 @@ MonoBehaviour:
   m_Name: Pickaxe
   m_EditorClassIdentifier: 
   itemType: 1
-  item:
-    canInteract: 1
+  canInteract: 1
+  itemData:
     prefab: {fileID: 6355476528010854554, guid: c34befb91bf059d46ae2156f69b72580, type: 3}
     icon: {fileID: 21300000, guid: 82d4686d5c151b64f9fe518923048cda, type: 3}
-    id: 6002
+    id: 2001
     name: Pickaxe
     description: N/A
-    weight: 4.3
-    value: 87
+    weight: 0
+    value: 0
     maxStackAmount: 1

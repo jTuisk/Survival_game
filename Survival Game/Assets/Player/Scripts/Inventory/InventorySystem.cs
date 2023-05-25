@@ -40,6 +40,10 @@ namespace Game.Player.Inventory
             chestContainers = new List<InventoryContainer>();
 
             //Remove after testing
+        }
+
+        private void Start()
+        {
             AddStartingItems();
         }
 
@@ -48,8 +52,8 @@ namespace Game.Player.Inventory
         {
             for(int i = 0; i < startingItems.Length; i++)
             {
-                toolbarContainer.ForceSetItem(i, startingItems[i].item.GetComponent<InteractiveItem>().itemData, startingItems[i].amount);
-                backpackContainer.ForceSetItem(i, startingItems[i].item.GetComponent<InteractiveItem>().itemData, startingItems[i].amount);
+                toolbarContainer.AddItem(startingItems[i].item.GetComponent<InteractiveItem>(), ref startingItems[i].amount);
+                backpackContainer.AddItem(startingItems[i].item.GetComponent<InteractiveItem>(), ref startingItems[i].amount);
             }
         }
 
@@ -100,7 +104,6 @@ namespace Game.Player.Inventory
 
         public void DropItem(InventorySlot item, int quantity = -1)
         {
-            //if quantity equals -1, then drop everything.
             item.DropItemToGround(quantity);
         }
 

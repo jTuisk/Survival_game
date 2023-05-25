@@ -13,13 +13,13 @@ MonoBehaviour:
   m_Name: Sword
   m_EditorClassIdentifier: 
   itemType: 2
-  item:
-    canInteract: 1
+  canInteract: 1
+  itemData:
     prefab: {fileID: 5307814100412040580, guid: 083699ab806df1b4984ac9146c3b73da, type: 3}
     icon: {fileID: 21300000, guid: c2dcbd38199fa1745a226059ba687337, type: 3}
-    id: 6004
-    name: Iron sword
+    id: 2003
+    name: Sword
     description: N/A
-    weight: 4.3
-    value: 310
+    weight: 0
+    value: 0
     maxStackAmount: 1

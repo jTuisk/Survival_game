@@ -24,17 +24,17 @@ namespace Game.Player.Building
         [Header("Snapping")]
         [SerializeField] Transform snapPointsParent;
         GameObject[] snapPoints;
+        Transform lastSnapPointHit;
+        bool falseSnapPoint;
 
         [Header("Position/Rotation/Raycast")]
         [SerializeField, ReadOnly] Vector3 rayHitPosition;
         [SerializeField, ReadOnly] Quaternion rayHitRotation;
+        [SerializeField, ReadOnly] Vector3 rotationAmount;
+        [SerializeField] float rotationSpeed = 50f;
         [SerializeField] LayerMask layerMasks;
         const int defaultLayer = 9;
         const int ignoreRayCastLayer = 2;
-        [SerializeField] float rotationSpeed = 5f;
-        [SerializeField, ReadOnly] Vector3 rotationAmount;
-        Transform lastSnapPointHit;
-        bool falseSnapPoint;
 
         [Header("Materials")]
         [SerializeField] Renderer goRenderer;
@@ -48,10 +48,9 @@ namespace Game.Player.Building
         [Header("Others")]
         [SerializeField, ReadOnly] List<GameObject> triggeredObjects;
         [SerializeField, ReadOnly] List<GameObject> triggeredSnapObjects;
+
         float actionTimer = 0f;
-        float actionInterval = 0.5f;
-
-
+        const float actionInterval = 0.5f;
 
         void Start()
         {
@@ -65,9 +64,6 @@ namespace Game.Player.Building
         {
             if (!blueprintIsPlaced && GameManager.Instance.gameStatus != GameManager.GameStatus.Ingame_placing_blueprints)
                 Destroy(gameObject);
-
-
-
 
             if (actionTimer > 0)
             {
@@ -107,14 +103,11 @@ namespace Game.Player.Building
         {
             foreach(var reqItem in requiredItems)
             {
-                Debug.Log($"reqItem: {reqItem.item.name}, quantity: {reqItem.quantity}, player has: {InventorySystem.Instance.ItemQuantity(reqItem.item)} ");
-
                 InventorySystem.Instance.RemoveItems(reqItem.item, ref reqItem.quantity);
             }
 
             requiredItems.RemoveAll(reqItem => reqItem.quantity <= 0);
 
-            Debug.Log($"reqCount: {requiredItems.Count}");
             InitializeRequirmentUI();
 
             if (requiredItems.Count == 0)
@@ -157,7 +150,6 @@ namespace Game.Player.Building
         void RotateBlueprint(int dir)
         {
             rotationAmount += Vector3.up * dir * rotationSpeed * Time.deltaTime;
-            //transform.Rotate(transform.rotation * transform.up * rotationSpeed * dir * Time.deltaTime);
         }
 
         void InitializeRequirmentUI()
@@ -186,7 +178,6 @@ namespace Game.Player.Building
 
         public void Placeblueprint()
         {
-            Debug.Log("Place blueprint! "+ CanPlace());
             actionTimer = actionInterval;
             if (CanPlace())
             {
@@ -276,7 +267,6 @@ namespace Game.Player.Building
                                     falseSnapPoint = true;
                                 }
                             }
-
                             break;
 
                         case ConstructionPartType.Ceiling:
@@ -296,7 +286,6 @@ namespace Game.Player.Building
                                     falseSnapPoint = true;
                                 }
                             }
-
                             break;
 
                         default:
@@ -306,7 +295,6 @@ namespace Game.Player.Building
                 }
                 else
                 {
-                    
                     Debug.DrawLine(camera.position, hit.point, Color.green);
                     lastSnapPointHit = null;
                     rayHitPosition = hit.point;
@@ -364,13 +352,11 @@ namespace Game.Player.Building
             if (blueprintIsPlaced)
                 return;
 
-
             Quaternion finalRotation = Quaternion.Euler(rotationAmount);
 
             if(lastSnapPointHit != null && !falseSnapPoint)
             {
-                Debug.Log("rotation!");
-                finalRotation *= rayHitRotation; // + rotation;
+                finalRotation *= rayHitRotation;
             }
 
             transform.rotation = finalRotation;

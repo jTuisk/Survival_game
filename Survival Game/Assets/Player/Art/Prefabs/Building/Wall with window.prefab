@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: -4760909343930433453}
   m_Layer: 0
   m_Name: Wall with window
-  m_TagString: Untagged
+  m_TagString: ConstructionPart
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -101,7 +101,7 @@ MonoBehaviour:
   itemData: {fileID: 11400000, guid: 44142bd1dcff72240a24c85c83d01f92, type: 2}
   quantity: 1
   displayQuantityText: 0
-  quantityCanvas: {fileID: 8285654299619168550}
+  canvas: {fileID: 0}
   quantityText: {fileID: 2143949104666317041}
 --- !u!65 &-4760909343930433453
 BoxCollider:

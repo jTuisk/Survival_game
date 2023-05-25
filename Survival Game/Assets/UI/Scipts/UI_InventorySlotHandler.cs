@@ -63,7 +63,7 @@ namespace Game.UI
 
             if (ActiveInventorySlot != null)
             {
-                if (ActiveInventorySlot.item != null)
+                if (ActiveInventorySlot.item != null && ActiveInventorySlot.itemQuantity > 0)
                 {
                     icon.sprite = ActiveInventorySlot.item.itemData.icon;
                 }

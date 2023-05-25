@@ -14,12 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemType: 4
   canInteract: 1
-  item:
+  itemData:
     prefab: {fileID: 8171309731453588319, guid: 545775185cebf02429eecd1f6af92a9f, type: 3}
     icon: {fileID: 21300000, guid: 6d91fb505fb112d43895674cbe452821, type: 3}
-    id: 7002
+    id: 3001
     name: Water bottle
     description: N/A
-    weight: 0.5
-    value: 4
+    weight: 0
+    value: 20
     maxStackAmount: 5

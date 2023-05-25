@@ -56,9 +56,9 @@ namespace Game.Player.Controller
                     if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, settings.distance, settings.itemLayer.value))
                     {
                         
-                        ConstructionPartBlueprint buildingObject = hit.transform.GetComponent<ConstructionPartBlueprint> ();
+                        ConstructionPartBlueprint buildingObject = hit.transform.GetComponent<ConstructionPartBlueprint>();
                         settings.timer = settings.interval;
-                        buildingObject.PlaceRequiredItems();
+                        buildingObject?.PlaceRequiredItems();
                     }
                 }
                 if (inputManager.BlockIsPressed && GameManager.Instance.gameStatus == GameManager.GameStatus.Ingame_placing_blueprints)
@@ -94,6 +94,7 @@ namespace Game.Player.Controller
                     if(Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, settings.distance, settings.itemLayer.value))
                     {
                         InteractiveItem iItem = hit.transform.GetComponent<InteractiveItem>();
+                        ChestHandler ch = hit.transform.GetComponent<ChestHandler>();
 
                         if(iItem != null)
                         {
@@ -110,6 +111,12 @@ namespace Game.Player.Controller
                                 Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * settings.distance, Color.cyan);
                             }
                         }
+
+                        if(ch != null)
+                        {
+                            ch.OpenChest();
+                        }
+
                     }
                     else
                     {
@@ -171,6 +178,13 @@ namespace Game.Player.Controller
                             if (inputManager.Q)
                             {
                                 OpenUI(GameManager.GameStatus.Ingame_select_building_part);
+                            }
+                            break;
+
+                        case GameManager.GameStatus.Ingame_Chest:
+                            if (inputManager.Tab || inputManager.Esc)
+                            {
+                                OpenUI(GameManager.GameStatus.Ingame);
                             }
                             break;
 
